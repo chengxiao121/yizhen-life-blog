@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const tagMap = new Map<string, number>();
+
+allPosts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
+    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+  });
+});
+
+const tags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="标签">
+  <div class="tags-page">
+    <h1>标签</h1>
+    <p class="tags-subtitle">共 {tags.length} 个标签</p>
+    <div class="tags-grid">
+      {tags.map(([tag, count]) => (
+        <a href={`/tags/${tag}`} class="tag-card">
+          <span class="tag-name">{tag}</span>
+          <span class="tag-count">{count} 篇</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tags-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+  .tags-page h1 {
+    margin-bottom: 0.5rem;
+  }
+  .tags-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+  .tags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  .tag-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.2rem;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    color: var(--text-primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tag-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: var(--accent);
+  }
+  .tag-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .tag-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+</style>
