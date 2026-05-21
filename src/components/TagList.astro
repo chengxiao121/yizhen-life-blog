@@ -1,0 +1,48 @@
+---
+interface Props {
+  tags: string[];
+  linkable?: boolean;
+}
+
+const { tags, linkable = true } = Astro.props;
+
+const tagColors: Record<string, { bg: string; text: string }> = {
+  '技术': { bg: 'var(--tag-blue)', text: 'var(--tag-blue-text)' },
+  '生活': { bg: 'var(--tag-pink)', text: 'var(--tag-pink-text)' },
+  '随笔': { bg: 'var(--tag-yellow)', text: 'var(--tag-yellow-text)' },
+  'Astro': { bg: 'var(--tag-purple)', text: 'var(--tag-purple-text)' },
+};
+
+const defaultColor = { bg: 'var(--tag-gray)', text: 'var(--tag-gray-text)' };
+---
+
+<div class="tag-list">
+  {tags.map((tag) => {
+    const color = tagColors[tag] || defaultColor;
+    return linkable ? (
+      <a href={`/tags/${tag}`} class="tag" style={`background: ${color.bg}; color: ${color.text};`}>
+        {tag}
+      </a>
+    ) : (
+      <span class="tag" style={`background: ${color.bg}; color: ${color.text};`}>{tag}</span>
+    );
+  })}
+</div>
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.2em 0.7em;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: opacity 0.2s;
+  }
+  a.tag:hover {
+    opacity: 0.8;
+  }
+</style>
