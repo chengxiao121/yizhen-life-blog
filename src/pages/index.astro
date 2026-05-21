@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout title="首页">
+  <section class="hero">
+    <h1>一帧.life</h1>
+    <p class="slogan">世界那么大，我先溜达溜达</p>
+  </section>
+
+  <section class="post-list">
+    {sortedPosts.map((post) => (
+      <PostCard
+        title={post.data.title}
+        slug={post.data.slug}
+        date={post.data.date}
+        description={post.data.description}
+        tags={post.data.tags}
+      />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .slogan {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+  .post-list {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+</style>
