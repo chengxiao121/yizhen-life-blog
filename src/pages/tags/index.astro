@@ -35,41 +35,44 @@ const tags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
     margin: 0 auto;
   }
   .tags-page h1 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    font-size: 1.5rem;
   }
   .tags-subtitle {
     color: var(--text-muted);
-    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.8rem;
   }
   .tags-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.8rem;
   }
   .tag-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.2rem;
+    padding: 1rem;
     background: var(--bg-card);
     border-radius: var(--radius);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
     color: var(--text-primary);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
   .tag-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
     color: var(--accent);
+    border-color: rgba(200, 121, 65, 0.2);
   }
   .tag-name {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .tag-count {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
-    margin-top: 0.3rem;
+    margin-top: 0.25rem;
   }
 </style>

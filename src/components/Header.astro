@@ -5,6 +5,7 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
   <nav class="nav">
     <a href="/" class="logo">
+      <span class="logo-icon">&#x2756;</span>
       <span class="logo-text">一帧.life</span>
     </a>
     <ul class="nav-links">
@@ -17,19 +18,31 @@ const currentPath = Astro.url.pathname;
 
 <style>
   .site-header {
-    padding: 1.5rem 2rem;
-    max-width: 900px;
+    padding: 0 2rem;
+    max-width: 960px;
     margin: 0 auto;
+    border-bottom: 1px solid var(--border-light);
   }
   .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .logo-icon {
+    font-size: 1.2rem;
+    color: var(--accent);
   }
   .logo-text {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-primary);
+    letter-spacing: 0.03em;
   }
   .logo:hover .logo-text {
     color: var(--accent);
@@ -37,26 +50,22 @@ const currentPath = Astro.url.pathname;
   .nav-links {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 0.2rem;
   }
   .nav-link {
     color: var(--text-secondary);
-    font-size: 0.95rem;
-    padding: 0.3em 0;
-    position: relative;
+    font-size: 0.9rem;
+    padding: 0.4em 0.9em;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
   }
-  .nav-link:hover,
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--accent-light);
+  }
   .nav-link.active {
     color: var(--accent);
-  }
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-    border-radius: 1px;
+    font-weight: 600;
+    background: var(--accent-light);
   }
 </style>

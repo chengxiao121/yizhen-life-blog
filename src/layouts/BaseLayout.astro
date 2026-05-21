@@ -35,8 +35,13 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
 <style>
   main {
     min-height: calc(100vh - 200px);
-    padding: 2rem;
-    max-width: 900px;
+    padding: 2rem 2rem 3rem;
+    max-width: 960px;
     margin: 0 auto;
+  }
+  @media (max-width: 768px) {
+    main {
+      padding: 1.5rem 1rem 2rem;
+    }
   }
 </style>

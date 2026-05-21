@@ -3,14 +3,26 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <p class="footer-text">&copy; {year} 一帧.life &middot; 世界那么大，我先溜达溜达</p>
+  <p class="footer-text">&copy; {year} 一帧.life</p>
+  <p class="footer-slogan">世界那么大，我先溜达溜达</p>
 </footer>
 
 <style>
   .site-footer {
     text-align: center;
-    padding: 3rem 2rem 2rem;
+    padding: 2.5rem 2rem 2rem;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    border-top: 1px solid var(--border-light);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .footer-text {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  .footer-slogan {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.7;
   }
 </style>
