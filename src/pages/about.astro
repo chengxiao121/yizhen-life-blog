@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于我">
+  <div class="about">
+    <div class="about-avatar">
+      <img src="/avatar.jpg" alt="头像" />
+    </div>
+    <h1>关于我</h1>
+    <div class="about-content prose">
+      <p>你好，欢迎来到「一帧.life」。</p>
+      <p>我是一名大三学生，对技术充满好奇，也热爱生活中的点点滴滴。</p>
+      <p>这个博客是我的小小天地，记录技术学习的思考，也记录生活中的所见所感。</p>
+      <p>世界那么大，我先溜达溜达。</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    text-align: center;
+  }
+  .about-avatar {
+    margin-bottom: 1.5rem;
+  }
+  .about-avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border);
+  }
+  .about h1 {
+    margin-bottom: 1.5rem;
+  }
+  .about-content {
+    text-align: left;
+  }
+</style>
