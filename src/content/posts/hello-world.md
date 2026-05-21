@@ -1,6 +1,5 @@
 ---
 title: "你好，世界"
-slug: "hello-world"
 date: "2026-05-21"
 tags: ["生活", "随笔"]
 description: "这是我的第一篇博客，记录新的开始。"

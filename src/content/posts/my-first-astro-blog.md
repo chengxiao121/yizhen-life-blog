@@ -1,6 +1,5 @@
 ---
 title: "我的第一个 Astro 博客"
-slug: "my-first-astro-blog"
 date: "2026-05-21"
 tags: ["技术", "Astro"]
 description: "记录用 Astro 搭建个人博客的过程。"

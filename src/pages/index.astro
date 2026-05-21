@@ -19,7 +19,7 @@ const sortedPosts = allPosts.sort(
     {sortedPosts.map((post) => (
       <PostCard
         title={post.data.title}
-        slug={post.data.slug}
+        slug={post.slug}
         date={post.data.date}
         description={post.data.description}
         tags={post.data.tags}
