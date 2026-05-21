@@ -1,0 +1,62 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="/" class="logo">
+      <span class="logo-text">一帧.life</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/" class:list={["nav-link", { active: currentPath === "/" }]}>首页</a></li>
+      <li><a href="/tags" class:list={["nav-link", { active: currentPath.startsWith("/tags") }]}>标签</a></li>
+      <li><a href="/about" class:list={["nav-link", { active: currentPath === "/about" }]}>关于我</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    padding: 1.5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .logo:hover .logo-text {
+    color: var(--accent);
+  }
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+  }
+  .nav-link {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding: 0.3em 0;
+    position: relative;
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--accent);
+  }
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+</style>
