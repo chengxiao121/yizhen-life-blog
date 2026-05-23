@@ -1,26 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import MomentCard from '../components/MomentCard.astro';
-import Timeline from '../components/Timeline.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
-
-const allMoments = await getCollection('moments');
-const sortedMoments = allMoments.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
-const recentMoments = sortedMoments.slice(0, 5);
-
-const renderedMoments = await Promise.all(
-  recentMoments.map(async (m) => {
-    const { Content } = await m.render();
-    return { ...m, Content };
-  })
 );
 ---
 
@@ -30,40 +15,17 @@ const renderedMoments = await Promise.all(
     <p class="slogan">世界那么大，我先溜达溜达</p>
   </section>
 
-  <div class="home-content">
-    <section class="moments-section">
-      <div class="section-header">
-        <h2>动态</h2>
-        <a href="/moments" class="more-link">全部 &rarr;</a>
-      </div>
-      <Timeline>
-        {renderedMoments.map((m) => (
-          <MomentCard
-            date={m.data.date}
-            photos={m.data.photos}
-            tags={m.data.tags}
-          >
-            <m.Content />
-          </MomentCard>
-        ))}
-      </Timeline>
-    </section>
-
-    <section class="posts-section">
-      <h2>文章</h2>
-      <div class="post-list">
-        {sortedPosts.map((post) => (
-          <PostCard
-            title={post.data.title}
-            slug={post.slug}
-            date={post.data.date}
-            description={post.data.description}
-            tags={post.data.tags}
-          />
-        ))}
-      </div>
-    </section>
-  </div>
+  <section class="post-list">
+    {sortedPosts.map((post) => (
+      <PostCard
+        title={post.data.title}
+        slug={post.slug}
+        date={post.data.date}
+        description={post.data.description}
+        tags={post.data.tags}
+      />
+    ))}
+  </section>
 </BaseLayout>
 
 <style>
@@ -80,33 +42,8 @@ const renderedMoments = await Promise.all(
     color: var(--text-muted);
     font-size: 0.95rem;
   }
-  .home-content {
+  .post-list {
     max-width: 720px;
     margin: 0 auto;
-  }
-  .moments-section {
-    margin-bottom: 3rem;
-  }
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  .section-header h2 {
-    font-size: 1.2rem;
-    margin: 0;
-  }
-  .more-link {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    transition: color 0.2s;
-  }
-  .more-link:hover {
-    color: var(--accent);
-  }
-  .posts-section h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
   }
 </style>

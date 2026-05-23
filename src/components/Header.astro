@@ -10,8 +10,6 @@ const currentPath = Astro.url.pathname;
     </a>
     <ul class="nav-links">
       <li><a href="/" class:list={["nav-link", { active: currentPath === "/" }]}>首页</a></li>
-      <li><a href="/moments" class:list={["nav-link", { active: currentPath.startsWith("/moments") }]}>动态</a></li>
-      <li><a href="/photos" class:list={["nav-link", { active: currentPath === "/photos" }]}>照片</a></li>
       <li><a href="/tags" class:list={["nav-link", { active: currentPath.startsWith("/tags") }]}>标签</a></li>
       <li><a href="/about" class:list={["nav-link", { active: currentPath === "/about" }]}>关于我</a></li>
     </ul>
@@ -52,7 +50,7 @@ const currentPath = Astro.url.pathname;
   .nav-links {
     display: flex;
     list-style: none;
-    gap: 0.1rem;
+    gap: 0.2rem;
   }
   .nav-link {
     color: var(--text-secondary);

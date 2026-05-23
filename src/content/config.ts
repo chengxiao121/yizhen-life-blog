@@ -8,17 +8,7 @@ const posts = defineCollection({
     tags: z.array(z.string()).default([]),
     description: z.string(),
     draft: z.boolean().default(false),
-    photos: z.array(z.string()).default([]),
   }),
 });
 
-const moments = defineCollection({
-  type: 'content',
-  schema: z.object({
-    date: z.string(),
-    photos: z.array(z.string()).default([]),
-    tags: z.array(z.string()).default([]),
-  }),
-});
-
-export const collections = { posts, moments };
+export const collections = { posts };

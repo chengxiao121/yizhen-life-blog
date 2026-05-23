@@ -1,32 +1,32 @@
 /* ===== 配色变量 ===== */
 :root {
-  --bg-primary: #f4f6f9;
+  --bg-primary: #faf8f5;
   --bg-card: #ffffff;
-  --bg-code: #eef1f5;
-  --text-primary: #1e2a3a;
-  --text-secondary: #5a6577;
-  --text-muted: #94a0b0;
-  --accent: #4a8fe7;
-  --accent-hover: #3578d0;
-  --accent-light: rgba(74, 143, 231, 0.08);
-  --border: #dfe4eb;
-  --border-light: #edf0f5;
+  --bg-code: #f4f0ec;
+  --text-primary: #2c2c2c;
+  --text-secondary: #636363;
+  --text-muted: #a0a0a0;
+  --accent: #c87941;
+  --accent-hover: #b56830;
+  --accent-light: rgba(200, 121, 65, 0.08);
+  --border: #eae6e1;
+  --border-light: #f0ece7;
   --shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
   --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
   --radius: 10px;
   --max-width: 720px;
-  --tag-blue: #e3edfb;
-  --tag-blue-text: #2b6cb0;
-  --tag-green: #e8f5e9;
-  --tag-green-text: #2e7d32;
-  --tag-purple: #ede7f6;
-  --tag-purple-text: #6c3483;
-  --tag-yellow: #fef9e7;
-  --tag-yellow-text: #b7950b;
-  --tag-pink: #fce4ec;
-  --tag-pink-text: #c0392b;
-  --tag-gray: #eef1f5;
-  --tag-gray-text: #5a6577;
+  --tag-blue: #e8f0fe;
+  --tag-blue-text: #1a56c4;
+  --tag-pink: #fce8ec;
+  --tag-pink-text: #c0284a;
+  --tag-yellow: #fef5e0;
+  --tag-yellow-text: #b45d00;
+  --tag-purple: #f0e4f6;
+  --tag-purple-text: #7b1fa2;
+  --tag-green: #e6f4ea;
+  --tag-green-text: #1e7a34;
+  --tag-gray: #f0f0f0;
+  --tag-gray-text: #5f6368;
 }
 
 /* ===== 基础重置 ===== */
@@ -158,7 +158,7 @@ p {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(74, 143, 231, 0.3);
+  text-decoration-color: rgba(200, 121, 65, 0.3);
   transition: text-decoration-color 0.2s;
 }
 
