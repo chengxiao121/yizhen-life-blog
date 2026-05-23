@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoGrid from '../components/PhotoGrid.astro';
+import { getCollection } from 'astro:content';
+
+const allMoments = await getCollection('moments');
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+const momentPhotos = allMoments
+  .filter((m) => m.data.photos && m.data.photos.length > 0)
+  .flatMap((m) =>
+    m.data.photos.map((src) => ({ src, date: m.data.date }))
+  );
+
+const postPhotos = allPosts
+  .filter((p) => p.data.photos && p.data.photos.length > 0)
+  .flatMap((p) =>
+    p.data.photos.map((src) => ({ src, date: p.data.date }))
+  );
+
+const allPhotos = [...momentPhotos, ...postPhotos].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+---
+
+<BaseLayout title="照片">
+  <div class="photos-page">
+    <h1>照片</h1>
+    <p class="photos-subtitle">共 {allPhotos.length} 张照片</p>
+    <PhotoGrid photos={allPhotos} />
+  </div>
+</BaseLayout>
+
+<style>
+  .photos-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .photos-page h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .photos-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.8rem;
+  }
+</style>
