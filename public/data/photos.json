@@ -1,0 +1,37 @@
+{
+  "photos": [
+    {
+      "id": "photo-001",
+      "filename": "test1.jpg",
+      "path": "/images/photos/2024/01/test1.jpg",
+      "title": "测试照片 1",
+      "description": "这是一张测试照片",
+      "date": "2024-01-15",
+      "width": 800,
+      "height": 600,
+      "tags": ["测试"]
+    },
+    {
+      "id": "photo-002",
+      "filename": "test2.jpg",
+      "path": "/images/photos/2024/01/test2.jpg",
+      "title": "测试照片 2",
+      "description": "这是另一张测试照片",
+      "date": "2024-01-16",
+      "width": 600,
+      "height": 800,
+      "tags": ["测试"]
+    },
+    {
+      "id": "photo-003",
+      "filename": "test3.jpg",
+      "path": "/images/photos/2024/01/test3.jpg",
+      "title": "测试照片 3",
+      "description": "这是第三张测试照片",
+      "date": "2024-01-17",
+      "width": 800,
+      "height": 800,
+      "tags": ["测试"]
+    }
+  ]
+}
