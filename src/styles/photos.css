@@ -21,6 +21,10 @@
   margin: 0 auto;
 }
 
+.photo-grid-sizer {
+  width: calc(33.333% - 11px);
+}
+
 .photo-grid::after {
   content: '';
   display: block;
@@ -29,7 +33,6 @@
 
 /* ===== 照片卡片 ===== */
 .photo-card {
-  float: left;
   width: calc(33.333% - 11px);
   margin-bottom: 16px;
   border-radius: var(--radius);
@@ -60,6 +63,24 @@
   opacity: 1;
 }
 
+.photo-card img.error {
+  opacity: 1;
+  background: var(--bg-card);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-card img.error::after {
+  content: '图片加载失败';
+  display: block;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 /* ===== 照片信息 ===== */
 .photo-info {
   padding: 0.8rem 1rem;
@@ -80,12 +101,14 @@
 
 /* ===== 响应式 ===== */
 @media (max-width: 1200px) {
+  .photo-grid-sizer,
   .photo-card {
     width: calc(50% - 8px);
   }
 }
 
 @media (max-width: 768px) {
+  .photo-grid-sizer,
   .photo-card {
     width: 100%;
     margin-bottom: 12px;

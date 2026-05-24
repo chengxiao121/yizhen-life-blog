@@ -27,6 +27,7 @@ const { id, path, title, date, width, height } = Astro.props;
     width={width}
     height={height}
     onload="this.classList.add('loaded')"
+    onerror="this.classList.add('error')"
   />
   {title && (
     <div class="photo-info">

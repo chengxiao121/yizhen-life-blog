@@ -3,11 +3,14 @@ import PhotoCard from './PhotoCard.astro';
 
 interface Photo {
   id: string;
+  filename: string;
   path: string;
   title?: string;
+  description?: string;
   date: string;
   width: number;
   height: number;
+  tags?: string[];
 }
 
 interface Props {
@@ -18,6 +21,7 @@ const { photos } = Astro.props;
 ---
 
 <div class="photo-grid" id="photo-grid">
+  <div class="photo-grid-sizer"></div>
   {photos.map((photo) => (
     <PhotoCard
       id={photo.id}
@@ -40,7 +44,7 @@ const { photos } = Astro.props;
   if (grid) {
     const masonry = new Masonry(grid, {
       itemSelector: '.photo-card',
-      columnWidth: '.photo-card',
+      columnWidth: '.photo-grid-sizer',
       percentPosition: true,
       gutter: 16,
       fitWidth: true
@@ -67,29 +71,26 @@ const { photos } = Astro.props;
     });
   }
 
-  // 初始化 PhotoSwipe
+  // 初始化 PhotoSwipe（单次实例化，点击时 loadAndOpen）
   const cards = document.querySelectorAll('.photo-card');
+  const items = Array.from(cards).map((c) => ({
+    src: c.dataset.src,
+    width: parseInt(c.dataset.width),
+    height: parseInt(c.dataset.height),
+    title: c.dataset.title
+  }));
 
-  cards.forEach((card) => {
+  const lightbox = new PhotoSwipe({
+    dataSource: items,
+    showHideAnimationType: 'zoom',
+    bgOpacity: 0.9,
+    padding: { top: 20, bottom: 20, left: 20, right: 20 }
+  });
+  lightbox.init();
+
+  cards.forEach((card, index) => {
     card.addEventListener('click', () => {
-      const items = Array.from(cards).map((c) => ({
-        src: c.dataset.src,
-        width: parseInt(c.dataset.width),
-        height: parseInt(c.dataset.height),
-        title: c.dataset.title
-      }));
-
-      const clickedIndex = Array.from(cards).indexOf(card);
-
-      const lightbox = new PhotoSwipe({
-        dataSource: items,
-        index: clickedIndex,
-        showHideAnimationType: 'zoom',
-        bgOpacity: 0.9,
-        padding: { top: 20, bottom: 20, left: 20, right: 20 }
-      });
-
-      lightbox.init();
+      lightbox.loadAndOpen(index);
     });
   });
 </script>
