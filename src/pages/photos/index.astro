@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import photosData from '../../../public/data/photos.json';
+
+// 读取照片数据
+const photos = photosData.photos;
+
+// 按日期排序（最新的在前）
+const sortedPhotos = photos.sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+---
+
+<BaseLayout title="照片墙">
+  <div class="photos-page">
+    <h1>照片墙</h1>
+    <p class="photos-count">共 {sortedPhotos.length} 张照片</p>
+    <PhotoGrid photos={sortedPhotos} />
+  </div>
+</BaseLayout>
+
+<style>
+  @import '../../styles/photos.css';
+</style>
