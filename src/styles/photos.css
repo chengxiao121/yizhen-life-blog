@@ -1,0 +1,97 @@
+/* ===== 照片墙页面 ===== */
+.photos-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.photos-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.photos-count {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}
+
+/* ===== 瀑布流网格 ===== */
+.photo-grid {
+  margin: 0 auto;
+}
+
+.photo-grid::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* ===== 照片卡片 ===== */
+.photo-card {
+  float: left;
+  width: calc(33.333% - 11px);
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  background: var(--bg-card);
+}
+
+.photo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.photo-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.photo-card img[loading="lazy"] {
+  opacity: 0;
+}
+
+.photo-card img.loaded {
+  opacity: 1;
+}
+
+/* ===== 照片信息 ===== */
+.photo-info {
+  padding: 0.8rem 1rem;
+}
+
+.photo-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+  line-height: 1.4;
+}
+
+.photo-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1200px) {
+  .photo-card {
+    width: calc(50% - 8px);
+  }
+}
+
+@media (max-width: 768px) {
+  .photo-card {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .photos-page {
+    padding: 1.5rem 1rem;
+  }
+}
