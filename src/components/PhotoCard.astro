@@ -1,0 +1,37 @@
+---
+interface Props {
+  id: string;
+  path: string;
+  title?: string;
+  date: string;
+  width: number;
+  height: number;
+}
+
+const { id, path, title, date, width, height } = Astro.props;
+---
+
+<div
+  class="photo-card"
+  data-id={id}
+  data-src={path}
+  data-width={width}
+  data-height={height}
+  data-title={title}
+  data-date={date}
+>
+  <img
+    src={path}
+    alt={title || '照片'}
+    loading="lazy"
+    width={width}
+    height={height}
+    onload="this.classList.add('loaded')"
+  />
+  {title && (
+    <div class="photo-info">
+      <div class="photo-title">{title}</div>
+      <div class="photo-date">{date}</div>
+    </div>
+  )}
+</div>
