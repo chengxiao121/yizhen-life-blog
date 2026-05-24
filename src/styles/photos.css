@@ -64,21 +64,20 @@
 }
 
 .photo-card img.error {
-  opacity: 1;
-  background: var(--bg-card);
+  opacity: 0;
   min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.photo-card img.error::after {
-  content: '图片加载失败';
-  display: block;
-  padding: 2rem;
+.photo-error {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  background: var(--bg-card);
   color: var(--text-muted);
   font-size: 0.85rem;
   text-align: center;
+  padding: 2rem;
 }
 
 /* ===== 照片信息 ===== */

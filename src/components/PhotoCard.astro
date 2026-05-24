@@ -27,8 +27,11 @@ const { id, path, title, date, width, height } = Astro.props;
     width={width}
     height={height}
     onload="this.classList.add('loaded')"
-    onerror="this.classList.add('error')"
+    onerror="this.classList.add('error'); this.parentElement.querySelector('.photo-error').style.display='flex'"
   />
+  <div class="photo-error" style="display:none">
+    <span>图片加载失败</span>
+  </div>
   {title && (
     <div class="photo-info">
       <div class="photo-title">{title}</div>

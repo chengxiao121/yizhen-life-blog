@@ -36,7 +36,7 @@ const { photos } = Astro.props;
 
 <script>
   import Masonry from 'masonry-layout';
-  import PhotoSwipe from 'photoswipe';
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
   import 'photoswipe/style.css';
 
   // 初始化 Masonry
@@ -80,7 +80,7 @@ const { photos } = Astro.props;
     title: c.dataset.title
   }));
 
-  const lightbox = new PhotoSwipe({
+  const lightbox = new PhotoSwipeLightbox({
     dataSource: items,
     showHideAnimationType: 'zoom',
     bgOpacity: 0.9,
