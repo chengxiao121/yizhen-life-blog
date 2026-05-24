@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import photosData from '../../../public/data/photos.json';
+import '../../styles/photos.css';
 
 // 读取照片数据
 const photos = photosData.photos;
@@ -19,7 +20,3 @@ const sortedPhotos = [...photos].sort(
     <PhotoGrid photos={sortedPhotos} />
   </div>
 </BaseLayout>
-
-<style>
-  @import '../../styles/photos.css';
-</style>
