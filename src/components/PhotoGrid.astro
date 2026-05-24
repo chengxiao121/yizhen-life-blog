@@ -1,0 +1,95 @@
+---
+import PhotoCard from './PhotoCard.astro';
+
+interface Photo {
+  id: string;
+  path: string;
+  title?: string;
+  date: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="photo-grid" id="photo-grid">
+  {photos.map((photo) => (
+    <PhotoCard
+      id={photo.id}
+      path={photo.path}
+      title={photo.title}
+      date={photo.date}
+      width={photo.width}
+      height={photo.height}
+    />
+  ))}
+</div>
+
+<script>
+  import Masonry from 'masonry-layout';
+  import PhotoSwipe from 'photoswipe';
+  import 'photoswipe/style.css';
+
+  // 初始化 Masonry
+  const grid = document.getElementById('photo-grid');
+  if (grid) {
+    const masonry = new Masonry(grid, {
+      itemSelector: '.photo-card',
+      columnWidth: '.photo-card',
+      percentPosition: true,
+      gutter: 16,
+      fitWidth: true
+    });
+
+    // 图片加载完成后重新布局
+    const images = grid.querySelectorAll('img');
+    let loadedCount = 0;
+
+    images.forEach((img) => {
+      if (img.complete) {
+        loadedCount++;
+        if (loadedCount === images.length) {
+          masonry.layout();
+        }
+      } else {
+        img.addEventListener('load', () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            masonry.layout();
+          }
+        });
+      }
+    });
+  }
+
+  // 初始化 PhotoSwipe
+  const cards = document.querySelectorAll('.photo-card');
+
+  cards.forEach((card) => {
+    card.addEventListener('click', () => {
+      const items = Array.from(cards).map((c) => ({
+        src: c.dataset.src,
+        width: parseInt(c.dataset.width),
+        height: parseInt(c.dataset.height),
+        title: c.dataset.title
+      }));
+
+      const clickedIndex = Array.from(cards).indexOf(card);
+
+      const lightbox = new PhotoSwipe({
+        dataSource: items,
+        index: clickedIndex,
+        showHideAnimationType: 'zoom',
+        bgOpacity: 0.9,
+        padding: { top: 20, bottom: 20, left: 20, right: 20 }
+      });
+
+      lightbox.init();
+    });
+  });
+</script>
