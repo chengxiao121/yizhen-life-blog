@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// 分离特色文章和普通文章
+const featuredPost = sortedPosts[0];
+const normalPosts = sortedPosts.slice(1);
+---
+
+<BaseLayout title="首页" mainClass="blog-main">
+  <style is:global>
+    main.blog-main {
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-right: 2rem;
+    }
+  </style>
+  <div class="journal-layout">
+    <div class="main-content">
+      <!-- 文章拼贴区 -->
+      <div class="posts-collage">
+        <div class="section-header">
+          <h2 class="section-title">最近的絮叨</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="posts-grid">
+          {/* 特色文章 - 大卡片 */}
+          {featuredPost && (
+            <div class="grid-featured">
+              <PostCard
+                title={featuredPost.data.title}
+                slug={featuredPost.slug}
+                date={featuredPost.data.date}
+                description={featuredPost.data.description}
+                tags={featuredPost.data.tags}
+                category={featuredPost.data.category}
+                featured={true}
+              />
+            </div>
+          )}
+
+          {/* 普通文章卡片 */}
+          {normalPosts.map((post, index) => (
+            <div class:list={["grid-item", `grid-item-${(index % 4) + 1}`]}>
+              <PostCard
+                title={post.data.title}
+                slug={post.slug}
+                date={post.data.date}
+                description={post.data.description}
+                tags={post.data.tags}
+                category={post.data.category}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部装饰 -->
+    <div class="bottom-deco">
+      <span class="deco-text">继续记录生活的每一帧</span>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .journal-layout {
+    width: 100%;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ===== 文章拼贴区 ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--deco-yellow);
+    white-space: nowrap;
+    text-shadow: 2px 2px 0 var(--deco-red);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--deco-yellow) 0px,
+      var(--deco-yellow) 8px,
+      transparent 8px,
+      transparent 12px
+    );
+  }
+
+  /* 文章网格布局 */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+
+  /* 特色文章横跨两列 */
+  .grid-featured {
+    grid-column: 1 / -1;
+  }
+
+  /* 普通卡片 - Decora 拼贴旋转效果 */
+  .grid-item-1 {
+    transform: rotate(-1.5deg);
+  }
+  .grid-item-2 {
+    transform: rotate(1deg);
+    margin-top: 0.5rem;
+  }
+  .grid-item-3 {
+    transform: rotate(0.8deg);
+  }
+  .grid-item-4 {
+    transform: rotate(-1.2deg);
+    margin-top: -0.3rem;
+  }
+
+  .grid-item {
+    transition: transform 0.2s ease;
+  }
+
+  .grid-item:hover {
+    transform: rotate(0deg) scale(1.03) !important;
+  }
+
+  /* ===== 底部装饰 ===== */
+  .bottom-deco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+    padding: 1.5rem;
+  }
+
+  .deco-text {
+    font-style: italic;
+    letter-spacing: 0.06em;
+    color: var(--deco-cyan);
+    font-weight: 600;
+  }
+
+  /* ===== 动画 ===== */
+  .grid-featured {
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+
+  .grid-item {
+    animation: fadeInUp 0.5s ease-out both;
+  }
+  .grid-item-1 { animation-delay: 0.3s; }
+  .grid-item-2 { animation-delay: 0.4s; }
+  .grid-item-3 { animation-delay: 0.5s; }
+  .grid-item-4 { animation-delay: 0.6s; }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .grid-item-1,
+    .grid-item-2,
+    .grid-item-3,
+    .grid-item-4 {
+      transform: none;
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-header {
+      gap: 0.5rem;
+    }
+    .section-title {
+      font-size: 1.1rem;
+    }
+  }
+</style>

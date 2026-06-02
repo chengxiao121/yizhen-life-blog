@@ -7,13 +7,13 @@ interface Props {
 const { tags, linkable = true } = Astro.props;
 
 const tagColors: Record<string, { bg: string; text: string }> = {
-  '技术': { bg: 'var(--tag-blue)', text: 'var(--tag-blue-text)' },
-  '生活': { bg: 'var(--tag-pink)', text: 'var(--tag-pink-text)' },
-  '随笔': { bg: 'var(--tag-yellow)', text: 'var(--tag-yellow-text)' },
-  'Astro': { bg: 'var(--tag-purple)', text: 'var(--tag-purple-text)' },
+  '技术': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
+  '生活': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
+  '随笔': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
+  'Astro': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
 };
 
-const defaultColor = { bg: 'var(--tag-gray)', text: 'var(--tag-gray-text)' };
+const defaultColor = { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' };
 ---
 
 <div class="tag-list">
@@ -37,13 +37,18 @@ const defaultColor = { bg: 'var(--tag-gray)', text: 'var(--tag-gray-text)' };
   }
   .tag {
     display: inline-block;
-    padding: 0.15em 0.6em;
-    border-radius: 20px;
+    padding: 0.15em 0.7em;
+    border-radius: 0;
     font-size: 0.75rem;
-    font-weight: 500;
-    transition: opacity 0.2s;
+    font-weight: 700;
+    transition: transform 0.2s;
+    border: none;
+    letter-spacing: 0.03em;
+  }
+  .tag:hover {
+    transform: scale(1.08);
   }
   a.tag:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 </style>

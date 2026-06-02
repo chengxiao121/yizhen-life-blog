@@ -4,16 +4,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="关于我">
   <div class="about">
+    <div class="about-deco-top">★ ♥ ✿ ♪ ★</div>
     <div class="about-avatar">
       <img src="/avatar.jpg" alt="头像" />
     </div>
-    <h1>关于我</h1>
+    <h1>★ 关于我 ★</h1>
     <div class="about-content prose">
-      <p>你好，欢迎来到「一帧.life」。</p>
+      <p>你好，欢迎来到「一帧.life」。♡</p>
       <p>我叫吴承晓，一名大三学生，热爱并沉迷于打羽毛球，也在断断续续学习知识，准备后面找工作。</p>
       <p>这个博客是我的小小天地，记录技术学习的思考，平常的生活点滴，生活中的所见所感。</p>
-      <p>世界那么大，我先溜达溜达。</p>
+      <p>★ 世界那么大，我先溜达溜达。★</p>
     </div>
+    <div class="about-stamps">
+      <span class="stamp stamp-1">★ 技术宅</span>
+      <span class="stamp stamp-2">♥ 羽毛球</span>
+      <span class="stamp stamp-3">✿ 生活家</span>
+    </div>
+    <div class="about-deco-bottom">△ ○ △ ○ △ ○ △</div>
   </div>
 </BaseLayout>
 
@@ -23,22 +30,89 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin: 0 auto;
     text-align: center;
   }
+
+  .about-deco-top {
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--deco-yellow);
+    animation: twinkle 2s ease-in-out infinite;
+  }
+
   .about-avatar {
     margin-bottom: 1.2rem;
   }
+
   .about-avatar img {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
-    border: 3px solid var(--border-light);
-    box-shadow: var(--shadow);
+    border: 4px solid var(--deco-yellow);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
+
   .about h1 {
     margin-bottom: 1.5rem;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
+    color: var(--deco-yellow);
+    text-shadow: 2px 2px 0 var(--deco-red);
   }
+
   .about-content {
     text-align: left;
+    border: none;
+    padding: 1.5rem;
+    background: var(--bg-card);
+  }
+
+  .about-stamps {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stamp {
+    padding: 0.5em 1.2em;
+    border-radius: 0;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    border: 3px solid;
+  }
+
+  .stamp-1 {
+    background: var(--deco-blue);
+    color: #ffffff;
+    border-color: var(--deco-blue);
+    transform: rotate(-4deg);
+  }
+
+  .stamp-2 {
+    background: var(--deco-red);
+    color: #ffffff;
+    border-color: var(--deco-red);
+    transform: rotate(3deg);
+  }
+
+  .stamp-3 {
+    background: var(--deco-green);
+    color: #000000;
+    border-color: var(--deco-green);
+    transform: rotate(-2deg);
+  }
+
+  .about-deco-bottom {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.5rem;
+    color: var(--deco-blue);
+    opacity: 0.5;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

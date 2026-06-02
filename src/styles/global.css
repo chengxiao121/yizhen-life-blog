@@ -1,32 +1,75 @@
-/* ===== 配色变量 ===== */
+/* ===== 原宿 Decora 潮流风格 配色变量 ===== */
 :root {
-  --bg-primary: #faf8f5;
-  --bg-card: #ffffff;
-  --bg-code: #f4f0ec;
-  --text-primary: #2c2c2c;
-  --text-secondary: #636363;
-  --text-muted: #a0a0a0;
-  --accent: #c87941;
-  --accent-hover: #b56830;
-  --accent-light: rgba(200, 121, 65, 0.08);
-  --border: #eae6e1;
-  --border-light: #f0ece7;
-  --shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
-  --radius: 10px;
+  /* Decora 高饱和撞色 */
+  --bg-primary: #333333;
+  --bg-card: #1E293B;
+  --bg-code: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
+
+  /* 核心 Decora 色 */
+  --accent: #FFE600;
+  --accent-hover: #FFCC00;
+  --accent-light: rgba(255, 230, 0, 0.15);
+  --border: #666666;
+  --border-light: #555555;
+
+  /* 无阴影 - Decora 平面风格 */
+  --shadow: none;
+  --shadow-hover: none;
+  --radius: 0px;
   --max-width: 720px;
-  --tag-blue: #e8f0fe;
-  --tag-blue-text: #1a56c4;
-  --tag-pink: #fce8ec;
-  --tag-pink-text: #c0284a;
-  --tag-yellow: #fef5e0;
-  --tag-yellow-text: #b45d00;
-  --tag-purple: #f0e4f6;
-  --tag-purple-text: #7b1fa2;
-  --tag-green: #e6f4ea;
-  --tag-green-text: #1e7a34;
-  --tag-gray: #f0f0f0;
-  --tag-gray-text: #5f6368;
+
+  /* Decora 撞色调 */
+  --deco-yellow: #FFE600;
+  --deco-blue: #0066FF;
+  --deco-red: #FF0033;
+  --deco-pink: #FF69B4;
+  --deco-green: #39FF14;
+  --deco-cyan: #00FFFF;
+  --deco-purple: #CC00FF;
+  --deco-orange: #FF6600;
+
+  /* 半透明版本 */
+  --deco-yellow-20: rgba(255, 230, 0, 0.2);
+  --deco-blue-20: rgba(0, 102, 255, 0.2);
+  --deco-red-20: rgba(255, 0, 51, 0.2);
+  --deco-pink-20: rgba(255, 105, 180, 0.2);
+  --deco-green-20: rgba(57, 255, 20, 0.2);
+  --deco-cyan-20: rgba(0, 255, 255, 0.2);
+
+  /* 标签颜色 - 高对比度 */
+  --tag-blue: #0066FF;
+  --tag-blue-text: #ffffff;
+  --tag-pink: #FF69B4;
+  --tag-pink-text: #ffffff;
+  --tag-yellow: #FFE600;
+  --tag-yellow-text: #000000;
+  --tag-purple: #CC00FF;
+  --tag-purple-text: #ffffff;
+  --tag-green: #39FF14;
+  --tag-green-text: #000000;
+  --tag-gray: #555555;
+  --tag-gray-text: #ffffff;
+
+  /* 兼容旧变量名（组件可能引用） */
+  --coral: #FF0033;
+  --coral-light: rgba(255, 0, 51, 0.2);
+  --coral-dark: #FF0033;
+  --sunny: #FFE600;
+  --sunny-light: rgba(255, 230, 0, 0.2);
+  --sunny-dark: #FFCC00;
+  --mint: #39FF14;
+  --mint-light: rgba(57, 255, 20, 0.2);
+  --lavender: #CC00FF;
+  --lavender-light: rgba(204, 0, 255, 0.2);
+  --cream: #3a3a3a;
+  --cream-dark: #444444;
+
+  /* 贴纸式无阴影 */
+  --shadow-sticker: none;
+  --shadow-sticker-hover: none;
 }
 
 /* ===== 基础重置 ===== */
@@ -50,11 +93,12 @@ body {
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
 }
 
 ::selection {
-  background: var(--accent-light);
-  color: var(--text-primary);
+  background: var(--deco-pink);
+  color: #000000;
 }
 
 a {
@@ -77,6 +121,7 @@ h1, h2, h3, h4 {
   line-height: 1.5;
   font-weight: 700;
   letter-spacing: 0.02em;
+  color: var(--text-primary);
 }
 
 h1 { font-size: 1.75rem; }
@@ -96,9 +141,9 @@ p {
   color: var(--text-primary);
 }
 
-.prose h1 { margin: 2em 0 0.6em; font-size: 1.6rem; }
-.prose h2 { margin: 1.8em 0 0.5em; font-size: 1.35rem; }
-.prose h3 { margin: 1.5em 0 0.4em; font-size: 1.15rem; }
+.prose h1 { margin: 2em 0 0.6em; font-size: 1.6rem; color: var(--deco-yellow); }
+.prose h2 { margin: 1.8em 0 0.5em; font-size: 1.35rem; color: var(--deco-cyan); }
+.prose h3 { margin: 1.5em 0 0.4em; font-size: 1.15rem; color: var(--deco-pink); }
 
 .prose p {
   margin-bottom: 1.2em;
@@ -106,32 +151,35 @@ p {
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--deco-pink);
   padding: 0.6em 1.2em;
   margin: 1.5em 0;
-  background: var(--accent-light);
+  background: var(--deco-pink-20);
   color: var(--text-secondary);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0;
   font-style: italic;
 }
 
 .prose code {
   background: var(--bg-code);
   padding: 0.15em 0.45em;
-  border-radius: 4px;
+  border-radius: 0;
   font-size: 0.88em;
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  color: var(--deco-green);
+  border: 1px solid var(--border);
 }
 
 .prose pre {
-  background: #1e1e2e;
+  background: #2a2a2a;
   color: #cdd6f4;
   padding: 1.2em 1.4em;
-  border-radius: 10px;
+  border-radius: 0;
   overflow-x: auto;
   margin: 1.5em 0;
   line-height: 1.6;
   font-size: 0.9em;
+  border: 3px solid var(--deco-blue);
 }
 
 .prose pre code {
@@ -139,6 +187,7 @@ p {
   padding: 0;
   color: inherit;
   font-size: inherit;
+  border: none;
 }
 
 .prose ul, .prose ol {
@@ -151,30 +200,31 @@ p {
 }
 
 .prose li::marker {
-  color: var(--accent);
+  color: var(--deco-yellow);
 }
 
 .prose a {
-  color: var(--accent);
+  color: var(--deco-cyan);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(200, 121, 65, 0.3);
+  text-decoration-color: rgba(0, 255, 255, 0.4);
   transition: text-decoration-color 0.2s;
 }
 
 .prose a:hover {
-  text-decoration-color: var(--accent);
+  text-decoration-color: var(--deco-cyan);
+  color: var(--deco-yellow);
 }
 
 .prose img {
-  border-radius: var(--radius);
+  border-radius: 0;
   margin: 1.5em 0;
-  box-shadow: var(--shadow);
+  border: 3px solid var(--deco-yellow);
 }
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--border);
+  border-top: 3px dashed var(--deco-pink);
   margin: 2em 0;
 }
 
@@ -187,13 +237,14 @@ p {
 
 .prose th, .prose td {
   padding: 0.6em 1em;
-  border: 1px solid var(--border);
+  border: 2px solid var(--deco-blue);
   text-align: left;
 }
 
 .prose th {
-  background: var(--bg-code);
+  background: var(--deco-blue);
   font-weight: 600;
+  color: #ffffff;
 }
 
 /* ===== 响应式 ===== */
@@ -202,7 +253,6 @@ p {
   .prose pre {
     padding: 1em;
     font-size: 0.85em;
-    border-radius: 8px;
   }
   .prose table {
     display: block;

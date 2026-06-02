@@ -1,49 +1,122 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
-import { getCollection } from 'astro:content';
-
-const allPosts = await getCollection('posts', ({ data }) => !data.draft);
-const sortedPosts = allPosts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+// 欢迎页 — 一帧.life (Decora 风格)
 ---
 
-<BaseLayout title="首页">
-  <section class="hero">
-    <h1>一帧.life</h1>
-    <p class="slogan">世界那么大，我先溜达溜达</p>
-  </section>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一帧.life — 世界那么大，我先溜达溜达</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <section class="post-list">
-    {sortedPosts.map((post) => (
-      <PostCard
-        title={post.data.title}
-        slug={post.slug}
-        date={post.data.date}
-        description={post.data.description}
-        tags={post.data.tags}
-      />
-    ))}
-  </section>
-</BaseLayout>
+    .landing {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: #000000;
+    }
 
-<style>
-  .hero {
-    text-align: center;
-    padding: 2.5rem 0 2rem;
-  }
-  .hero h1 {
-    font-size: 2rem;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.05em;
-  }
-  .slogan {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-  }
-  .post-list {
-    max-width: 720px;
-    margin: 0 auto;
-  }
-</style>
+    .bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: #fff;
+      animation: fadeUp 1.2s ease-out both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .site-name {
+      font-family: 'LXGW WenKai', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+      color: #FFE600;
+      text-shadow: 3px 3px 0 #FF0033, 6px 6px 0 #0066FF;
+    }
+
+
+    .tagline {
+      font-family: 'LXGW WenKai', serif;
+      font-size: 1.2rem;
+      color: #00FFFF;
+      letter-spacing: 0.08em;
+      margin-bottom: 2.5rem;
+      font-weight: 600;
+    }
+
+    .enter-btn {
+      display: inline-block;
+      font-family: 'LXGW WenKai', serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #000000;
+      background: #FFE600;
+      border: 4px solid #FFE600;
+      padding: 0.7em 2.4em;
+      border-radius: 0;
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      transition: all 0.2s;
+    }
+
+    .enter-btn:hover {
+      background: #FF0033;
+      border-color: #FF0033;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="/landing-bg.mp4" type="video/mp4" />
+    </video>
+
+    <div class="content">
+      <h1 class="site-name">一帧.life</h1>
+      <p class="tagline">世界那么大，我先溜达溜达</p>
+      <a href="/blog" class="enter-btn">进入博客</a>
+    </div>
+  </div>
+  <script>
+    const video = document.querySelector('.bg-video');
+    video.addEventListener('loadedmetadata', () => {
+      if (video.videoHeight > video.videoWidth) {
+        video.style.width = '100vh';
+        video.style.height = '100vw';
+        video.style.top = '50%';
+        video.style.left = '50%';
+        video.style.inset = 'auto';
+        video.style.transform = 'translate(-50%, -50%) rotate(-90deg)';
+      }
+    });
+  </script>
+</body>
+</html>

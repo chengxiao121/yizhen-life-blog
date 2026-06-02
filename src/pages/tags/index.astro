@@ -55,16 +55,15 @@ const tags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
     padding: 1rem;
     background: var(--bg-card);
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: none;
     box-shadow: var(--shadow);
     color: var(--text-primary);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .tag-card:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-hover);
     color: var(--accent);
-    border-color: rgba(200, 121, 65, 0.2);
   }
   .tag-name {
     font-weight: 600;

@@ -6,9 +6,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  mainClass?: string;
+  noSidebar?: boolean;
 }
 
-const { title, description = '一帧.life - 世界那么大，我先溜达溜达' } = Astro.props;
+const { title, description = '一帧.life - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -24,24 +26,267 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   <title>{title} | 一帧.life</title>
 </head>
 <body>
+  <!-- 顶部背景图区域 — sticky 独立块，完整显示不被遮挡 -->
+  <div class="hero-bg">
+    <img class="hero-bg-img" src="/page-bg.png" alt="" aria-hidden="true" />
+    <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1200,100 1350,20 1440,60 L1440,120 L0,120 Z" />
+    </svg>
+  </div>
+
+  <!-- 导航栏 — 始终固定在页面最顶部 -->
   <Header />
-  <main>
-    <slot />
-  </main>
-  <Footer />
+
+  <!-- 内容区域 — 整体在背景图下方，滚动时覆盖背景图 -->
+  <div class="content-wrapper">
+
+    <!-- 左侧固定个人资料卡片 -->
+    {!noSidebar && (
+      <aside class="global-sidebar">
+        <div class="intro-card">
+          <div class="intro-avatar-wrapper">
+            <img src="/avatar.jpg" alt="头像" class="intro-avatar" />
+          </div>
+          <div class="intro-content">
+            <h2 class="intro-name">一帧.life</h2>
+            <p class="intro-tagline">在代码与生活之间，寻找每一帧的美好</p>
+            <div class="intro-doodle">
+              <span class="doodle-text">世界那么大，我先溜达溜达</span>
+            </div>
+          </div>
+          <div class="intro-stamps">
+            <span class="stamp stamp-1">技术宅</span>
+            <span class="stamp stamp-2">摄影控</span>
+            <span class="stamp stamp-3">生活家</span>
+          </div>
+        </div>
+      </aside>
+    )}
+
+    <main class:list={[mainClass, { 'has-sidebar': !noSidebar }]}>
+      <slot />
+    </main>
+    <div class="footer-wrapper">
+      <Footer />
+    </div>
+  </div>
 </body>
 </html>
 
 <style>
-  main {
-    min-height: calc(100vh - 200px);
-    padding: 2rem 2rem 3rem;
-    max-width: 960px;
+  body {
+    position: relative;
+    min-height: 100vh;
+    background: #333;
+  }
+
+  /* 顶部背景图区域 — sticky 独立块，完整显示不被遮挡 */
+  .hero-bg {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 50vh;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    pointer-events: none;
+  }
+
+  /* 底部波浪 SVG */
+  .hero-wave {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    display: block;
+  }
+
+  .hero-wave path {
+    fill: #333;
+  }
+
+  /* 内容区域 — 整体在背景图下方，滚动时覆盖背景图 */
+  .content-wrapper {
+    position: relative;
+    z-index: 2;
+    background: #333;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1400px;
     margin: 0 auto;
   }
+
+  .footer-wrapper {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  main {
+    position: relative;
+    min-height: calc(100vh - 200px);
+    padding: 1.5rem 2rem 3rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  main.has-sidebar {
+    padding-left: 2rem;
+  }
+
+  /* ===== 左侧固定个人资料卡片 ===== */
+  .global-sidebar {
+    position: sticky;
+    top: 68px;
+    width: 300px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding-left: 32px;
+    z-index: 50;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .global-sidebar .intro-card {
+    position: relative;
+    background: var(--bg-card);
+    border: none;
+    border-radius: 0;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: visible;
+  }
+
+  .global-sidebar .intro-avatar-wrapper {
+    width: 90px;
+    height: 90px;
+    border-radius: 0;
+    padding: 3px;
+    background: var(--deco-yellow);
+    margin-bottom: 1rem;
+    border: 3px solid var(--deco-pink);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .global-sidebar .intro-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .global-sidebar .intro-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .global-sidebar .intro-name {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--deco-yellow);
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.06em;
+    text-shadow: 2px 2px 0 var(--deco-red);
+  }
+
+  .global-sidebar .intro-tagline {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+  }
+
+  .global-sidebar .intro-doodle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: 3px solid var(--deco-pink);
+    border-radius: 0;
+  }
+
+  .global-sidebar .doodle-text {
+    color: var(--deco-cyan);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .global-sidebar .intro-stamps {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .global-sidebar .stamp {
+    padding: 0.3em 0.7em;
+    border-radius: 0;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    border: 3px solid;
+  }
+
+  .global-sidebar .stamp-1 {
+    background: var(--deco-blue);
+    color: #ffffff;
+    border-color: var(--deco-blue);
+    transform: rotate(-4deg);
+  }
+
+  .global-sidebar .stamp-2 {
+    background: var(--deco-red);
+    color: #ffffff;
+    border-color: var(--deco-red);
+    transform: rotate(3deg);
+  }
+
+  .global-sidebar .stamp-3 {
+    background: var(--deco-green);
+    color: #000000;
+    border-color: var(--deco-green);
+    transform: rotate(-2deg);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .global-sidebar {
+      display: none;
+    }
+    main.has-sidebar {
+      padding-left: 2rem;
+    }
+    .content-wrapper {
+      max-width: 100%;
+    }
+  }
+
   @media (max-width: 768px) {
     main {
-      padding: 1.5rem 1rem 2rem;
+      padding: 1rem 1rem 2rem;
     }
   }
 </style>

@@ -7,67 +7,127 @@ interface Props {
   date: string;
   description: string;
   tags: string[];
+  category?: string;
+  featured?: boolean;
 }
 
-const { title, slug, date, description, tags } = Astro.props;
+const { title, slug, date, description, tags, category, featured = false } = Astro.props;
+
+// 格式化日期
+const formatDate = (dateStr: string) => {
+  const d = new Date(dateStr);
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  return `${month}月${day}日`;
+};
+
 ---
 
-<article class="post-card">
+<article class:list={["post-card", { featured }]}>
   <a href={`/posts/${slug}`} class="post-card-link">
+    <div class="card-header">
+      <time class="post-date">{formatDate(date)}</time>
+      {category && <span class="post-category">{category}</span>}
+    </div>
     <h2 class="post-title">{title}</h2>
     <p class="post-desc">{description}</p>
   </a>
-  <div class="post-meta">
-    <time class="post-date">{date}</time>
+  <div class="card-footer">
     <TagList tags={tags} />
   </div>
 </article>
 
 <style>
   .post-card {
+    position: relative;
     background: var(--bg-card);
-    border-radius: var(--radius);
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 1.4rem 1.5rem 1.2rem;
+    border: none;
+    transition: transform 0.2s ease;
+    overflow: visible;
   }
+
   .post-card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-hover);
-    border-color: rgba(200, 121, 65, 0.2);
+    transform: scale(1.02) rotate(0deg) !important;
   }
+
   .post-card-link {
     display: block;
     color: inherit;
+    text-decoration: none;
   }
+
   .post-card-link:hover {
     color: inherit;
   }
-  .post-title {
-    font-size: 1.15rem;
-    margin-bottom: 0.4rem;
-    color: var(--text-primary);
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-  .post-desc {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.65;
-    margin-bottom: 0;
-  }
-  .post-meta {
+
+  .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 1rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border-light);
+    margin-bottom: 0.6rem;
   }
+
   .post-date {
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .post-category {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border: none;
+    border-radius: 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .post-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .post-card:hover .post-title {
+    color: var(--deco-yellow);
+  }
+
+  .post-desc {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 2px dashed var(--border);
+  }
+
+  /* 特色卡片样式 */
+  .post-card.featured {
+    padding: 1.8rem 2rem 1.5rem;
+  }
+
+  .post-card.featured .post-title {
+    font-size: 1.3rem;
+  }
+
+  .post-card.featured .post-desc {
+    -webkit-line-clamp: 3;
+    font-size: 0.92rem;
   }
 </style>
