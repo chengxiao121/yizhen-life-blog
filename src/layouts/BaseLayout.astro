@@ -49,15 +49,15 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
           </div>
           <div class="intro-content">
             <h2 class="intro-name">一帧.life</h2>
-            <p class="intro-tagline">在代码与生活之间，寻找每一帧的美好</p>
             <div class="intro-doodle">
               <span class="doodle-text">世界那么大，我先溜达溜达</span>
             </div>
-          </div>
-          <div class="intro-stamps">
-            <span class="stamp stamp-1">技术宅</span>
-            <span class="stamp stamp-2">摄影控</span>
-            <span class="stamp stamp-3">生活家</span>
+            <ul class="intro-info">
+              <li><span class="info-label">生日</span> 6月13日</li>
+              <li><span class="info-label">星座</span> 金牛座</li>
+              <li><span class="info-label">邮箱</span> 18823549722@163.com</li>
+              <li><span class="info-label">爱好</span> 羽毛球</li>
+            </ul>
           </div>
         </div>
       </aside>
@@ -144,7 +144,7 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   /* ===== 左侧固定个人资料卡片 ===== */
   .global-sidebar {
     position: sticky;
-    top: 68px;
+    top: 72px;
     width: 300px;
     flex-shrink: 0;
     align-self: flex-start;
@@ -155,15 +155,29 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
 
   .global-sidebar .intro-card {
     position: relative;
-    background: var(--bg-card);
-    border: none;
-    border-radius: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     overflow: visible;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.15s ease;
+  }
+
+  .global-sidebar .intro-card:hover {
+    background: rgba(0, 240, 255, 0.12);
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15), inset 0 0 8px rgba(0, 240, 255, 0.06);
+    transform: translateY(-1px);
   }
 
   .global-sidebar .intro-avatar-wrapper {
@@ -192,10 +206,10 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   .global-sidebar .intro-name {
     font-size: 1.4rem;
     font-weight: 900;
-    color: var(--deco-yellow);
+    color: #FFE600;
     margin-bottom: 0.3rem;
     letter-spacing: 0.06em;
-    text-shadow: 2px 2px 0 var(--deco-red);
+    text-shadow: 2px 2px 0 #FF0033, 4px 4px 0 #0066FF;
   }
 
   .global-sidebar .intro-tagline {
@@ -212,7 +226,7 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     gap: 0.6rem;
     padding: 0.6rem 1rem;
     background: transparent;
-    border: 3px solid var(--deco-pink);
+    border: none;
     border-radius: 0;
   }
 
@@ -223,42 +237,29 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     letter-spacing: 0.04em;
   }
 
-  .global-sidebar .intro-stamps {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1.2rem;
-    flex-wrap: wrap;
-    justify-content: center;
+  .global-sidebar .intro-info {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    width: 100%;
+    text-align: left;
   }
 
-  .global-sidebar .stamp {
-    padding: 0.3em 0.7em;
-    border-radius: 0;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    border: 3px solid;
+  .global-sidebar .intro-info li {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
   }
 
-  .global-sidebar .stamp-1 {
-    background: var(--deco-blue);
-    color: #ffffff;
-    border-color: var(--deco-blue);
-    transform: rotate(-4deg);
+  .global-sidebar .intro-info li:last-child {
+    border-bottom: none;
   }
 
-  .global-sidebar .stamp-2 {
-    background: var(--deco-red);
-    color: #ffffff;
-    border-color: var(--deco-red);
-    transform: rotate(3deg);
-  }
-
-  .global-sidebar .stamp-3 {
-    background: var(--deco-green);
-    color: #000000;
-    border-color: var(--deco-green);
-    transform: rotate(-2deg);
+  .global-sidebar .info-label {
+    color: var(--deco-cyan);
+    font-weight: 700;
+    margin-right: 0.5rem;
   }
 
   @keyframes fadeInUp {

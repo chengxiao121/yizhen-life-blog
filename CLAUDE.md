@@ -42,7 +42,7 @@ draft: false           # true 则隐藏不出现在列表中
 
 ```
 /                  → 欢迎页（视频背景 + 进入按钮）
-/blog              → 博客文章列表（左侧个人信息 + 右侧文章拼贴）
+/blog              → 博客首页（2 列文章网格，特色文章大卡片横跨两列）
 /tech              → 技术分类
 /life              → 生活分类
 /photos            → 照片墙（Masonry 瀑布流 + PhotoSwipe 灯箱）
@@ -57,17 +57,17 @@ draft: false           # true 则隐藏不出现在列表中
 src/
 ├── content/config.ts              # 文章 schema（Zod 验证）
 ├── content/posts/                 # Markdown 文章
-├── layouts/BaseLayout.astro       # 唯一布局，Header + slot + Footer，页面背景图
+├── layouts/BaseLayout.astro       # 唯一布局：hero 背景图 + 导航栏 + flex 左右布局（sidebar 个人资料卡片 + main + footer）
 ├── components/
-│   ├── Header.astro               # 贴纸式导航栏（粗描边，荧光笔高亮）
-│   ├── Footer.astro               # 页脚（Kawaii 装饰线）
-│   ├── PostCard.astro             # 文章卡片（拼贴式，分类彩色粗描边，hover 放大）
+│   ├── Header.astro               # 固定导航栏（毛玻璃效果，青色胶囊药丸链接，z-index: 100）
+│   ├── Footer.astro               # 页脚（粉色顶部边框）
+│   ├── PostCard.astro             # 文章卡片（半透明胶囊风格，border-radius: 20px，hover 青色发光）
 │   ├── TagList.astro              # 标签列表（粗描边胶囊）
 │   ├── PhotoGrid.astro            # 照片墙瀑布流布局
 │   └── PhotoCard.astro            # 照片卡片
 ├── pages/
 │   ├── index.astro                # 欢迎页（视频背景，自动检测竖屏旋转）
-│   ├── blog/index.astro           # 博客首页（左右布局）
+│   ├── blog/index.astro           # 博客首页（2 列网格，特色文章 + 普通卡片，拼贴旋转效果）
 │   ├── tech/index.astro           # 技术分类
 │   ├── life/index.astro           # 生活分类
 │   ├── about.astro                # 关于我
@@ -79,12 +79,13 @@ src/
 
 ## 设计风格 - 原宿 Decora 潮流
 
-- 黑色底色，高饱和黄(#FFE600)/蓝(#0066FF)/红(#FF0033)撞色
-- 满版涂鸦背景（`global.css` 的 `body::before` 实现星星/圆点/十字图案）
-- 平面化无阴影（`--shadow: none`），所有圆角为 0
+- 黑色底色（`#333333`），高饱和黄(#FFE600)/蓝(#0066FF)/红(#FF0033)撞色
+- 平面化无阴影（`--shadow: none`），大部分圆角为 0，卡片类组件使用 `border-radius: 20px`
 - 粗描边 3-4px，不同组件不同颜色区分
 - 大量 Kawaii 符号装饰：★ ♥ ✿ ♪ ♡ ☆
 - CSS 变量以 `--deco-*` 命名（`--deco-yellow`, `--deco-pink` 等）
+- **「一帧.life」Logo 文字**使用三层 text-shadow 叠加：`color: #FFE600`（黄）+ `text-shadow: #FF0033`（红）+ `#0066FF`（蓝），根据字号等比缩小偏移量
+- **导航栏和卡片**使用毛玻璃胶囊风格：半透明白色默认态，青色（`#00F0FF`）hover/active 态，`backdrop-filter: blur(8px)`
 
 ## 关键设计决策
 
@@ -94,10 +95,21 @@ src/
 - **文章内容**用 `.prose` class 包裹，有专门的排版样式
 - **组件样式**用 Astro 的 `<style>` 作用域样式，引用全局 CSS 变量
 - **欢迎页**是独立页面，不使用 BaseLayout，视频背景自动检测竖屏旋转
-- **页面背景图**在 BaseLayout 中，`public/page-bg.jpg`，竖屏自动逆时针旋转 90 度铺满
+- **页面背景图**在 BaseLayout 中，`public/page-bg.png`（注意是 png 不是 jpg）
+- **BaseLayout 布局**采用 flex 左右结构：左侧 sidebar（sticky, 300px）+ 右侧 main（flex: 1）+ 底部 footer（width: 100%）
+- **BaseLayout 接受 `mainClass` 和 `noSidebar` props**，`noSidebar` 为 true 时隐藏侧边栏，main 全宽
+- **Header** 是 `position: fixed`，高度约 71px（0.6rem padding × 2 + 52px nav）；sidebar 的 `top` 值需要略大于 Header 高度避免遮挡
+- **Astro scoped styles 中的 `@keyframes`** 会被重命名（加组件 hash），跨组件引用动画名会失效
+
+## 滚动行为
+
+- **hero-bg**（`position: sticky, top: 0, z-index: 1`）：背景图粘在视口顶部，被 content-wrapper（z-index: 2）向上滚动时覆盖
+- **Header**（`position: fixed, top: 0, z-index: 100`）：始终固定在最顶层
+- **sidebar**（`position: sticky, top: 72px`）：滚动时粘在导航栏正下方，像固定侧边栏
+- **content-wrapper** 的 `z-index: 2` + 灰色背景覆盖 hero 区域，形成视差过渡效果
 
 ## 静态资源
 
-- `public/avatar.jpg` — 头像，关于我页面和博客首页使用
-- `public/page-bg.jpg` — 博客页面背景图（导航栏以下），竖屏自动旋转
+- `public/avatar.jpg` — 头像，左侧 sidebar 和关于我页面使用
+- `public/page-bg.png` — 博客页面顶部 hero 背景图（sticky, 50vh），底部波浪 SVG 过渡到内容区
 - `public/landing-bg.mp4` — 欢迎页视频背景，替换同名文件即可更换
