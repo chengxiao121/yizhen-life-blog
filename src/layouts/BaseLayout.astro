@@ -26,13 +26,15 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   <title>{title} | 一帧.life</title>
 </head>
 <body>
-  <!-- 顶部背景图区域 — sticky 独立块，完整显示不被遮挡 -->
+  <!-- 顶部背景图区域 — 正常滚动 -->
   <div class="hero-bg">
     <img class="hero-bg-img" src="/page-bg.png" alt="" aria-hidden="true" />
-    <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1200,100 1350,20 1440,60 L1440,120 L0,120 Z" />
-    </svg>
   </div>
+
+  <!-- 波浪 SVG — JS 动态定位到 hero 底部，滚动时固定不变 -->
+  <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1200,100 1350,20 1440,60 L1440,120 L0,120 Z" />
+  </svg>
 
   <!-- 导航栏 — 始终固定在页面最顶部 -->
   <Header />
@@ -70,6 +72,30 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
       <Footer />
     </div>
   </div>
+
+  <script>
+    // 波浪 SVG 动态定位：跟随 hero 底部，滚动时固定不变
+    const wave = document.querySelector('.hero-wave') as SVGElement | null;
+    const hero = document.querySelector('.hero-bg') as HTMLElement | null;
+    if (wave && hero) {
+      const updateWavePosition = () => {
+        const heroRect = hero.getBoundingClientRect();
+        const heroBottom = heroRect.bottom;
+        const waveHeight = 80;
+        // hero 还在视口中：波浪贴在 hero 底部
+        if (heroBottom > 0) {
+          wave.style.top = (heroBottom - waveHeight) + 'px';
+          wave.style.display = 'block';
+        } else {
+          // hero 完全滚出视口：隐藏波浪
+          wave.style.display = 'none';
+        }
+      };
+      updateWavePosition();
+      window.addEventListener('scroll', updateWavePosition, { passive: true });
+      window.addEventListener('resize', updateWavePosition);
+    }
+  </script>
 </body>
 </html>
 
@@ -80,13 +106,10 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     background: #333;
   }
 
-  /* 顶部背景图区域 — sticky 独立块，完整显示不被遮挡 */
+  /* 顶部背景图区域 — 正常滚动，不固定 */
   .hero-bg {
-    position: sticky;
-    top: 0;
     width: 100%;
     height: 50vh;
-    z-index: 1;
     overflow: hidden;
   }
 
@@ -98,24 +121,25 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     pointer-events: none;
   }
 
-  /* 底部波浪 SVG */
+  /* 波浪 SVG — JS 动态设置 top，跟随 hero 底部 */
   .hero-wave {
-    position: absolute;
-    bottom: -2px;
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
     height: 80px;
-    display: block;
+    z-index: 10;
+    pointer-events: none;
+    transition: none;
   }
 
   .hero-wave path {
     fill: #333;
   }
 
-  /* 内容区域 — 整体在背景图下方，滚动时覆盖背景图 */
+  /* 内容区域 — 正常文档流 */
   .content-wrapper {
     position: relative;
-    z-index: 2;
     background: #333;
     display: flex;
     flex-wrap: wrap;
