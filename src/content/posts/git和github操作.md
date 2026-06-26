@@ -84,8 +84,46 @@ description: "null"
 - **场景**：需要从 GitHub 获取项目最新版本。
 - **操作**：“**帮我从 GitHub 拉一下最新版本**”。AI 会执行 `git pull`。
 
-## 5. 总结
-- Git 和 GitHub 已是 AI 深度掌握的技能，任何操作问题都可以通过与 AI 交互解决。
-- 核心工作流简化为：**创建仓库 -> 用AI编码 -> 频繁commit+push -> 出问题时用自然语言请求回滚**。
-- 良好的版本管理习惯（频繁提交、清晰备注）是高效项目管理的基石。
-- 善用 GitHub 展示项目，构建个人技术品牌。
+## 全流程
+
+Step 1: 准备工作（确保主分支干净）
+```
+1. 切到主分支
+git checkout main
+
+2. 拉取远程最新代码（确保和 GitHub 同步）
+git pull origin main
+```
+
+ Step 2: 开新分支（开始干活）
+ ```
+ git checkout -b 分支名称
+ ```
+
+Step 3: 在分支上开发并提交
+```
+git add .
+git commit -m "内容备注"
+```
+
+Step 4: 推送到远程
+`git push`
+
+Step 5：去github网页合并代码到主分支，合并完删除远程分支
+
+Step 6: 本地同步
+```
+# 1. 切回主分支
+git checkout main
+
+# 2. 拉取云端合并后的最新代码
+git pull origin main
+```
+
+Step 7: 清理本地分支（如果还要使用该分支开发可不清理）
+```
+git branch -d feat/canvas-renderer
+
+查看分支
+git branch
+```
