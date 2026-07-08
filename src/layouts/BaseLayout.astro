@@ -103,7 +103,7 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   body {
     position: relative;
     min-height: 100vh;
-    background: #333;
+    background: var(--bg-primary);
   }
 
   /* 顶部背景图区域 — 正常滚动，不固定 */
@@ -134,13 +134,13 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   }
 
   .hero-wave path {
-    fill: #333;
+    fill: var(--bg-primary);
   }
 
   /* 内容区域 — 正常文档流 */
   .content-wrapper {
     position: relative;
-    background: #333;
+    background: var(--bg-primary);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

@@ -1,7 +1,7 @@
 /* ===== 原宿 Decora 潮流风格 配色变量 ===== */
 :root {
   /* Decora 高饱和撞色 */
-  --bg-primary: #333333;
+  --bg-primary: #5e5a51;
   --bg-card: #1E293B;
   --bg-code: #2a2a2a;
   --text-primary: #ffffff;
@@ -117,16 +117,27 @@ img {
 }
 
 /* ===== 排版 ===== */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   line-height: 1.5;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--text-primary);
 }
 
-h1 { font-size: 1.75rem; }
-h2 { font-size: 1.4rem; }
-h3 { font-size: 1.2rem; }
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
 
 p {
   margin-bottom: 1em;
@@ -141,9 +152,23 @@ p {
   color: var(--text-primary);
 }
 
-.prose h1 { margin: 2em 0 0.6em; font-size: 1.6rem; color: var(--deco-yellow); }
-.prose h2 { margin: 1.8em 0 0.5em; font-size: 1.35rem; color: var(--deco-cyan); }
-.prose h3 { margin: 1.5em 0 0.4em; font-size: 1.15rem; color: var(--deco-pink); }
+.prose h1 {
+  margin: 2em 0 0.6em;
+  font-size: 1.6rem;
+  color: var(--deco-yellow);
+}
+
+.prose h2 {
+  margin: 1.8em 0 0.5em;
+  font-size: 1.35rem;
+  color: var(--deco-cyan);
+}
+
+.prose h3 {
+  margin: 1.5em 0 0.4em;
+  font-size: 1.15rem;
+  color: var(--deco-pink);
+}
 
 .prose p {
   margin-bottom: 1.2em;
@@ -190,7 +215,8 @@ p {
   border: none;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   padding-left: 1.4em;
   margin-bottom: 1.2em;
 }
@@ -235,7 +261,8 @@ p {
   font-size: 0.9em;
 }
 
-.prose th, .prose td {
+.prose th,
+.prose td {
   padding: 0.6em 1em;
   border: 2px solid var(--deco-blue);
   text-align: left;
@@ -249,11 +276,15 @@ p {
 
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
-  html { font-size: 15px; }
+  html {
+    font-size: 15px;
+  }
+
   .prose pre {
     padding: 1em;
     font-size: 0.85em;
   }
+
   .prose table {
     display: block;
     overflow-x: auto;
