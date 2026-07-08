@@ -1,0 +1,43 @@
+---
+interface Props {
+  quotes: string[];
+}
+
+const { quotes } = Astro.props;
+
+// 随机选择一条句子
+const randomQuote = quotes.length > 0
+  ? quotes[Math.floor(Math.random() * quotes.length)]
+  : '世界那么大，我先溜达溜达。';
+---
+
+<div class="random-quote">
+  <p class="quote-text">
+    <span class="quote-mark">"</span>
+    {randomQuote}
+    <span class="quote-mark">"</span>
+  </p>
+</div>
+
+<style>
+  .random-quote {
+    text-align: center;
+    padding: 0;
+  }
+
+  .quote-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+
+  .quote-mark {
+    color: var(--deco-cyan);
+    font-weight: 700;
+    font-size: 1rem;
+    font-style: normal;
+  }
+</style>

@@ -45,13 +45,7 @@ const categoryCounts = categories.map(cat => {
 
 <style>
   .category-sidebar {
-    position: sticky;
-    top: 72px;
-    width: 250px;
-    flex-shrink: 0;
-    align-self: flex-start;
-    padding-right: 32px;
-    z-index: 50;
+    width: 100%;
     animation: fadeInUp 0.6s ease-out;
   }
 
@@ -160,7 +154,7 @@ const categoryCounts = categories.map(cat => {
     }
   }
 
-  /* 响应式：≤1100px 时隐藏右侧分类栏 */
+  /* 响应式：≤1100px 时隐藏 */
   @media (max-width: 1100px) {
     .category-sidebar {
       display: none;

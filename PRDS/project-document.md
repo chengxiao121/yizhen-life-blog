@@ -56,7 +56,7 @@ BaseLayout.astro
 └── Content Wrapper
     ├── Sidebar（粘性定位，280px，个人资料卡片）
     ├── Main（flex: 1，页面内容）
-    ├── CategorySidebar（粘性定位，250px，文章分类）
+    ├── RightSidebar（粘性定位，250px，文章分类 + 照片轮播 + 随机句子）
     └── Footer（页脚）
 ```
 

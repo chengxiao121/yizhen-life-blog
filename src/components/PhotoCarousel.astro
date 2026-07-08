@@ -1,0 +1,249 @@
+---
+interface Props {
+  photos: { id: string; path: string; title: string }[];
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="photo-carousel" data-photos={JSON.stringify(photos)}>
+  <div class="carousel-container">
+    {photos.map((photo, index) => (
+      <img
+        src={photo.path}
+        alt={photo.title || '照片'}
+        class="carousel-slide"
+        data-index={index}
+        loading="eager"
+      />
+    ))}
+  </div>
+
+  <!-- 左右箭头 -->
+  <button class="carousel-arrow carousel-arrow-prev" aria-label="上一张">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  </button>
+  <button class="carousel-arrow carousel-arrow-next" aria-label="下一张">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  </button>
+
+  <!-- 圆点指示器 -->
+  <div class="carousel-dots">
+    {photos.map((_, index) => (
+      <button class="carousel-dot" data-index={index} aria-label={`第 ${index + 1} 张`} />
+    ))}
+  </div>
+</div>
+
+<script>
+  class PhotoCarousel {
+    container: HTMLElement;
+    slides: NodeListOf<HTMLImageElement>;
+    dots: NodeListOf<HTMLButtonElement>;
+    prevBtn: HTMLButtonElement | null;
+    nextBtn: HTMLButtonElement | null;
+    current: number = 0;
+    total: number = 0;
+    intervalId: ReturnType<typeof setInterval> | null = null;
+    isPaused: boolean = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.slides = container.querySelectorAll('.carousel-slide');
+      this.dots = container.querySelectorAll('.carousel-dot');
+      this.prevBtn = container.querySelector('.carousel-arrow-prev');
+      this.nextBtn = container.querySelector('.carousel-arrow-next');
+      this.total = this.slides.length;
+
+      this.init();
+    }
+
+    init() {
+      this.showSlide(0);
+      this.startAutoPlay();
+
+      this.container.addEventListener('mouseenter', () => {
+        this.isPaused = true;
+        this.stopAutoPlay();
+      });
+
+      this.container.addEventListener('mouseleave', () => {
+        this.isPaused = false;
+        this.startAutoPlay();
+      });
+
+      this.prevBtn?.addEventListener('click', () => {
+        this.prev();
+      });
+
+      this.nextBtn?.addEventListener('click', () => {
+        this.next();
+      });
+
+      this.dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          this.goTo(index);
+        });
+      });
+    }
+
+    showSlide(index: number) {
+      this.slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      this.dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+
+      this.current = index;
+    }
+
+    next() {
+      const nextIndex = (this.current + 1) % this.total;
+      this.showSlide(nextIndex);
+    }
+
+    prev() {
+      const prevIndex = (this.current - 1 + this.total) % this.total;
+      this.showSlide(prevIndex);
+    }
+
+    goTo(index: number) {
+      this.showSlide(index);
+    }
+
+    startAutoPlay() {
+      if (this.intervalId) return;
+      this.intervalId = setInterval(() => {
+        if (!this.isPaused) {
+          this.next();
+        }
+      }, 4000);
+    }
+
+    stopAutoPlay() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousels = document.querySelectorAll('.photo-carousel');
+    carousels.forEach((el) => {
+      new PhotoCarousel(el as HTMLElement);
+    });
+  });
+</script>
+
+<style>
+  .photo-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 600ms ease;
+    pointer-events: none;
+  }
+
+  .carousel-slide.active {
+    opacity: 1;
+  }
+
+  /* 左右箭头 */
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease, background 0.25s ease;
+    z-index: 10;
+    padding: 0;
+  }
+
+  .photo-carousel:hover .carousel-arrow {
+    opacity: 1;
+  }
+
+  .carousel-arrow:hover {
+    background: rgba(0, 240, 255, 0.3);
+    border-color: rgba(0, 240, 255, 0.45);
+  }
+
+  .carousel-arrow-prev {
+    left: 8px;
+  }
+
+  .carousel-arrow-next {
+    right: 8px;
+  }
+
+  .carousel-arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* 圆点指示器 */
+  .carousel-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    padding: 0;
+  }
+
+  .carousel-dot.active {
+    background: var(--deco-cyan);
+    transform: scale(1.2);
+  }
+
+  .carousel-dot:hover {
+    background: rgba(0, 240, 255, 0.7);
+  }
+</style>

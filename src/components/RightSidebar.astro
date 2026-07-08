@@ -1,0 +1,105 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import CategorySidebar from './CategorySidebar.astro';
+import PhotoCarousel from './PhotoCarousel.astro';
+import RandomQuote from './RandomQuote.astro';
+
+interface Props {
+  currentCategory?: string;
+}
+
+const { currentCategory = '' } = Astro.props;
+
+// 读取照片数据
+function readJsonFile(filePath: string) {
+  try {
+    const fullPath = path.join(process.cwd(), 'public', filePath);
+    const data = fs.readFileSync(fullPath, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
+}
+
+const photosData = readJsonFile('data/photos.json');
+const allPhotos = photosData?.photos || [];
+
+// 随机选取 5 张照片
+const shuffled = [...allPhotos].sort(() => Math.random() - 0.5);
+const selectedPhotos = shuffled.slice(0, 5).map((p: any) => ({
+  id: p.id,
+  path: p.path,
+  title: p.title || p.description || '',
+}));
+
+// 读取句子数据
+const quotesData = readJsonFile('data/quotes.json');
+const quotes = Array.isArray(quotesData) ? quotesData : [];
+---
+
+<aside class="right-sidebar">
+  <!-- 文章分类 -->
+  <CategorySidebar currentCategory={currentCategory} />
+
+  <!-- 照片轮播 + 随机句子 -->
+  <div class="sidebar-section carousel-section">
+    <PhotoCarousel photos={selectedPhotos} />
+    <div class="quote-wrapper">
+      <RandomQuote quotes={quotes} />
+    </div>
+  </div>
+</aside>
+
+<style>
+  .right-sidebar {
+    position: sticky;
+    top: 72px;
+    width: 250px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding-right: 32px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .sidebar-section {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1rem;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.15s ease;
+  }
+
+  .sidebar-section.carousel-section {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .quote-wrapper {
+    padding: 0.125rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar-section:hover {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: rgba(0, 240, 255, 0.35);
+  }
+
+  /* 响应式：≤1100px 时隐藏右侧边栏 */
+  @media (max-width: 1100px) {
+    .right-sidebar {
+      display: none;
+    }
+  }
+</style>
