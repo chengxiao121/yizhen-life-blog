@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import CategorySidebar from '../../components/CategorySidebar.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
@@ -13,23 +14,18 @@ const featuredPost = sortedPosts[0];
 const normalPosts = sortedPosts.slice(1);
 ---
 
-<BaseLayout title="首页" mainClass="blog-main">
+<BaseLayout title="首页" mainClass="blog-main" showCategorySidebar={true}>
   <style is:global>
     main.blog-main {
       padding-top: 0;
       padding-bottom: 0;
-      padding-right: 2rem;
+      padding-right: 0;
     }
   </style>
   <div class="journal-layout">
     <div class="main-content">
       <!-- 文章拼贴区 -->
       <div class="posts-collage">
-        <div class="section-header">
-          <h2 class="section-title">最近的絮叨</h2>
-          <div class="section-line"></div>
-        </div>
-
         <div class="posts-grid">
           {/* 特色文章 - 大卡片 */}
           {featuredPost && (
@@ -68,6 +64,8 @@ const normalPosts = sortedPosts.slice(1);
       <span class="deco-text">继续记录生活的每一帧</span>
     </div>
   </div>
+
+  <CategorySidebar slot="right-sidebar" currentCategory="" />
 </BaseLayout>
 
 <style>

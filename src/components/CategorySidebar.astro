@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentCategory?: string;
+}
+
+const { currentCategory = '' } = Astro.props;
+
+// 获取所有文章
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+// 定义分类列表
+const categories = [
+  { name: '技术', slug: 'tech' },
+  { name: '生活', slug: 'life' },
+  { name: '随笔', slug: 'essay' },
+];
+
+// 统计每个分类的文章数量
+const categoryCounts = categories.map(cat => {
+  const count = allPosts.filter(post => post.data.category === cat.name).length;
+  return { ...cat, count };
+});
+---
+
+<aside class="category-sidebar">
+  <div class="category-card">
+    <h3 class="category-title">文章分类</h3>
+    <ul class="category-list">
+      {categoryCounts.map(cat => (
+        <li class="category-item">
+          <a
+            href={`/${cat.slug}`}
+            class:list={['category-link', { active: currentCategory === cat.slug }]}
+          >
+            <span class="category-name">{cat.name}</span>
+            <span class="category-count">{cat.count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</aside>
+
+<style>
+  .category-sidebar {
+    position: sticky;
+    top: 72px;
+    width: 250px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding-right: 32px;
+    z-index: 50;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .category-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.5rem 1.2rem;
+    overflow: visible;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.15s ease;
+  }
+
+  .category-card:hover {
+    background: rgba(0, 240, 255, 0.12);
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15), inset 0 0 8px rgba(0, 240, 255, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .category-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--deco-yellow);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+    text-shadow: 2px 2px 0 var(--deco-red);
+    letter-spacing: 0.04em;
+  }
+
+  .category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .category-item {
+    margin-bottom: 0;
+  }
+
+  .category-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      transform 0.15s ease;
+    border: 1.5px solid transparent;
+  }
+
+  .category-link:hover {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--deco-cyan);
+    transform: translateX(3px);
+  }
+
+  .category-link.active {
+    background: rgba(0, 240, 255, 0.18);
+    color: var(--deco-cyan);
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+  }
+
+  .category-name {
+    letter-spacing: 0.02em;
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-weight: 700;
+  }
+
+  .category-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: color 0.25s ease;
+  }
+
+  .category-link:hover .category-count,
+  .category-link.active .category-count {
+    color: var(--deco-cyan);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 响应式：≤1100px 时隐藏右侧分类栏 */
+  @media (max-width: 1100px) {
+    .category-sidebar {
+      display: none;
+    }
+  }
+</style>
