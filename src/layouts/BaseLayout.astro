@@ -8,9 +8,10 @@ interface Props {
   description?: string;
   mainClass?: string;
   noSidebar?: boolean;
+  showCategorySidebar?: boolean;
 }
 
-const { title, description = '一帧.life - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false } = Astro.props;
+const { title, description = '一帧.life - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -68,6 +69,11 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     <main class:list={[mainClass, { 'has-sidebar': !noSidebar }]}>
       <slot />
     </main>
+    <!-- 右侧分类栏目 -->
+    {showCategorySidebar && (
+      <slot name="right-sidebar" />
+    )}
+
     <div class="footer-wrapper">
       <Footer />
     </div>
@@ -163,13 +169,20 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
 
   main.has-sidebar {
     padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  /* 右侧分类栏 */
+  .content-wrapper > .category-sidebar {
+    padding-right: 32px;
+    padding-left: 0;
   }
 
   /* ===== 左侧固定个人资料卡片 ===== */
   .global-sidebar {
     position: sticky;
     top: 72px;
-    width: 300px;
+    width: 280px;
     flex-shrink: 0;
     align-self: flex-start;
     padding-left: 32px;
@@ -301,8 +314,12 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     .global-sidebar {
       display: none;
     }
+    .content-wrapper > .category-sidebar {
+      display: none;
+    }
     main.has-sidebar {
       padding-left: 2rem;
+      padding-right: 2rem;
     }
     .content-wrapper {
       max-width: 100%;
