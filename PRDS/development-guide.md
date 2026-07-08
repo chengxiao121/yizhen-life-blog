@@ -13,6 +13,7 @@
 src/
 ├── components/              # 可复用组件
 │   ├── Header.astro         # 固定导航栏
+│   ├── CategorySidebar.astro # 右侧文章分类栏目
 │   ├── Footer.astro         # 页脚
 │   ├── PostCard.astro       # 文章卡片
 │   ├── TagList.astro        # 标签列表
@@ -22,7 +23,7 @@ src/
 │   ├── config.ts            # Zod Schema 定义
 │   └── posts/               # Markdown 文章
 ├── layouts/
-│   └── BaseLayout.astro     # 基础布局（Hero + Header + Sidebar + Main + Footer）
+│   └── BaseLayout.astro     # 基础布局（Hero + Header + Sidebar + Main + CategorySidebar + Footer）
 ├── pages/                   # 路由页面
 │   ├── index.astro          # 欢迎页（独立布局）
 │   ├── blog/index.astro     # 博客首页
@@ -48,6 +49,7 @@ BaseLayout.astro
     │   └── TagList.astro
     ├── PhotoGrid.astro
     │   └── PhotoCard.astro
+    ├── CategorySidebar.astro
     └── ...
 ```
 
@@ -77,7 +79,7 @@ npm run preview  # 预览构建结果
 
 - **所有页面**使用 `BaseLayout`，通过 `<slot />` 插入内容
 - **欢迎页**是独立页面，不使用 BaseLayout，视频背景自动检测竖屏旋转
-- **BaseLayout 接受 `mainClass` 和 `noSidebar` props**，`noSidebar` 为 true 时隐藏侧边栏，main 全宽
+- **BaseLayout 接受 `mainClass`、`noSidebar` 和 `showCategorySidebar` props**，`noSidebar` 为 true 时隐藏侧边栏，`showCategorySidebar` 为 true 时显示右侧分类栏目
 
 ### 2.4 样式规范
 
@@ -102,6 +104,7 @@ npm run preview  # 预览构建结果
 | **hero-bg** | `position: sticky, top: 0` | 1 | 背景图粘在视口顶部，被 content-wrapper 覆盖 |
 | **Header** | `position: fixed, top: 0` | 100 | 始终固定在最顶层 |
 | **sidebar** | `position: sticky, top: 72px` | 50 | 滚动时粘在导航栏正下方 |
+| **category-sidebar** | `position: sticky, top: 72px` | 50 | 右侧分类栏目，滚动时固定 |
 | **content-wrapper** | `position: relative` | 2 | 灰色背景覆盖 hero 区域，形成视差过渡 |
 
 ### 3.2 Header 高度参考
@@ -139,6 +142,7 @@ npm run preview  # 预览构建结果
 |------|------|
 | **固定导航栏** | 毛玻璃效果，始终置顶 |
 | **粘性侧边栏** | 个人资料卡片，滚动时固定 |
+| **右侧分类栏** | 文章分类列表，显示数量，当前高亮 |
 | **响应式适配** | 1100px 以下隐藏侧边栏，768px 以下单列 |
 | **Hero 背景** | 50vh 背景图 + 波浪 SVG 过渡 |
 
