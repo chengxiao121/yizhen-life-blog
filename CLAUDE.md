@@ -7,6 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 「一帧.life」个人博客，技术 + 生活分类，原宿 Decora 潮流风格。域名 yizhen.life，Vercel 自动部署。
 
 > 📄 完整项目文档见 `./PRDS/project-document.md`
+> 🔧 开发指南见 `./PRDS/development-guide.md`
+> 🎨 UI 设计系统见 `./PRDS/ui-design-system.md`
+> ✍️ 内容创作指南见 `./PRDS/content-guide.md`
 
 ## 常用命令
 
@@ -15,47 +18,6 @@ npm run dev      # 本地开发，http://localhost:4321（端口被占时自动�
 npm run build    # 生产构建，输出到 dist/
 npm run preview  # 预览构建结果
 ```
-
-## 写文章
-
-在 `src/content/posts/` 下新建 `.md` 文件，文件名即为 URL slug（`my-post.md` → `/posts/my-post`）：
-
-```yaml
----
-title: "文章标题"
-date: "2026-05-23"    # 必须加引号，否则 YAML 会解析为日期对象导致 schema 校验失败
-tags: ["标签1", "标签2"]
-category: "技术"       # 必须是 "技术" 或 "生活"
-description: "文章摘要"
-draft: false           # true 则隐藏不出现在列表中
----
-```
-
-用 Obsidian 编辑文章，`.obsidian/` 目录已 gitignore。
-
-## 技术栈（精简）
-
-- Astro 5.x 静态生成，`output: 'static'`
-- 纯 CSS + CSS 自定义属性（无 Tailwind/框架）
-- 霞鹜文楷（LXGW WenKai）Google Font
-- Vercel 静态部署，推送到 GitHub 自动构建
-
-> 详细技术栈见 `./PRDS/project-document.md` 第 3 章
-
-## 路由结构
-
-```
-/                  → 欢迎页（视频背景 + 进入按钮）
-/blog              → 博客首页（2 列文章网格，特色文章大卡片横跨两列）
-/tech              → 技术分类
-/life              → 生活分类
-/photos            → 照片墙（Masonry 瀑布流 + PhotoSwipe 灯箱）
-/about             → 关于我
-/posts/[slug]      → 文章详情
-/tags              → 标签页
-```
-
-> 完整页面结构见 `./PRDS/project-document.md` 第 2 章
 
 ## 关键设计决策（AI 必须知道）
 
