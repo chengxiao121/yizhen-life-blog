@@ -13,7 +13,10 @@
 src/
 ├── components/              # 可复用组件
 │   ├── Header.astro         # 固定导航栏
-│   ├── CategorySidebar.astro # 右侧文章分类栏目
+│   ├── RightSidebar.astro   # 右侧边栏（分类 + 轮播 + 句子）
+│   ├── CategorySidebar.astro # 文章分类（内部组件）
+│   ├── PhotoCarousel.astro  # 照片轮播（内部组件）
+│   ├── RandomQuote.astro    # 随机句子（内部组件）
 │   ├── Footer.astro         # 页脚
 │   ├── PostCard.astro       # 文章卡片
 │   ├── TagList.astro        # 标签列表
@@ -23,7 +26,7 @@ src/
 │   ├── config.ts            # Zod Schema 定义
 │   └── posts/               # Markdown 文章
 ├── layouts/
-│   └── BaseLayout.astro     # 基础布局（Hero + Header + Sidebar + Main + CategorySidebar + Footer）
+│   └── BaseLayout.astro     # 基础布局（Hero + Header + Sidebar + Main + RightSidebar + Footer）
 ├── pages/                   # 路由页面
 │   ├── index.astro          # 欢迎页（独立布局）
 │   ├── blog/index.astro     # 博客首页
@@ -49,7 +52,10 @@ BaseLayout.astro
     │   └── TagList.astro
     ├── PhotoGrid.astro
     │   └── PhotoCard.astro
-    ├── CategorySidebar.astro
+    ├── RightSidebar.astro
+    │   ├── CategorySidebar.astro
+    │   ├── PhotoCarousel.astro
+    │   └── RandomQuote.astro
     └── ...
 ```
 
@@ -143,6 +149,8 @@ npm run preview  # 预览构建结果
 | **固定导航栏** | 毛玻璃效果，始终置顶 |
 | **粘性侧边栏** | 个人资料卡片，滚动时固定 |
 | **右侧分类栏** | 文章分类列表，显示数量，当前高亮 |
+| **照片轮播** | 右侧边栏照片轮播，5张，4秒切换，淡入淡出 |
+| **随机句子** | 右侧边栏底部，每次刷新随机显示一句 |
 | **响应式适配** | 1100px 以下隐藏侧边栏，768px 以下单列 |
 | **Hero 背景** | 50vh 背景图 + 波浪 SVG 过渡 |
 
