@@ -57,7 +57,7 @@ BaseLayout.astro
     ├── Sidebar（粘性定位，280px，个人资料卡片）
     ├── Main（flex: 1，页面内容）
     ├── RightSidebar（粘性定位，250px，文章分类 + 照片轮播 + 随机句子）
-    └── Footer（页脚）
+    └── SiteStats（站点运行统计卡片）
 ```
 
 ---

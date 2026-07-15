@@ -58,11 +58,6 @@ const normalPosts = sortedPosts.slice(1);
         </div>
       </div>
     </div>
-
-    <!-- 底部装饰 -->
-    <div class="bottom-deco">
-      <span class="deco-text">继续记录生活的每一帧</span>
-    </div>
   </div>
 
   <RightSidebar slot="right-sidebar" currentCategory="" />
@@ -138,22 +133,6 @@ const normalPosts = sortedPosts.slice(1);
 
   .grid-item:hover {
     transform: rotate(0deg) scale(1.03) !important;
-  }
-
-  /* ===== 底部装饰 ===== */
-  .bottom-deco {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 3rem;
-    padding: 1.5rem;
-  }
-
-  .deco-text {
-    font-style: italic;
-    letter-spacing: 0.06em;
-    color: var(--deco-cyan);
-    font-weight: 600;
   }
 
   /* ===== 动画 ===== */

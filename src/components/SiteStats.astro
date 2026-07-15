@@ -1,0 +1,243 @@
+---
+// 站点运行时间统计组件 — 单行卡片风格
+// 始于 2026年5月21日
+const START_DATE = new Date('2026-05-21T00:00:00+08:00');
+---
+
+<div class="site-stats-wrapper">
+  <div class="site-stats-card">
+    <!-- 左侧：当前时间 -->
+    <div class="stats-left">
+      <span class="stats-current-time" id="stats-current-time">--:--:--</span>
+    </div>
+
+    <!-- 中间：运行时间 -->
+    <div class="stats-center">
+      <span class="stats-label">小破站已运行</span>
+      <span class="stats-number" id="stats-days">0</span>
+      <span class="stats-unit">天</span>
+      <span class="stats-number" id="stats-hours">0</span>
+      <span class="stats-unit">小时</span>
+    </div>
+
+    <!-- 右侧：起始日期 -->
+    <div class="stats-right">
+      <span class="stats-start">始于 2026年5月21日</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const currentTimeEl = document.getElementById('stats-current-time');
+    const daysEl = document.getElementById('stats-days');
+    const hoursEl = document.getElementById('stats-hours');
+    const startTime = new Date('2026-05-21T00:00:00+08:00').getTime();
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+
+    function updateStats() {
+      const now = new Date();
+      const nowTime = now.getTime();
+      const diff = Math.max(0, nowTime - startTime);
+
+      // 当前时间 HH:MM:SS
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      currentTimeEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+      // 计算天数和小时
+      const totalHours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const remainingHours = totalHours % 24;
+
+      daysEl.textContent = days.toLocaleString('zh-CN');
+      hoursEl.textContent = remainingHours.toString();
+    }
+
+    // 初始化并每秒更新
+    updateStats();
+    setInterval(updateStats, 1000);
+  })();
+</script>
+
+<style>
+  .site-stats-wrapper {
+    width: 100%;
+    flex-shrink: 0;
+    margin-top: 20px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ===== 卡片主容器 ===== */
+  .site-stats-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.15s ease;
+    cursor: default;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* 卡片 hover 效果 — 与 PostCard 一致 */
+  .site-stats-card:hover {
+    background: rgba(0, 240, 255, 0.12);
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15), inset 0 0 8px rgba(0, 240, 255, 0.06);
+    transform: translateY(-1px);
+  }
+
+  /* ===== 左侧：当前时间 ===== */
+  .stats-left {
+    flex-shrink: 0;
+  }
+
+  .stats-current-time {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--deco-cyan);
+    font-variant-numeric: tabular-nums;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== 中间：运行时间 ===== */
+  .stats-center {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .stats-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    margin-right: 0.3rem;
+  }
+
+  .stats-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--deco-yellow);
+    text-shadow: 2px 2px 0 var(--deco-red), 3px 3px 0 var(--deco-blue);
+    font-variant-numeric: tabular-nums;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    line-height: 1.2;
+  }
+
+  .stats-unit {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-right: 0.4rem;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+  }
+
+  /* ===== 右侧：起始日期 ===== */
+  .stats-right {
+    flex-shrink: 0;
+  }
+
+  .stats-start {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    white-space: nowrap;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 768px) {
+    .site-stats-wrapper {
+      padding: 1rem;
+      margin-top: 16px;
+    }
+
+    .site-stats-card {
+      padding: 1rem 1.2rem;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .stats-left {
+      order: 1;
+    }
+
+    .stats-center {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .stats-right {
+      order: 2;
+    }
+
+    .stats-current-time {
+      font-size: 1rem;
+    }
+
+    .stats-number {
+      font-size: 1.3rem;
+    }
+
+    .stats-unit {
+      font-size: 0.85rem;
+    }
+
+    .stats-start {
+      font-size: 0.72rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .site-stats-card {
+      padding: 0.8rem 1rem;
+      border-radius: 16px;
+    }
+
+    .stats-current-time {
+      font-size: 0.9rem;
+    }
+
+    .stats-number {
+      font-size: 1.1rem;
+    }
+
+    .stats-unit {
+      font-size: 0.8rem;
+    }
+
+    .stats-label {
+      font-size: 0.82rem;
+    }
+
+    .stats-start {
+      font-size: 0.68rem;
+    }
+  }
+</style>
