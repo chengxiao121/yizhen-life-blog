@@ -1,6 +1,6 @@
 ---
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import SiteStats from '../components/SiteStats.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -74,10 +74,10 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
       <slot name="right-sidebar" />
     )}
 
-    <div class="footer-wrapper">
-      <Footer />
-    </div>
   </div>
+
+  <!-- 站点运行统计 — 横跨整个页面宽度 -->
+  <SiteStats />
 
   <script>
     // 波浪 SVG 动态定位：跟随 hero 底部，滚动时固定不变
@@ -152,11 +152,6 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     justify-content: center;
     max-width: 1400px;
     margin: 0 auto;
-  }
-
-  .footer-wrapper {
-    width: 100%;
-    flex-shrink: 0;
   }
 
   main {

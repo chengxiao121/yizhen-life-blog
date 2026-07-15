@@ -13,11 +13,11 @@
 src/
 ├── components/              # 可复用组件
 │   ├── Header.astro         # 固定导航栏
+│   ├── SiteStats.astro      # 站点运行统计（当前时间 + 运行天数小时）
 │   ├── RightSidebar.astro   # 右侧边栏（分类 + 轮播 + 句子）
 │   ├── CategorySidebar.astro # 文章分类（内部组件）
 │   ├── PhotoCarousel.astro  # 照片轮播（内部组件）
 │   ├── RandomQuote.astro    # 随机句子（内部组件）
-│   ├── Footer.astro         # 页脚
 │   ├── PostCard.astro       # 文章卡片
 │   ├── TagList.astro        # 标签列表
 │   ├── PhotoGrid.astro      # 照片墙网格（client-side JS）
@@ -46,7 +46,7 @@ src/
 ```
 BaseLayout.astro
 ├── Header.astro
-├── Footer.astro
+├── SiteStats.astro
 └── [页面内容]
     ├── PostCard.astro
     │   └── TagList.astro
@@ -86,6 +86,7 @@ npm run preview  # 预览构建结果
 - **所有页面**使用 `BaseLayout`，通过 `<slot />` 插入内容
 - **欢迎页**是独立页面，不使用 BaseLayout，视频背景自动检测竖屏旋转
 - **BaseLayout 接受 `mainClass`、`noSidebar` 和 `showCategorySidebar` props**，`noSidebar` 为 true 时隐藏侧边栏，`showCategorySidebar` 为 true 时显示右侧分类栏目
+- **SiteStats 组件**在 BaseLayout 底部独立渲染，显示当前时间、站点运行天数/小时及起始日期
 
 ### 2.4 样式规范
 
@@ -153,6 +154,7 @@ npm run preview  # 预览构建结果
 | **随机句子** | 右侧边栏底部，每次刷新随机显示一句 |
 | **响应式适配** | 1100px 以下隐藏侧边栏，768px 以下单列 |
 | **Hero 背景** | 50vh 背景图 + 波浪 SVG 过渡 |
+| **站点运行统计** | 卡片式页脚，显示当前时间 + 运行天数小时 + 起始日期 |
 
 ---
 
