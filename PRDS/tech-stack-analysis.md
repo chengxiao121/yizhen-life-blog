@@ -20,7 +20,7 @@
 
 | 考量 | 说明 |
 |------|------|
-| **设计自由度** | Decora 风格需要精细控制每个元素的视觉表现，手写 CSS 更灵活 |
+| **设计自由度** | 暗色主题 + 粒子背景 + 少量彩色点缀的风格需要精细控制，手写 CSS 更灵活 |
 | **无构建开销** | 无需处理 Tailwind 等工具链的编译时间 |
 | **零依赖** | 避免引入不必要的 CSS 框架，减少依赖维护负担 |
 
@@ -33,7 +33,8 @@
 | **Astro Islands 架构** | 仅在需要交互的组件（照片墙）注入 JS，其余页面零 JS 运行时 |
 | **Content Collections** | Zod Schema 校验 + TypeScript 类型推导，编译时安全 |
 | **Vercel 零运维** | Git push 即部署，无需配置 CI/CD |
-| **纯 CSS 可控性** | `--deco-*` 变量系统便于主题管理，scoped styles 避免冲突 |
+| **纯 CSS 可控性** | `--deco-*` 变量系统便于管理点缀色，scoped styles 避免冲突 |
+| **WebGL 粒子背景** | 基于 `ogl` 的原生 WebGL 实现，无框架依赖，60fps 粒子动画 |
 | **Obsidian 兼容** | Markdown 文章可用 Obsidian 编辑，`.obsidian/` 已 gitignore |
 
 ---

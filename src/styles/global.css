@@ -1,7 +1,7 @@
 /* ===== 原宿 Decora 潮流风格 配色变量 ===== */
 :root {
-  /* Decora 高饱和撞色 */
-  --bg-primary: #5e5a51;
+	/* Decora 高饱和撞色 */
+	--bg-primary: rgba(10, 10, 15, 0.85);
   --bg-card: #1E293B;
   --bg-code: #2a2a2a;
   --text-primary: #ffffff;
@@ -88,7 +88,7 @@ html {
 
 body {
   font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-  background-color: var(--bg-primary);
+  background-color: transparent;
   color: var(--text-primary);
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;

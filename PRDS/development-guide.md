@@ -13,6 +13,7 @@
 src/
 ├── components/              # 可复用组件
 │   ├── Header.astro         # 固定导航栏
+│   ├── ParticlesBackground.astro # WebGL 粒子背景（全屏，z:-1）
 │   ├── SiteStats.astro      # 站点运行统计（当前时间 + 运行天数小时）
 │   ├── RightSidebar.astro   # 右侧边栏（分类 + 轮播 + 句子）
 │   ├── CategorySidebar.astro # 文章分类（内部组件）
@@ -45,6 +46,7 @@ src/
 
 ```
 BaseLayout.astro
+├── ParticlesBackground.astro（WebGL 粒子背景）
 ├── Header.astro
 ├── SiteStats.astro
 └── [页面内容]
@@ -97,7 +99,7 @@ npm run preview  # 预览构建结果
 ### 2.5 静态资源
 
 - `public/avatar.jpg` — 头像，左侧 sidebar 和关于我页面使用
-- `public/page-bg.png` — 博客页面顶部 hero 背景图（sticky, 50vh），底部波浪 SVG 过渡到内容区
+- `public/page-bg.png` — 博客页面顶部 hero 背景图（正常流，50vh），底部波浪 SVG 过渡到内容区，内容区背景透明，粒子动画透出
 - `public/landing-bg.mp4` — 欢迎页视频背景，替换同名文件即可更换
 
 ---
@@ -108,11 +110,13 @@ npm run preview  # 预览构建结果
 
 | 元素 | 定位方式 | z-index | 说明 |
 |------|---------|---------|------|
-| **hero-bg** | `position: sticky, top: 0` | 1 | 背景图粘在视口顶部，被 content-wrapper 覆盖 |
+| **ParticlesBackground** | `position: fixed, inset: 0` | -1 | 全屏 WebGL 粒子，最底层 |
+| **hero-bg** | 正常流 | — | 背景图占 50vh，随页面正常滚动 |
+| **hero-wave** | `position: fixed`，JS 动态 top | 10 | 波浪跟随 hero 底部，hero 滚出后隐藏 |
 | **Header** | `position: fixed, top: 0` | 100 | 始终固定在最顶层 |
 | **sidebar** | `position: sticky, top: 72px` | 50 | 滚动时粘在导航栏正下方 |
 | **category-sidebar** | `position: sticky, top: 72px` | 50 | 右侧分类栏目，滚动时固定 |
-| **content-wrapper** | `position: relative` | 2 | 灰色背景覆盖 hero 区域，形成视差过渡 |
+| **content-wrapper** | `position: relative` | 2 | 透明背景，内容在粒子之上 |
 
 ### 3.2 Header 高度参考
 
@@ -217,7 +221,7 @@ const posts = defineCollection({
 |------|------|
 | 全局样式 | `src/styles/global.css` |
 | 组件样式 | Astro `<style>` 标签（scoped） |
-| CSS 变量命名 | `--deco-*` 用于 Decora 主题色 |
+| CSS 变量命名 | `--deco-*` 用于高饱和点缀色（黄/蓝/红/青/粉/绿），仅在 hover、标题、描边等少量位置使用 |
 | 响应式断点 | `1100px` / `768px` / `480px` |
 
 ### 6.3 性能优化原则
