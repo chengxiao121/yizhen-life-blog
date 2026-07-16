@@ -220,28 +220,23 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   }
 
   .global-sidebar .intro-card:hover {
-    background: rgba(0, 240, 255, 0.12);
-    border-color: rgba(0, 240, 255, 0.45);
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15), inset 0 0 8px rgba(0, 240, 255, 0.06);
+    border-color: rgba(255, 230, 0, 0.45);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.15), inset 0 0 8px rgba(249, 115, 22, 0.06);
     transform: translateY(-1px);
   }
 
   .global-sidebar .intro-avatar-wrapper {
     width: 90px;
     height: 90px;
-    border-radius: 0;
-    padding: 3px;
-    background: var(--deco-yellow);
+    border-radius: 50%;
     margin-bottom: 1rem;
-    border: 3px solid var(--deco-pink);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
 
   .global-sidebar .intro-avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    border-radius: 50%;
   }
 
   .global-sidebar .intro-content {
@@ -255,7 +250,7 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     color: #FFE600;
     margin-bottom: 0.3rem;
     letter-spacing: 0.06em;
-    text-shadow: 2px 2px 0 #FF0033, 4px 4px 0 #0066FF;
+	    text-shadow: none;
   }
 
   .global-sidebar .intro-tagline {
@@ -277,8 +272,8 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   }
 
   .global-sidebar .doodle-text {
-    color: var(--deco-cyan);
-    font-size: 0.78rem;
+	    color: #F97316;
+	    font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.04em;
   }
@@ -303,8 +298,8 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   }
 
   .global-sidebar .info-label {
-    color: var(--deco-cyan);
-    font-weight: 700;
+	    color: #F97316;
+	    font-weight: 700;
     margin-right: 0.5rem;
   }
 

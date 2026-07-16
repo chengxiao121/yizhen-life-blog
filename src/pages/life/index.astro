@@ -12,11 +12,9 @@ const sortedPosts = allPosts.sort(
 <BaseLayout title="生活">
   <div class="category-page">
     <div class="category-header">
-      <span class="category-icon">♥</span>
-      <h1>生活 ♥ LIFE</h1>
-      <span class="category-icon">♥</span>
+      <h1>生活</h1>
     </div>
-    <p class="category-info">共 {sortedPosts.length} 篇文章 ♡</p>
+    <p class="category-info">共 {sortedPosts.length} 篇文章</p>
     <div class="post-list">
       {sortedPosts.map((post, index) => (
         <div class:list={["post-item", `post-item-${(index % 3) + 1}`]}>
@@ -49,14 +47,7 @@ const sortedPosts = allPosts.sort(
 
   .category-header h1 {
     font-size: 1.6rem;
-    color: var(--deco-pink);
-    text-shadow: 2px 2px 0 var(--deco-red);
-  }
-
-  .category-icon {
-    color: var(--deco-red);
-    font-size: 1.3rem;
-    animation: pulse-heart 1.5s ease-in-out infinite;
+    color: #ffffff;
   }
 
   .category-info {
@@ -82,10 +73,5 @@ const sortedPosts = allPosts.sort(
 
   .post-item:hover {
     transform: rotate(0deg) !important;
-  }
-
-  @keyframes pulse-heart {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
   }
 </style>

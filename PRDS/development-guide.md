@@ -221,7 +221,7 @@ const posts = defineCollection({
 |------|------|
 | 全局样式 | `src/styles/global.css` |
 | 组件样式 | Astro `<style>` 标签（scoped） |
-| CSS 变量命名 | `--deco-*` 用于高饱和点缀色（黄/蓝/红/青/粉/绿），仅在 hover、标题、描边等少量位置使用 |
+| CSS 变量命名 | `--deco-*` 用于点缀色，仅 yellow=#FFE600 和其余=#F97316 两种 |
 | 响应式断点 | `1100px` / `768px` / `480px` |
 
 ### 6.3 性能优化原则

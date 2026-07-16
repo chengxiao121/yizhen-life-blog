@@ -16,9 +16,7 @@ const sortedPhotos = [...photos].sort(
 <BaseLayout title="照片墙">
   <div class="photos-page">
     <div class="photos-header">
-      <span class="photos-icon">✿</span>
-      <h1>照片墙 ✿ PHOTO</h1>
-      <span class="photos-icon">✿</span>
+      <h1>照片墙</h1>
     </div>
     <p class="photos-count">共 {sortedPhotos.length} 张照片 ♪</p>
     <PhotoGrid photos={sortedPhotos} />
@@ -40,14 +38,7 @@ const sortedPhotos = [...photos].sort(
 
   .photos-header h1 {
     font-size: 1.6rem;
-    color: var(--deco-pink);
-    text-shadow: 2px 2px 0 var(--deco-yellow);
-  }
-
-  .photos-icon {
-    color: var(--deco-pink);
-    font-size: 1.3rem;
-    animation: float-flower 3s ease-in-out infinite;
+    color: #ffffff;
   }
 
   .photos-count {
@@ -55,10 +46,5 @@ const sortedPhotos = [...photos].sort(
     font-size: 0.85rem;
     margin-bottom: 1.8rem;
     letter-spacing: 0.04em;
-  }
-
-  @keyframes float-flower {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(10deg); }
   }
 </style>

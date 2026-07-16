@@ -1,7 +1,7 @@
-/* ===== 原宿 Decora 潮流风格 配色变量 ===== */
+/* ===== 配色变量 ===== */
 :root {
-	/* Decora 高饱和撞色 */
-	--bg-primary: rgba(10, 10, 15, 0.85);
+  /* 高饱和撞色 */
+  --bg-primary: rgba(10, 10, 15, 0.85);
   --bg-card: #1E293B;
   --bg-code: #2a2a2a;
   --text-primary: #ffffff;
@@ -15,55 +15,55 @@
   --border: #666666;
   --border-light: #555555;
 
-  /* 无阴影 - Decora 平面风格 */
+  /* 无阴影 - 平面风格 */
   --shadow: none;
   --shadow-hover: none;
   --radius: 0px;
   --max-width: 720px;
 
-  /* Decora 撞色调 */
+  /* 点缀色 */
   --deco-yellow: #FFE600;
-  --deco-blue: #0066FF;
-  --deco-red: #FF0033;
-  --deco-pink: #FF69B4;
-  --deco-green: #39FF14;
-  --deco-cyan: #00FFFF;
-  --deco-purple: #CC00FF;
-  --deco-orange: #FF6600;
+  --deco-blue: #F97316;
+  --deco-red: #F97316;
+  --deco-pink: #F97316;
+  --deco-green: #F97316;
+  --deco-cyan: #F97316;
+  --deco-purple: #F97316;
+  --deco-orange: #F97316;
 
   /* 半透明版本 */
   --deco-yellow-20: rgba(255, 230, 0, 0.2);
-  --deco-blue-20: rgba(0, 102, 255, 0.2);
-  --deco-red-20: rgba(255, 0, 51, 0.2);
-  --deco-pink-20: rgba(255, 105, 180, 0.2);
-  --deco-green-20: rgba(57, 255, 20, 0.2);
-  --deco-cyan-20: rgba(0, 255, 255, 0.2);
+  --deco-blue-20: rgba(249, 115, 22, 0.2);
+  --deco-red-20: rgba(249, 115, 22, 0.2);
+  --deco-pink-20: rgba(249, 115, 22, 0.2);
+  --deco-green-20: rgba(249, 115, 22, 0.2);
+  --deco-cyan-20: rgba(249, 115, 22, 0.2);
 
   /* 标签颜色 - 高对比度 */
-  --tag-blue: #0066FF;
+  --tag-blue: #F97316;
   --tag-blue-text: #ffffff;
-  --tag-pink: #FF69B4;
+  --tag-pink: #F97316;
   --tag-pink-text: #ffffff;
   --tag-yellow: #FFE600;
   --tag-yellow-text: #000000;
-  --tag-purple: #CC00FF;
+  --tag-purple: #F97316;
   --tag-purple-text: #ffffff;
-  --tag-green: #39FF14;
+  --tag-green: #F97316;
   --tag-green-text: #000000;
   --tag-gray: #555555;
   --tag-gray-text: #ffffff;
 
   /* 兼容旧变量名（组件可能引用） */
-  --coral: #FF0033;
-  --coral-light: rgba(255, 0, 51, 0.2);
-  --coral-dark: #FF0033;
+  --coral: #F97316;
+  --coral-light: rgba(249, 115, 22, 0.2);
+  --coral-dark: #F97316;
   --sunny: #FFE600;
   --sunny-light: rgba(255, 230, 0, 0.2);
   --sunny-dark: #FFCC00;
-  --mint: #39FF14;
-  --mint-light: rgba(57, 255, 20, 0.2);
-  --lavender: #CC00FF;
-  --lavender-light: rgba(204, 0, 255, 0.2);
+  --mint: #F97316;
+  --mint-light: rgba(249, 115, 22, 0.2);
+  --lavender: #F97316;
+  --lavender-light: rgba(249, 115, 22, 0.2);
   --cream: #3a3a3a;
   --cream-dark: #444444;
 
@@ -94,11 +94,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
-}
-
-::selection {
-  background: var(--deco-pink);
-  color: #000000;
 }
 
 a {
@@ -191,7 +186,6 @@ p {
   border-radius: 0;
   font-size: 0.88em;
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
-  color: var(--deco-green);
   border: 1px solid var(--border);
 }
 
@@ -204,7 +198,6 @@ p {
   margin: 1.5em 0;
   line-height: 1.6;
   font-size: 0.9em;
-  border: 3px solid var(--deco-blue);
 }
 
 .prose pre code {
@@ -233,7 +226,7 @@ p {
   color: var(--deco-cyan);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(0, 255, 255, 0.4);
+    text-decoration-color: rgba(249, 115, 22, 0.4);
   transition: text-decoration-color 0.2s;
 }
 
@@ -269,7 +262,6 @@ p {
 }
 
 .prose th {
-  background: var(--deco-blue);
   font-weight: 600;
   color: #ffffff;
 }
