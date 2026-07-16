@@ -12,6 +12,7 @@
     "astro": "^5.7.0",
     "image-size": "^2.0.2",
     "masonry-layout": "^4.2.2",
+    "ogl": "^1.0.11",
     "photoswipe": "^5.4.4",
     "sharp": "^0.33.0"
   }

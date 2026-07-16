@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import SiteStats from '../components/SiteStats.astro';
+import ParticlesBackground from '../components/ParticlesBackground.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -27,6 +28,19 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   <title>{title} | 一帧.life</title>
 </head>
 <body>
+  <!-- WebGL 粒子背景 — 最底层 -->
+  <ParticlesBackground
+    particleColors={["#F97316"]}
+    particleCount={600}
+    particleSpread={10}
+    speed={0.1}
+    particleBaseSize={100}
+    moveParticlesOnHover={false}
+    alphaParticles={false}
+    disableRotation={false}
+    pixelRatio={5}
+  />
+
   <!-- 顶部背景图区域 — 正常滚动 -->
   <div class="hero-bg">
     <img class="hero-bg-img" src="/page-bg.png" alt="" aria-hidden="true" />
@@ -109,7 +123,7 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   body {
     position: relative;
     min-height: 100vh;
-    background: var(--bg-primary);
+    background: transparent;
   }
 
   /* 顶部背景图区域 — 正常滚动，不固定 */
@@ -140,13 +154,13 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   }
 
   .hero-wave path {
-    fill: var(--bg-primary);
+    fill: #0a0a0f;
   }
 
   /* 内容区域 — 正常文档流 */
   .content-wrapper {
     position: relative;
-    background: var(--bg-primary);
+    background: transparent;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

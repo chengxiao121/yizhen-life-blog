@@ -10,7 +10,7 @@
 
 ### 1.1 简介
 
-「一帧.life」是一个采用**原宿 Decora 潮流风格**设计的个人博客，主打高饱和撞色、平面化无阴影、粗描边等视觉特征。博客内容涵盖技术文章与生活随笔，同时包含照片墙展示功能。
+「一帧.life」是一个采用 **WebGL 粒子动画背景** 的个人博客，橙色粒子在深色画布上缓慢旋转，整体为暗色主题，彩色仅用作点缀（Logo、hover 发光、极少量的描边和 text-shadow）。博客内容涵盖技术文章与生活随笔，同时包含照片墙展示功能。
 
 | 项目 | 说明 |
 |------|------|
@@ -50,10 +50,11 @@
 
 ```
 BaseLayout.astro
-├── Hero 背景图区域 (50vh)
-│   └── 波浪 SVG（动态定位到 hero 底部）
+├── ParticlesBackground（WebGL 粒子，fixed，全屏，z:-1）
+├── Hero 背景图区域 (50vh，正常流)
+│   └── 波浪 SVG（fixed，z:10，动态定位到 hero 底部，#0a0a0f）
 ├── Header（固定导航栏，z-index: 100）
-└── Content Wrapper
+└── Content Wrapper（透明背景）
     ├── Sidebar（粘性定位，280px，个人资料卡片）
     ├── Main（flex: 1，页面内容）
     ├── RightSidebar（粘性定位，250px，文章分类 + 照片轮播 + 随机句子）
@@ -77,12 +78,13 @@ BaseLayout.astro
 | **照片墙** | masonry-layout | ^4.2.2 | 瀑布流布局 |
 | **图片灯箱** | photoswipe | ^5.4.4 | 照片查看器 |
 | **图片处理** | sharp | ^0.33.0 | 构建时图片优化 |
+| **粒子背景** | ogl | latest | WebGL 粒子动画背景 |
 | **部署** | Vercel | — | 静态托管 + CI/CD |
 
 ### 3.2 选型理由
 
 - **Astro**：零 JS 默认、Content Collections 类型安全、静态输出性能优异
-- **纯 CSS**：完全可控的样式系统，与 Decora 风格高度契合，无构建开销
+- **纯 CSS**：完全可控的样式系统，暗色主题 + 粒子背景 + 少量彩色点缀，无构建开销
 - **Vercel**：与 GitHub 无缝集成，零配置自动部署
 
 ---
