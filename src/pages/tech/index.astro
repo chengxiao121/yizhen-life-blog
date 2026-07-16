@@ -12,9 +12,7 @@ const sortedPosts = allPosts.sort(
 <BaseLayout title="技术">
   <div class="category-page">
     <div class="category-header">
-      <span class="category-icon">★</span>
-      <h1>技术 ★ TECH</h1>
-      <span class="category-icon">★</span>
+      <h1>技术</h1>
     </div>
     <p class="category-info">共 {sortedPosts.length} 篇文章 ♪</p>
     <div class="post-list">
@@ -49,14 +47,7 @@ const sortedPosts = allPosts.sort(
 
   .category-header h1 {
     font-size: 1.6rem;
-    color: var(--deco-blue);
-    text-shadow: 2px 2px 0 var(--deco-yellow);
-  }
-
-  .category-icon {
-    color: var(--deco-blue);
-    font-size: 1.3rem;
-    animation: spin-star 3s linear infinite;
+    color: #ffffff;
   }
 
   .category-info {
@@ -82,10 +73,5 @@ const sortedPosts = allPosts.sort(
 
   .post-item:hover {
     transform: rotate(0deg) !important;
-  }
-
-  @keyframes spin-star {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
   }
 </style>
