@@ -3,3 +3,10 @@ dist/
 .astro/
 .DS_Store
 .obsidian/
+.claude/
+.zcode/
+.workbuddy/
+CLAUDE.md
+PRDS/
+docs/superpowers/
+scripts/gen_qr.py
