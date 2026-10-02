@@ -6,3 +6,7 @@ dist/
 .claude/
 .zcode/
 .workbuddy/
+CLAUDE.md
+PRDS/
+docs/superpowers/
+scripts/gen_qr.py
