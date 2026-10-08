@@ -1,9 +1,11 @@
 ---
-title: "你好，世界"
-date: "2026-05-21"
-tags: ["生活", "随笔"]
-category: "生活"
-description: "这是我的第一篇博客，记录新的开始。"
+title: 你好，世界
+date: 2026-05-21
+tags:
+  - 生活
+  - 随笔
+category: 生活
+description: 这是我的第一篇博客，记录新的开始。
 ---
 
 # 你好，世界

@@ -1,6 +1,6 @@
 ---
 title: 操作git命令和提示词
-date: "2026-06-09"
+date: 2026-06-09
 category: 技术
 description: "null"
 ---

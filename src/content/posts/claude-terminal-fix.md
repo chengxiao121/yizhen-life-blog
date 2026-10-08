@@ -1,6 +1,6 @@
 ---
 title: 在终端启动不了claude的问题
-date: "2026-05-26"
+date: 2026-05-26
 tags:
   - Windows
   - nvm

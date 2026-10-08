@@ -1,6 +1,6 @@
 ---
 title: 和AI讨论需求
-date: "2026-06-11"
+date: 2026-06-11
 category: 技术
 description: "null"
 ---

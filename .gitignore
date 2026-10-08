@@ -8,5 +8,6 @@ dist/
 .workbuddy/
 CLAUDE.md
 PRDS/
-docs/superpowers/
+docs/
 scripts/gen_qr.py
+AGENTS.md
