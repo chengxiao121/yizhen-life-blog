@@ -1,16 +1,10 @@
-\---  
-title: 从踩坑到设计：我给交易系统搭 Spring Security + JWT 认证的全程记录  
-date: "2026-5-28"  
-tags:  
-  \- Spring Security  
-  \- JWT  
-  \- Redis  
-  \- 踩坑  
-category: 技术  
-description: 基于 waynboot 学习搭建交易系统认证模块的过程记录：依赖选型、SecurityConfig 的两个坑、JWT 配合 Redis 的会话设计，以及三类"看不懂的认证失败"的排查与反思。  
-draft: true  
-\---
-
+---
+title: 从踩坑到设计：我给交易系统搭 Spring Security + JWT 认证的全程记录
+date: 2026-05-26
+tags:
+category: 技术
+description: 基于 waynboot 学习搭建交易系统认证模块的过程记录：依赖选型、SecurityConfig 的两个坑、JWT 配合 Redis 的会话设计，以及三类"看不懂的认证失败"的排查与反思。
+---
 最近在做一个基于 Spring Boot 的数字商业交易平台（这个项目我基于开源项目 waynboot 学习搭建，重点深入了认证授权模块），认证这块踩了不少坑，也做了几个值得记录的设计决策。这篇文章按时间线把这些整理下来——既是复盘，也希望帮到同样在 Spring Security 6.x 上挣扎的人。
 
 ## 一、选型：java-jwt，以及一个认知误区
