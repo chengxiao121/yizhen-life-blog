@@ -16,8 +16,8 @@ const sortedPosts = allPosts.sort(
     </div>
     <p class="category-info">共 {sortedPosts.length} 篇文章</p>
     <div class="post-list">
-      {sortedPosts.map((post, index) => (
-        <div class:list={["post-item", `post-item-${(index % 3) + 1}`]}>
+      {sortedPosts.map((post) => (
+        <div class="post-item">
           <PostCard
             title={post.data.title}
             slug={post.slug}
@@ -47,7 +47,7 @@ const sortedPosts = allPosts.sort(
 
   .category-header h1 {
     font-size: 1.6rem;
-    color: #ffffff;
+    color: var(--text-primary);
   }
 
   .category-info {
@@ -61,17 +61,5 @@ const sortedPosts = allPosts.sort(
     display: flex;
     flex-direction: column;
     gap: 1rem;
-  }
-
-  .post-item-1 { transform: rotate(0.8deg); }
-  .post-item-2 { transform: rotate(-0.5deg); }
-  .post-item-3 { transform: rotate(0.4deg); }
-
-  .post-item {
-    transition: transform 0.2s ease;
-  }
-
-  .post-item:hover {
-    transform: rotate(0deg) !important;
   }
 </style>

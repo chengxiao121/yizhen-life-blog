@@ -1,75 +1,73 @@
-/* ===== 配色变量 ===== */
+/* ===== 配色变量 — 薄荷绿浅色二次元风 ===== */
 :root {
-  /* 高饱和撞色 */
-  --bg-primary: rgba(10, 10, 15, 0.85);
-  --bg-card: #1E293B;
-  --bg-code: #2a2a2a;
-  --text-primary: #ffffff;
-  --text-secondary: #cccccc;
-  --text-muted: #888888;
+  /* 底色与文字 */
+  --bg-primary: #F7F9F5;
+  --bg-card: #FFFFFF;
+  --bg-code: #EEF3EE;
+  --text-primary: #2F3B33;
+  --text-secondary: #5C6B61;
+  --text-muted: #94A29A;
 
-  /* 核心 Decora 色 */
-  --accent: #FFE600;
-  --accent-hover: #FFCC00;
-  --accent-light: rgba(255, 230, 0, 0.15);
-  --border: #666666;
-  --border-light: #555555;
+  /* 核心强调色 — 薄荷绿 */
+  --accent: #5FA986;
+  --accent-hover: #4E9573;
+  --accent-light: rgba(143, 203, 168, 0.18);
+  --border: #E4EBE4;
+  --border-light: #EDF2ED;
 
-  /* 无阴影 - 平面风格 */
-  --shadow: none;
-  --shadow-hover: none;
-  --radius: 0px;
+  /* 阴影与圆角 — 圆角卡片风 */
+  --shadow: 0 2px 10px rgba(47, 59, 51, 0.06);
+  --shadow-hover: 0 6px 18px rgba(47, 59, 51, 0.1);
+  --shadow-sticker: 0 2px 10px rgba(47, 59, 51, 0.06);
+  --shadow-sticker-hover: 0 6px 18px rgba(47, 59, 51, 0.1);
+  --radius: 14px;
   --max-width: 720px;
 
   /* 点缀色 */
-  --deco-yellow: #FFE600;
-  --deco-blue: #F97316;
-  --deco-red: #F97316;
-  --deco-pink: #F97316;
-  --deco-green: #F97316;
-  --deco-cyan: #F97316;
-  --deco-purple: #F97316;
-  --deco-orange: #F97316;
+  --deco-yellow: #8FCBA8;
+  --deco-blue: #A8C6E8;
+  --deco-red: #F5B8C4;
+  --deco-pink: #F5B8C4;
+  --deco-green: #8FCBA8;
+  --deco-cyan: #5FA986;
+  --deco-purple: #C6B8E0;
+  --deco-orange: #F0C9A0;
 
   /* 半透明版本 */
-  --deco-yellow-20: rgba(255, 230, 0, 0.2);
-  --deco-blue-20: rgba(249, 115, 22, 0.2);
-  --deco-red-20: rgba(249, 115, 22, 0.2);
-  --deco-pink-20: rgba(249, 115, 22, 0.2);
-  --deco-green-20: rgba(249, 115, 22, 0.2);
-  --deco-cyan-20: rgba(249, 115, 22, 0.2);
+  --deco-yellow-20: rgba(143, 203, 168, 0.2);
+  --deco-blue-20: rgba(168, 198, 232, 0.2);
+  --deco-red-20: rgba(245, 184, 196, 0.2);
+  --deco-pink-20: rgba(245, 184, 196, 0.2);
+  --deco-green-20: rgba(143, 203, 168, 0.2);
+  --deco-cyan-20: rgba(95, 169, 134, 0.2);
 
-  /* 标签颜色 - 高对比度 */
-  --tag-blue: #F97316;
-  --tag-blue-text: #ffffff;
-  --tag-pink: #F97316;
-  --tag-pink-text: #ffffff;
-  --tag-yellow: #FFE600;
-  --tag-yellow-text: #000000;
-  --tag-purple: #F97316;
-  --tag-purple-text: #ffffff;
-  --tag-green: #F97316;
-  --tag-green-text: #000000;
-  --tag-gray: #555555;
-  --tag-gray-text: #ffffff;
+  /* 标签颜色 — 马卡龙粉彩 */
+  --tag-blue: #E3EEF8;
+  --tag-blue-text: #4A7BA6;
+  --tag-pink: #FBE4EA;
+  --tag-pink-text: #C05E7C;
+  --tag-yellow: #E6F4EA;
+  --tag-yellow-text: #4E9573;
+  --tag-purple: #EEE9F6;
+  --tag-purple-text: #7C63A8;
+  --tag-green: #E6F4EA;
+  --tag-green-text: #4E9573;
+  --tag-gray: #EFF3EF;
+  --tag-gray-text: #6B7A70;
 
   /* 兼容旧变量名（组件可能引用） */
-  --coral: #F97316;
-  --coral-light: rgba(249, 115, 22, 0.2);
-  --coral-dark: #F97316;
-  --sunny: #FFE600;
-  --sunny-light: rgba(255, 230, 0, 0.2);
-  --sunny-dark: #FFCC00;
-  --mint: #F97316;
-  --mint-light: rgba(249, 115, 22, 0.2);
-  --lavender: #F97316;
-  --lavender-light: rgba(249, 115, 22, 0.2);
-  --cream: #3a3a3a;
-  --cream-dark: #444444;
-
-  /* 贴纸式无阴影 */
-  --shadow-sticker: none;
-  --shadow-sticker-hover: none;
+  --coral: #5FA986;
+  --coral-light: rgba(143, 203, 168, 0.2);
+  --coral-dark: #4E9573;
+  --sunny: #8FCBA8;
+  --sunny-light: rgba(143, 203, 168, 0.2);
+  --sunny-dark: #4E9573;
+  --mint: #8FCBA8;
+  --mint-light: rgba(143, 203, 168, 0.2);
+  --lavender: #C6B8E0;
+  --lavender-light: rgba(198, 184, 224, 0.2);
+  --cream: #FFFFFF;
+  --cream-dark: #F0F4F0;
 }
 
 /* ===== 基础重置 ===== */
@@ -88,7 +86,7 @@ html {
 
 body {
   font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-  background-color: transparent;
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
@@ -150,19 +148,23 @@ p {
 .prose h1 {
   margin: 2em 0 0.6em;
   font-size: 1.6rem;
-  color: var(--deco-yellow);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-light);
+  padding-bottom: 0.3em;
 }
 
 .prose h2 {
   margin: 1.8em 0 0.5em;
   font-size: 1.35rem;
-  color: var(--deco-cyan);
+  color: var(--text-primary);
+  border-left: 4px solid var(--deco-green);
+  padding-left: 0.6em;
 }
 
 .prose h3 {
   margin: 1.5em 0 0.4em;
   font-size: 1.15rem;
-  color: var(--deco-pink);
+  color: var(--accent-hover);
 }
 
 .prose p {
@@ -176,24 +178,25 @@ p {
   margin: 1.5em 0;
   background: var(--deco-pink-20);
   color: var(--text-secondary);
-  border-radius: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
   font-style: italic;
 }
 
 .prose code {
   background: var(--bg-code);
   padding: 0.15em 0.45em;
-  border-radius: 0;
+  border-radius: 6px;
   font-size: 0.88em;
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
   border: 1px solid var(--border);
+  color: var(--accent-hover);
 }
 
 .prose pre {
-  background: #2a2a2a;
-  color: #cdd6f4;
+  background: #2B3530;
+  color: #DCE8E0;
   padding: 1.2em 1.4em;
-  border-radius: 0;
+  border-radius: var(--radius);
   overflow-x: auto;
   margin: 1.5em 0;
   line-height: 1.6;
@@ -219,31 +222,32 @@ p {
 }
 
 .prose li::marker {
-  color: var(--deco-yellow);
+  color: var(--deco-green);
 }
 
 .prose a {
-  color: var(--deco-cyan);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
-    text-decoration-color: rgba(249, 115, 22, 0.4);
+  text-decoration-color: rgba(95, 169, 134, 0.4);
   transition: text-decoration-color 0.2s;
 }
 
 .prose a:hover {
-  text-decoration-color: var(--deco-cyan);
-  color: var(--deco-yellow);
+  text-decoration-color: var(--accent);
+  color: var(--accent-hover);
 }
 
 .prose img {
-  border-radius: 0;
+  border-radius: var(--radius);
   margin: 1.5em 0;
-  border: 3px solid var(--deco-yellow);
+  border: none;
+  box-shadow: var(--shadow);
 }
 
 .prose hr {
   border: none;
-  border-top: 3px dashed var(--deco-pink);
+  border-top: 2px dashed var(--border);
   margin: 2em 0;
 }
 
@@ -257,13 +261,14 @@ p {
 .prose th,
 .prose td {
   padding: 0.6em 1em;
-  border: 2px solid var(--deco-blue);
+  border: 1px solid var(--border);
   text-align: left;
 }
 
 .prose th {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
+  background: var(--bg-code);
 }
 
 /* ===== 响应式 ===== */

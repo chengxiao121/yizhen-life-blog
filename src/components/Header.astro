@@ -1,5 +1,14 @@
 ---
+// 顶栏：logo + 搜索 + 移动端导航（≤1100px 时显示）
 const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: '/blog', label: '首页', active: currentPath === '/blog' || currentPath === '/' },
+  { href: '/tech', label: '技术', active: currentPath.startsWith('/tech') },
+  { href: '/life', label: '生活', active: currentPath.startsWith('/life') },
+  { href: '/photos', label: '照片墙', active: currentPath.startsWith('/photos') },
+  { href: '/about', label: '关于我', active: currentPath === '/about' },
+];
 ---
 
 <header class="site-header">
@@ -7,51 +16,69 @@ const currentPath = Astro.url.pathname;
     <a href="/" class="logo">
       <span class="logo-text">一帧.life</span>
     </a>
+
+    <!-- 移动端水平导航 -->
     <ul class="nav-links">
-      <li><a href="/blog" class:list={["nav-link", { active: currentPath === "/blog" || currentPath === "/" }]}>首页</a></li>
-      <li><a href="/tech" class:list={["nav-link", { active: currentPath.startsWith("/tech") }]}>技术</a></li>
-      <li><a href="/life" class:list={["nav-link", { active: currentPath.startsWith("/life") }]}>生活</a></li>
-      <li><a href="/photos" class:list={["nav-link", { active: currentPath.startsWith("/photos") }]}>照片墙</a></li>
-      <li><a href="/about" class:list={["nav-link", { active: currentPath === "/about" }]}>关于我</a></li>
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class:list={["nav-link", { active: item.active }]}>{item.label}</a>
+        </li>
+      ))}
     </ul>
+
+    <!-- 搜索框：回车跳转到对应标签页 -->
+    <form class="search-box" onsubmit="return false;">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="21" y1="21" x2="16.5" y2="16.5" />
+      </svg>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="搜索文章…"
+        aria-label="搜索文章"
+        data-search-input
+      />
+    </form>
   </nav>
 </header>
 
-<style>
-  /* ── Accent variable ── */
-  :root {
-    --nav-accent: #F97316;
+<script>
+  const input = document.querySelector('[data-search-input]') as HTMLInputElement | null;
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const kw = input.value.trim();
+        if (kw) window.location.href = `/tags/${encodeURIComponent(kw)}`;
+      }
+    });
   }
+</script>
 
-  /* ── Header bar: glassmorphism ── */
+<style>
   .site-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
-    padding: 0.6rem 2rem;
-    max-width: 100%;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.55) 0%,
-      rgba(0, 0, 0, 0.35) 100%
-    );
+    padding: 0.5rem 1.5rem;
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(16px) saturate(1.4);
     -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(228, 235, 228, 0.8);
   }
 
   .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 52px;
-    max-width: 1100px;
+    height: 48px;
+    max-width: 1280px;
     margin: 0 auto;
+    gap: 1rem;
   }
 
-  /* ── Logo ── */
   .logo {
     display: flex;
     align-items: center;
@@ -65,100 +92,103 @@ const currentPath = Astro.url.pathname;
   }
 
   .logo-text {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
-		    color: #FFE600;
-	    letter-spacing: 0.08em;
-	    text-shadow: none;
-  }
-
-  /* ── Nav links row ── */
-  .nav-links {
-    display: flex;
-    list-style: none;
-    gap: 0.35rem;
-    align-items: center;
-  }
-
-  /* ── Capsule pill ── */
-  .nav-link {
-    position: relative;
-    display: inline-block;
-    color: rgba(255, 255, 255, 0.88);
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.45em 1.1em;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    text-decoration: none;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    transition:
-      background 0.25s ease,
-      border-color 0.25s ease,
-      color 0.25s ease,
-      box-shadow 0.25s ease,
-      transform 0.15s ease;
+    color: var(--text-primary);
+    letter-spacing: 0.08em;
     white-space: nowrap;
   }
 
-  .nav-link:hover {
-    color: #ffffff;
-    border-color: rgba(255, 230, 0, 0.45);
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.15), inset 0 0 8px rgba(249, 115, 22, 0.06);
-    transform: translateY(-1px);
+  /* 移动端导航 — 桌面端隐藏 */
+  .nav-links {
+    display: none;
+    list-style: none;
+    gap: 0.3rem;
+    align-items: center;
   }
 
-  /* ── Active state ── */
+  .nav-link {
+    display: inline-block;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4em 0.9em;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+
   .nav-link.active {
     color: #ffffff;
-    font-weight: 700;
-    background: rgba(249, 115, 22, 0.18);
-    border-color: rgba(249, 115, 22, 0.55);
-    box-shadow: 0 0 14px rgba(249, 115, 22, 0.2), inset 0 0 10px rgba(249, 115, 22, 0.08);
+    background: var(--accent);
   }
 
-  /* Active indicator dot */
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--nav-accent);
-    box-shadow: 0 0 6px rgba(249, 115, 22, 0.6);
+  /* ── 搜索框 ── */
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4em 1em;
+    background: var(--tag-gray);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: border-color 0.25s ease, background 0.25s ease;
   }
 
-  /* ── Responsive ── */
+  .search-box:focus-within {
+    border-color: rgba(143, 203, 168, 0.7);
+    background: #ffffff;
+  }
+
+  .search-icon {
+    width: 15px;
+    height: 15px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    width: 140px;
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  /* ── 响应式 ── */
+  @media (max-width: 1100px) {
+    .nav-links {
+      display: flex;
+    }
+  }
+
   @media (max-width: 768px) {
     .site-header {
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 1rem;
     }
-    .nav {
-      height: 48px;
-    }
-    .logo-text {
-      font-size: 1rem;
-    }
-    .nav-link {
-      font-size: 0.78rem;
-      padding: 0.4em 0.8em;
-      border-width: 1px;
+    .search-input {
+      width: 90px;
     }
   }
 
   @media (max-width: 480px) {
-    .nav-links {
-      gap: 0.2rem;
+    .nav-link {
+      padding: 0.35em 0.6em;
+      font-size: 0.72rem;
     }
-	    .nav-link {
-	      padding: 0.35em 0.6em;
-	      font-size: 0.72rem;
-	    }
-	  }
+    .search-input {
+      width: 70px;
+    }
+  }
 </style>

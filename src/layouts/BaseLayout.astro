@@ -1,7 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import SiteStats from '../components/SiteStats.astro';
-import ParticlesBackground from '../components/ParticlesBackground.astro';
+import { getCollection } from 'astro:content';
 import '../styles/global.css';
 
 interface Props {
@@ -13,6 +13,23 @@ interface Props {
 }
 
 const { title, description = '一帧.life - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+// 统计数据
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const postCount = allPosts.length;
+const tagCount = new Set(allPosts.flatMap((p) => p.data.tags)).size;
+const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
+
+// 左侧竖向导航
+const navItems = [
+  { href: '/blog', label: '首页', icon: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z' },
+  { href: '/tech', label: '技术', icon: 'M8 9l-4 3 4 3M16 9l4 3-4 3M13 6l-2 12' },
+  { href: '/life', label: '生活', icon: 'M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.7 0 3.3.9 4.5 2.3C13.2 5.9 14.8 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z' },
+  { href: '/photos', label: '照片墙', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 5-5 4 4' },
+  { href: '/about', label: '关于', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3.6-6 8-6s8 2 8 6' },
+];
 ---
 
 <!doctype html>
@@ -28,53 +45,65 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   <title>{title} | 一帧.life</title>
 </head>
 <body>
-  <!-- WebGL 粒子背景 — 最底层 -->
-  <ParticlesBackground
-    particleColors={["#F97316"]}
-    particleCount={600}
-    particleSpread={10}
-    speed={0.1}
-    particleBaseSize={100}
-    moveParticlesOnHover={false}
-    alphaParticles={false}
-    disableRotation={false}
-    pixelRatio={5}
-  />
-
-  <!-- 顶部背景图区域 — 正常滚动 -->
-  <div class="hero-bg">
-    <img class="hero-bg-img" src="/page-bg.png" alt="" aria-hidden="true" />
-  </div>
-
-  <!-- 波浪 SVG — JS 动态定位到 hero 底部，滚动时固定不变 -->
-  <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1200,100 1350,20 1440,60 L1440,120 L0,120 Z" />
-  </svg>
-
-  <!-- 导航栏 — 始终固定在页面最顶部 -->
+  <!-- 顶栏：logo + 搜索 -->
   <Header />
 
-  <!-- 内容区域 — 整体在背景图下方，滚动时覆盖背景图 -->
+  <!-- 内容区域：左导航栏 + 主内容 + 右侧栏 -->
   <div class="content-wrapper">
 
-    <!-- 左侧固定个人资料卡片 -->
+    <!-- 左侧固定导航栏 -->
     {!noSidebar && (
       <aside class="global-sidebar">
         <div class="intro-card">
           <div class="intro-avatar-wrapper">
             <img src="/avatar.jpg" alt="头像" class="intro-avatar" />
           </div>
-          <div class="intro-content">
-            <h2 class="intro-name">一帧.life</h2>
-            <div class="intro-doodle">
-              <span class="doodle-text">世界那么大，我先溜达溜达</span>
-            </div>
-            <ul class="intro-info">
-              <li><span class="info-label">生日</span> 6月13日</li>
-              <li><span class="info-label">星座</span> 金牛座</li>
-              <li><span class="info-label">邮箱</span> 18823549722@163.com</li>
-              <li><span class="info-label">爱好</span> 羽毛球</li>
+          <h2 class="intro-name">一帧.life</h2>
+          <p class="intro-doodle">学一点，玩一点，记录一点。</p>
+
+          <nav class="sidebar-nav">
+            <ul>
+              {navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={['nav-item', { active: item.href === '/blog' ? currentPath === '/blog' || currentPath === '/' : currentPath.startsWith(item.href) }]}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d={item.icon} />
+                    </svg>
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
+          </nav>
+
+          <div class="sidebar-stats">
+            <div class="stat-item">
+              <span class="stat-num">{postCount}</span>
+              <span class="stat-label">文章</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">{tagCount}</span>
+              <span class="stat-label">标签</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">{categoryCount}</span>
+              <span class="stat-label">分类</span>
+            </div>
+          </div>
+
+          <div class="sidebar-social">
+            <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.05.78 2.13v3.16c0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+            </a>
+            <a href="/about" aria-label="邮箱">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </a>
+            <a href="/about" aria-label="关于我">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+            </a>
           </div>
         </div>
       </aside>
@@ -83,39 +112,15 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     <main class:list={[mainClass, { 'has-sidebar': !noSidebar }]}>
       <slot />
     </main>
-    <!-- 右侧分类栏目 -->
+    <!-- 右侧栏目 -->
     {showCategorySidebar && (
       <slot name="right-sidebar" />
     )}
 
   </div>
 
-  <!-- 站点运行统计 — 横跨整个页面宽度 -->
+  <!-- 站点运行统计 -->
   <SiteStats />
-
-  <script>
-    // 波浪 SVG 动态定位：跟随 hero 底部，滚动时固定不变
-    const wave = document.querySelector('.hero-wave') as SVGElement | null;
-    const hero = document.querySelector('.hero-bg') as HTMLElement | null;
-    if (wave && hero) {
-      const updateWavePosition = () => {
-        const heroRect = hero.getBoundingClientRect();
-        const heroBottom = heroRect.bottom;
-        const waveHeight = 80;
-        // hero 还在视口中：波浪贴在 hero 底部
-        if (heroBottom > 0) {
-          wave.style.top = (heroBottom - waveHeight) + 'px';
-          wave.style.display = 'block';
-        } else {
-          // hero 完全滚出视口：隐藏波浪
-          wave.style.display = 'none';
-        }
-      };
-      updateWavePosition();
-      window.addEventListener('scroll', updateWavePosition, { passive: true });
-      window.addEventListener('resize', updateWavePosition);
-    }
-  </script>
 </body>
 </html>
 
@@ -123,184 +128,192 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
   body {
     position: relative;
     min-height: 100vh;
-    background: transparent;
+    background: var(--bg-primary);
+    padding-top: 76px; /* 顶栏高度 + 间距 */
   }
 
-  /* 顶部背景图区域 — 正常滚动，不固定 */
-  .hero-bg {
-    width: 100%;
-    height: 50vh;
-    overflow: hidden;
-  }
-
-  .hero-bg-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    pointer-events: none;
-  }
-
-  /* 波浪 SVG — JS 动态设置 top，跟随 hero 底部 */
-  .hero-wave {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    z-index: 10;
-    pointer-events: none;
-    transition: none;
-  }
-
-  .hero-wave path {
-    fill: #0a0a0f;
-  }
-
-  /* 内容区域 — 正常文档流 */
+  /* 内容区域 */
   .content-wrapper {
     position: relative;
     background: transparent;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
+    gap: 1.25rem;
   }
 
   main {
     position: relative;
     min-height: calc(100vh - 200px);
-    padding: 1.5rem 2rem 3rem;
+    padding: 0 0 3rem;
     flex: 1;
     min-width: 0;
   }
 
   main.has-sidebar {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-
-  /* 右侧分类栏 */
-  .content-wrapper > .category-sidebar {
-    padding-right: 32px;
     padding-left: 0;
+    padding-right: 0;
   }
 
-  /* ===== 左侧固定个人资料卡片 ===== */
+  /* ===== 左侧固定导航栏 ===== */
   .global-sidebar {
     position: sticky;
-    top: 72px;
-    width: 280px;
+    top: 92px;
+    width: 165px;
     flex-shrink: 0;
     align-self: flex-start;
-    padding-left: 32px;
     z-index: 50;
+    margin-left: -20px; /* 左栏贴近屏幕边缘 */
     animation: fadeInUp 0.6s ease-out;
   }
 
-  .global-sidebar .intro-card {
-    position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+  .intro-card {
+    background: transparent;
+    border: none;
     border-radius: 20px;
-    padding: 2rem 1.5rem;
+    padding: 0.5rem 0 1.2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    overflow: visible;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition:
-      background 0.25s ease,
-      border-color 0.25s ease,
-      box-shadow 0.25s ease,
-      transform 0.15s ease;
   }
 
-  .global-sidebar .intro-card:hover {
-    border-color: rgba(255, 230, 0, 0.45);
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.15), inset 0 0 8px rgba(249, 115, 22, 0.06);
-    transform: translateY(-1px);
-  }
-
-  .global-sidebar .intro-avatar-wrapper {
-    width: 90px;
-    height: 90px;
+  .intro-avatar-wrapper {
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
+    border: 3px solid var(--accent-light);
+    overflow: hidden;
   }
 
-  .global-sidebar .intro-avatar {
+  .intro-avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
 
-  .global-sidebar .intro-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .global-sidebar .intro-name {
-    font-size: 1.4rem;
+  .intro-name {
+    font-size: 1.2rem;
     font-weight: 900;
-    color: #FFE600;
+    color: var(--text-primary);
     margin-bottom: 0.3rem;
     letter-spacing: 0.06em;
-	    text-shadow: none;
   }
 
-  .global-sidebar .intro-tagline {
+  .intro-doodle {
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    margin-bottom: 1.1rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── 竖向导航 ── */
+  .sidebar-nav {
+    width: 100%;
+  }
+
+  .sidebar-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55em 0.9em;
+    border-radius: 12px;
     color: var(--text-secondary);
-    font-size: 0.82rem;
-    margin-bottom: 0.8rem;
-    font-weight: 500;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
   }
 
-  .global-sidebar .intro-doodle {
-    display: inline-flex;
+  .nav-item svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+
+  .nav-item:hover {
+    background: var(--accent-light);
+    color: var(--accent-hover);
+  }
+
+  .nav-item.active {
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    font-weight: 700;
+  }
+
+  /* ── 统计 ── */
+  .sidebar-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.4rem;
+    width: 100%;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+  }  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-num {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── 社交图标 ── */
+  .sidebar-social {
+    display: flex;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .sidebar-social a {
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 0.6rem 1rem;
-    background: transparent;
-    border: none;
-    border-radius: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: var(--text-muted);
+    background: var(--tag-gray);
+    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
   }
 
-  .global-sidebar .doodle-text {
-	    color: #F97316;
-	    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+  .sidebar-social a:hover {
+    color: var(--accent-hover);
+    background: var(--accent-light);
+    transform: translateY(-2px);
   }
 
-  .global-sidebar .intro-info {
-    list-style: none;
-    margin: 1rem 0 0;
-    padding: 0;
-    width: 100%;
-    text-align: left;
-  }
-
-  .global-sidebar .intro-info li {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    padding: 0.3rem 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-  }
-
-  .global-sidebar .intro-info li:last-child {
-    border-bottom: none;
-  }
-
-  .global-sidebar .info-label {
-	    color: #F97316;
-	    font-weight: 700;
-    margin-right: 0.5rem;
+  .sidebar-social svg {
+    width: 15px;
+    height: 15px;
   }
 
   @keyframes fadeInUp {
@@ -314,25 +327,28 @@ const { title, description = '一帧.life - 世界那么大，我先溜达溜达
     }
   }
 
+  @media (max-width: 1320px) {
+    .global-sidebar {
+      margin-left: 0; /* 屏幕不够宽时取消负边距，避免贴出屏幕 */
+    }
+  }
+
   @media (max-width: 1100px) {
     .global-sidebar {
       display: none;
     }
-    .content-wrapper > .category-sidebar {
-      display: none;
-    }
-    main.has-sidebar {
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
     .content-wrapper {
       max-width: 100%;
+      padding: 0 1rem;
     }
   }
 
   @media (max-width: 768px) {
+    body {
+      padding-top: 64px;
+    }
     main {
-      padding: 1rem 1rem 2rem;
+      padding-bottom: 2rem;
     }
   }
 </style>
