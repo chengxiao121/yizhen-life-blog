@@ -77,18 +77,16 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
   /* ===== 卡片主容器 ===== */
   .site-stats-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 1.2rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--shadow);
     transition:
-      background 0.25s ease,
       border-color 0.25s ease,
       box-shadow 0.25s ease,
       transform 0.15s ease;
@@ -99,8 +97,8 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
 
   /* 卡片 hover 效果 — 与 PostCard 一致 */
   .site-stats-card:hover {
-    border-color: rgba(255, 230, 0, 0.45);
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.15), inset 0 0 8px rgba(249, 115, 22, 0.06);
+    border-color: rgba(143, 203, 168, 0.6);
+    box-shadow: var(--shadow-hover);
     transform: translateY(-1px);
   }
 
@@ -140,7 +138,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
   .stats-number {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #F97316;
+    color: var(--accent-hover);
     font-variant-numeric: tabular-nums;
     font-family: "LXGW WenKai", "Noto Serif SC", serif;
     line-height: 1.2;

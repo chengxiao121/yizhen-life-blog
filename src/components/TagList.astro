@@ -7,13 +7,13 @@ interface Props {
 const { tags, linkable = true } = Astro.props;
 
 const tagColors: Record<string, { bg: string; text: string }> = {
-  '技术': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
-  '生活': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
-  '随笔': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
-  'Astro': { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' },
+  '技术': { bg: 'var(--tag-green)', text: 'var(--tag-green-text)' },
+  '生活': { bg: 'var(--tag-pink)', text: 'var(--tag-pink-text)' },
+  '随笔': { bg: 'var(--tag-blue)', text: 'var(--tag-blue-text)' },
+  'Astro': { bg: 'var(--tag-purple)', text: 'var(--tag-purple-text)' },
 };
 
-const defaultColor = { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary)' };
+const defaultColor = { bg: 'var(--tag-gray)', text: 'var(--tag-gray-text)' };
 ---
 
 <div class="tag-list">
@@ -38,7 +38,7 @@ const defaultColor = { bg: 'rgba(255,255,255,0.08)', text: 'var(--text-secondary
   .tag {
     display: inline-block;
     padding: 0.15em 0.7em;
-    border-radius: 0;
+    border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 700;
     transition: transform 0.2s;

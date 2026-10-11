@@ -39,7 +39,14 @@ const quotes = Array.isArray(quotesData) ? quotesData : [];
 ---
 
 <aside class="right-sidebar">
-  <!-- 文章分类 -->
+  <!-- 关于我卡片 -->
+  <div class="about-card">
+    <p class="about-hello">Hi，我是一帧 ✦</p>
+    <p class="about-desc">一名爱溜达的学生，这里是我的小小宇宙，记录代码与生活的片段。</p>
+    <a href="/about" class="about-link">认识一下 →</a>
+  </div>
+
+  <!-- 分类卡片 -->
   <CategorySidebar currentCategory={currentCategory} />
 
   <!-- 照片轮播 + 随机句子 -->
@@ -54,31 +61,67 @@ const quotes = Array.isArray(quotesData) ? quotesData : [];
 <style>
   .right-sidebar {
     position: sticky;
-    top: 72px;
-    width: 250px;
+    top: 92px;
+    width: 230px;
     flex-shrink: 0;
     align-self: flex-start;
-    padding-right: 32px;
     z-index: 50;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
   }
 
+  .about-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.3rem 1.2rem;
+    box-shadow: var(--shadow);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .about-card:hover {
+    border-color: rgba(143, 203, 168, 0.6);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .about-hello {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .about-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 0.8rem;
+  }
+
+  .about-link {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-hover);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .about-link:hover {
+    color: var(--accent);
+  }
+
   .sidebar-section {
     position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 1rem;
     overflow: hidden;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--shadow);
     transition:
-      background 0.25s ease,
       border-color 0.25s ease,
-      box-shadow 0.25s ease,
-      transform 0.15s ease;
+      box-shadow 0.25s ease;
   }
 
   .sidebar-section.carousel-section {
@@ -88,11 +131,11 @@ const quotes = Array.isArray(quotesData) ? quotesData : [];
 
   .quote-wrapper {
     padding: 0.125rem 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border);
   }
 
   .sidebar-section:hover {
-    border-color: rgba(249, 115, 22, 0.35);
+    border-color: rgba(143, 203, 168, 0.6);
   }
 
   /* 响应式：≤1100px 时隐藏右侧边栏 */

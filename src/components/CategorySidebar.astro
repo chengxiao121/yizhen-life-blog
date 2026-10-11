@@ -51,33 +51,31 @@ const categoryCounts = categories.map(cat => {
 
   .category-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 1.5rem 1.2rem;
     overflow: visible;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--shadow);
     transition:
-      background 0.25s ease,
       border-color 0.25s ease,
       box-shadow 0.25s ease,
       transform 0.15s ease;
   }
 
   .category-card:hover {
-    border-color: rgba(255, 230, 0, 0.45);
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.15), inset 0 0 8px rgba(249, 115, 22, 0.06);
+    border-color: rgba(143, 203, 168, 0.6);
+    box-shadow: var(--shadow-hover);
     transform: translateY(-1px);
   }
 
   .category-title {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     padding-bottom: 0.6rem;
-    border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+    border-bottom: 2px dashed var(--border);
     letter-spacing: 0.04em;
   }
 
@@ -111,16 +109,16 @@ const categoryCounts = categories.map(cat => {
   }
 
   .category-link:hover {
-    background: rgba(249, 115, 22, 0.1);
-    color: var(--deco-cyan);
+    background: var(--accent-light);
+    color: var(--accent-hover);
     transform: translateX(3px);
   }
 
   .category-link.active {
-    background: rgba(249, 115, 22, 0.18);
-    color: var(--deco-cyan);
-    border-color: rgba(255, 230, 0, 0.45);
-    box-shadow: 0 0 10px rgba(249, 115, 22, 0.1);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    border-color: rgba(143, 203, 168, 0.6);
+    box-shadow: 0 2px 8px rgba(95, 169, 134, 0.12);
   }
 
   .category-name {
@@ -138,7 +136,7 @@ const categoryCounts = categories.map(cat => {
 
   .category-link:hover .category-count,
   .category-link.active .category-count {
-    color: var(--deco-cyan);
+    color: var(--accent-hover);
   }
 
   @keyframes fadeInUp {
