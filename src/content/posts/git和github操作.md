@@ -1,6 +1,6 @@
 ---
 title: git和github操作
-date: "2026-06-09"
+date: "2026-06-17"
 category: 技术
 description: "用 AI 提示词完成从连接 GitHub 到分支协作的全流程。"
 draft: false

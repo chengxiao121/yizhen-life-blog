@@ -1,6 +1,6 @@
 ---
 title: 和AI讨论需求，从0做一个项目
-date: "2026-06-11"
+date: "2026-07-11"
 category: 技术
 description: "用 AI 从零做项目的完整流程：立项 → 需求讨论 → 文档拆解 → 开发计划 → demo 验证"
 draft: false
