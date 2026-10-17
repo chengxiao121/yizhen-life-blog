@@ -3,7 +3,10 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <p class="footer-text">&copy; {year} 一帧.life — 世界那么大，我先溜达溜达!</p>
+  <p class="footer-text">&copy; {year} 落羽闲笺 — 世界那么大，我先溜达溜达!</p>
+  <p class="footer-icp">
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备2026156601号-1</a>
+  </p>
   <p class="footer-slogan">Made with love</p>
 </footer>
 
@@ -23,6 +26,20 @@ const year = new Date().getFullYear();
     color: var(--text-secondary);
     font-weight: 600;
     letter-spacing: 0.05em;
+  }
+
+  .footer-icp {
+    font-size: 0.78rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-icp a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-icp a:hover {
+    color: var(--deco-pink);
   }
 
   .footer-slogan {

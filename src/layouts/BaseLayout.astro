@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import SiteStats from '../components/SiteStats.astro';
+import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import '../styles/global.css';
 
@@ -12,7 +13,7 @@ interface Props {
   showCategorySidebar?: boolean;
 }
 
-const { title, description = '一帧.life - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
+const { title, description = '落羽闲笺 - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 
@@ -42,7 +43,7 @@ const navItems = [
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai&display=swap" rel="stylesheet" />
-  <title>{title} | 一帧.life</title>
+  <title>{title} | 落羽闲笺</title>
 </head>
 <body>
   <!-- 顶栏：logo + 搜索 -->
@@ -58,7 +59,7 @@ const navItems = [
           <div class="intro-avatar-wrapper">
             <img src="/avatar.jpg" alt="头像" class="intro-avatar" />
           </div>
-          <h2 class="intro-name">一帧.life</h2>
+          <h2 class="intro-name">可乐加冰</h2>
           <p class="intro-doodle">学一点，玩一点，记录一点。</p>
 
           <nav class="sidebar-nav">
@@ -121,6 +122,9 @@ const navItems = [
 
   <!-- 站点运行统计 -->
   <SiteStats />
+
+  <!-- 页脚（含 ICP 备案号） -->
+  <Footer />
 </body>
 </html>
 
