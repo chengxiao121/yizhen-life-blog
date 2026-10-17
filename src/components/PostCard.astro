@@ -28,7 +28,10 @@ const formatDate = (dateStr: string) => {
   <a href={`/posts/${slug}`} class="post-card-link">
     <div class="card-header">
       {category && <span class="post-category">{category}</span>}
-      <TagList tags={tags} />
+      {/* 卡片整体被外层 <a> 包裹，标签必须用 span（linkable=false），
+          否则 <a> 嵌套 <a> 是非法 HTML，浏览器解析时会拆断外层链接，
+          导致卡片标题无法点击（hello-world、梁王世锦赛文章曾中招） */}
+      <TagList tags={tags} linkable={false} />
     </div>
     <h2 class="post-title">{title}</h2>
     <p class="post-desc">{description}</p>
