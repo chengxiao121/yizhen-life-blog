@@ -12,3 +12,6 @@ PRDS/
 docs/
 scripts/gen_qr.py
 AGENTS.md
+
+# 外部参考项目与素材工作区（不进博客仓库）
+external/
