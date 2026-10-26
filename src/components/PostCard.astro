@@ -8,10 +8,9 @@ interface Props {
   description: string;
   tags: string[];
   category?: string;
-  featured?: boolean;
 }
 
-const { title, slug, date, description, tags, category, featured = false } = Astro.props;
+const { title, slug, date, description, tags, category } = Astro.props;
 
 // 格式化日期
 const formatDate = (dateStr: string) => {
@@ -24,7 +23,7 @@ const formatDate = (dateStr: string) => {
 
 ---
 
-<article class:list={["post-card", { featured }]}>
+<article class="post-card">
   <a href={`/posts/${slug}`} class="post-card-link">
     <div class="card-header">
       {category && <span class="post-category">{category}</span>}
@@ -162,19 +161,5 @@ const formatDate = (dateStr: string) => {
   .post-card:hover .card-arrow {
     color: var(--accent-hover);
     transform: translateX(3px);
-  }
-
-  /* 特色卡片样式 */
-  .post-card.featured {
-    padding: 1.8rem 2rem 1.4rem;
-  }
-
-  .post-card.featured .post-title {
-    font-size: 1.35rem;
-  }
-
-  .post-card.featured .post-desc {
-    -webkit-line-clamp: 3;
-    font-size: 0.92rem;
   }
 </style>

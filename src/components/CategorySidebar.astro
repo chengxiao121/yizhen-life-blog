@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getPublishedPosts } from '../lib/posts';
 
 interface Props {
   currentCategory?: string;
@@ -7,14 +7,13 @@ interface Props {
 
 const { currentCategory = '' } = Astro.props;
 
-// 获取所有文章
-const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+// 获取所有已发布文章
+const allPosts = await getPublishedPosts();
 
-// 定义分类列表
+// 定义分类列表（必须与 schema 枚举一致，禁止加无路由页的分类）
 const categories = [
   { name: '技术', slug: 'tech' },
   { name: '生活', slug: 'life' },
-  { name: '随笔', slug: 'essay' },
 ];
 
 // 统计每个分类的文章数量

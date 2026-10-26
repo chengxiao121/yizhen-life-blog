@@ -1,9 +1,10 @@
 ---
-import fs from 'node:fs';
-import path from 'node:path';
 import CategorySidebar from './CategorySidebar.astro';
 import PhotoCarousel from './PhotoCarousel.astro';
 import RandomQuote from './RandomQuote.astro';
+// 数据读取方式与照片页统一：直接 import（构建期内联），禁止 fs.readFileSync
+import photosData from '../../public/data/photos.json';
+import quotesData from '../../public/data/quotes.json';
 
 interface Props {
   currentCategory?: string;
@@ -11,31 +12,17 @@ interface Props {
 
 const { currentCategory = '' } = Astro.props;
 
-// 读取照片数据
-function readJsonFile(filePath: string) {
-  try {
-    const fullPath = path.join(process.cwd(), 'public', filePath);
-    const data = fs.readFileSync(fullPath, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return null;
-  }
-}
-
-const photosData = readJsonFile('data/photos.json');
-const allPhotos = photosData?.photos || [];
+const allPhotos = photosData.photos || [];
 
 // 随机选取 5 张照片
 const shuffled = [...allPhotos].sort(() => Math.random() - 0.5);
-const selectedPhotos = shuffled.slice(0, 5).map((p: any) => ({
+const selectedPhotos = shuffled.slice(0, 5).map((p) => ({
   id: p.id,
   path: p.path,
   title: p.title || p.description || '',
 }));
 
-// 读取句子数据
-const quotesData = readJsonFile('data/quotes.json');
-const quotes = Array.isArray(quotesData) ? quotesData : [];
+const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
 ---
 
 <aside class="right-sidebar">

@@ -54,20 +54,6 @@
   --tag-green-text: #4E9573;
   --tag-gray: #EFF3EF;
   --tag-gray-text: #6B7A70;
-
-  /* 兼容旧变量名（组件可能引用） */
-  --coral: #5FA986;
-  --coral-light: rgba(143, 203, 168, 0.2);
-  --coral-dark: #4E9573;
-  --sunny: #8FCBA8;
-  --sunny-light: rgba(143, 203, 168, 0.2);
-  --sunny-dark: #4E9573;
-  --mint: #8FCBA8;
-  --mint-light: rgba(143, 203, 168, 0.2);
-  --lavender: #C6B8E0;
-  --lavender-light: rgba(198, 184, 224, 0.2);
-  --cream: #FFFFFF;
-  --cream-dark: #F0F4F0;
 }
 
 /* ===== 基础重置 ===== */

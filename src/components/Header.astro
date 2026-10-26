@@ -1,14 +1,8 @@
 ---
 // 顶栏：logo + 搜索 + 移动端导航（≤1100px 时显示）
-const currentPath = Astro.url.pathname;
+import { navItems, isActiveNav } from '../lib/nav';
 
-const navItems = [
-  { href: '/blog', label: '首页', active: currentPath === '/blog' || currentPath === '/' },
-  { href: '/tech', label: '技术', active: currentPath.startsWith('/tech') },
-  { href: '/life', label: '生活', active: currentPath.startsWith('/life') },
-  { href: '/photos', label: '照片墙', active: currentPath.startsWith('/photos') },
-  { href: '/about', label: '关于我', active: currentPath === '/about' },
-];
+const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
@@ -21,7 +15,7 @@ const navItems = [
     <ul class="nav-links">
       {navItems.map((item) => (
         <li>
-          <a href={item.href} class:list={["nav-link", { active: item.active }]}>{item.label}</a>
+          <a href={item.href} class:list={["nav-link", { active: isActiveNav(item.href, currentPath) }]}>{item.label}</a>
         </li>
       ))}
     </ul>

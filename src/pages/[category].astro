@@ -1,18 +1,30 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getPublishedPosts } from '../lib/posts';
 
-const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.category === "技术");
-const sortedPosts = allPosts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+// 分类页统一路由：/tech、/life 共用本页（结构规则：禁止孪生页面）
+export async function getStaticPaths() {
+  const categories = [
+    { slug: 'tech', name: '技术' },
+    { slug: 'life', name: '生活' },
+  ];
+  return categories.map((cat) => ({
+    params: { category: cat.slug },
+    props: { name: cat.name },
+  }));
+}
+
+const { name } = Astro.props;
+const sortedPosts = (await getPublishedPosts()).filter(
+  (post) => post.data.category === name
 );
 ---
 
-<BaseLayout title="技术">
+<BaseLayout title={name}>
   <div class="category-page">
     <div class="category-header">
-      <h1>技术</h1>
+      <h1>{name}</h1>
     </div>
     <p class="category-info">共 {sortedPosts.length} 篇文章 ♪</p>
     <div class="post-list">
