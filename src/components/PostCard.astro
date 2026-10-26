@@ -1,5 +1,6 @@
 ---
 import TagList from './TagList.astro';
+import { formatDate } from '../lib/date';
 
 interface Props {
   title: string;
@@ -11,16 +12,6 @@ interface Props {
 }
 
 const { title, slug, date, description, tags, category } = Astro.props;
-
-// 格式化日期
-const formatDate = (dateStr: string) => {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-};
-
 ---
 
 <article class="post-card">
@@ -56,7 +47,7 @@ const formatDate = (dateStr: string) => {
   .post-card {
     position: relative;
     background: var(--bg-card);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 1.4rem 1.6rem 1.1rem;
     border: 1px solid var(--border);
     overflow: visible;
@@ -68,7 +59,7 @@ const formatDate = (dateStr: string) => {
   }
 
   .post-card:hover {
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
     box-shadow: var(--shadow-hover);
     transform: translateY(-2px);
   }
@@ -98,8 +89,8 @@ const formatDate = (dateStr: string) => {
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.05em;
-    color: var(--tag-green-text);
-    background: var(--tag-green);
+    color: var(--tag-orange-text);
+    background: var(--tag-orange);
   }
 
   .post-title {

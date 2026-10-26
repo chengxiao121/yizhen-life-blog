@@ -26,10 +26,27 @@ const { id, path, title, date, width, height } = Astro.props;
     loading="lazy"
     width={width}
     height={height}
-    onload="this.classList.add('loaded')"
-    onerror="this.classList.add('error'); this.parentElement.querySelector('.photo-error').style.display='flex'"
   />
   <div class="photo-error" style="display:none">
     <span>图片加载失败</span>
   </div>
 </div>
+
+<script>
+  // 加载态统一在此绑定，禁止改回内联 onload/onerror
+  const imgs = document.querySelectorAll<HTMLImageElement>('.photo-card img');
+  imgs.forEach((img) => {
+    const show = () => img.classList.add('loaded');
+    const fail = () => {
+      img.classList.add('error');
+      const err = img.parentElement?.querySelector<HTMLElement>('.photo-error');
+      if (err) err.style.display = 'flex';
+    };
+    if (img.complete) {
+      img.naturalWidth > 0 ? show() : fail();
+    } else {
+      img.addEventListener('load', show);
+      img.addEventListener('error', fail);
+    }
+  });
+</script>

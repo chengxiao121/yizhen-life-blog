@@ -1,6 +1,7 @@
 /* ===== 照片墙页面 ===== */
+/* 注意：宽度唯一来源在此，勿在页面 scoped 样式重复定义 */
 .photos-page {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }

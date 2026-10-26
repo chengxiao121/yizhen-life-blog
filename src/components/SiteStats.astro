@@ -1,10 +1,12 @@
 ---
 // 站点运行时间统计组件 — 单行卡片风格
-// 始于 2026年5月21日
-const START_DATE = new Date('2026-05-21T00:00:00+08:00');
+// 建站日期只在此处定义一次，页面展示与脚本计算都从这里取
+const START_DATE_ISO = '2026-05-21T00:00:00+08:00';
+const startDate = new Date(START_DATE_ISO);
+const startDateText = `${startDate.getFullYear()}年${startDate.getMonth() + 1}月${startDate.getDate()}日`;
 ---
 
-<div class="site-stats-wrapper">
+<div class="site-stats-wrapper" data-start-date={START_DATE_ISO}>
   <div class="site-stats-card">
     <!-- 左侧：当前时间 -->
     <div class="stats-left">
@@ -22,7 +24,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
 
     <!-- 右侧：起始日期 -->
     <div class="stats-right">
-      <span class="stats-start">始于 2026年5月21日</span>
+      <span class="stats-start">始于 {startDateText}</span>
     </div>
   </div>
 </div>
@@ -32,7 +34,8 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     const currentTimeEl = document.getElementById('stats-current-time');
     const daysEl = document.getElementById('stats-days');
     const hoursEl = document.getElementById('stats-hours');
-    const startTime = new Date('2026-05-21T00:00:00+08:00').getTime();
+    const wrapper = document.querySelector('.site-stats-wrapper');
+    const startTime = new Date(wrapper.dataset.startDate).getTime();
 
     function pad(n) {
       return n.toString().padStart(2, '0');
@@ -79,7 +82,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     position: relative;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 1.2rem 2rem;
     display: flex;
     align-items: center;
@@ -97,7 +100,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
 
   /* 卡片 hover 效果 — 与 PostCard 一致 */
   .site-stats-card:hover {
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
     box-shadow: var(--shadow-hover);
     transform: translateY(-1px);
   }
@@ -110,9 +113,9 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
   .stats-current-time {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--deco-cyan);
+    color: var(--accent);
     font-variant-numeric: tabular-nums;
-    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    font-family: var(--font-body);
     letter-spacing: 0.05em;
   }
 
@@ -131,7 +134,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     color: var(--text-secondary);
     font-weight: 400;
     letter-spacing: 0.05em;
-    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    font-family: var(--font-body);
     margin-right: 0.3rem;
   }
 
@@ -140,7 +143,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     font-weight: 800;
     color: var(--accent-hover);
     font-variant-numeric: tabular-nums;
-    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    font-family: var(--font-body);
     line-height: 1.2;
   }
 
@@ -149,7 +152,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     color: var(--text-secondary);
     font-weight: 400;
     margin-right: 0.4rem;
-    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    font-family: var(--font-body);
   }
 
   /* ===== 右侧：起始日期 ===== */
@@ -162,7 +165,7 @@ const START_DATE = new Date('2026-05-21T00:00:00+08:00');
     color: var(--text-muted);
     font-weight: 400;
     letter-spacing: 0.03em;
-    font-family: "LXGW WenKai", "Noto Serif SC", serif;
+    font-family: var(--font-body);
     white-space: nowrap;
   }
 

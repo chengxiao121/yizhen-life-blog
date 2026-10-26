@@ -1,5 +1,6 @@
 ---
 // 欢迎页 — 落羽闲笺 (Decora 风格)
+import '../styles/global.css';
 ---
 
 <html lang="zh-CN">
@@ -7,9 +8,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>落羽闲笺 — 世界那么大，我先溜达溜达</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,7 +20,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      background: #F7F9F5;
+      background: var(--bg-primary);
     }
 
     .bg-video {
@@ -40,7 +38,7 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      color: var(--text-primary, #2F3B33);
+      color: var(--text-primary);
       animation: fadeUp 1.2s ease-out both;
     }
 
@@ -50,20 +48,20 @@
     }
 
     .site-name {
-      font-family: 'LXGW WenKai', serif;
+      font-family: var(--font-body);
       font-size: 3.5rem;
       font-weight: 900;
       letter-spacing: 0.1em;
       margin-bottom: 0.6rem;
-      color: #4E9573;
+      color: var(--accent-hover);
       text-shadow: 3px 3px 0 rgba(245, 184, 196, 0.6);
     }
 
 
     .tagline {
-      font-family: 'LXGW WenKai', serif;
+      font-family: var(--font-body);
       font-size: 1.2rem;
-      color: #94A29A;
+      color: var(--text-muted);
       letter-spacing: 0.08em;
       margin-bottom: 2.5rem;
       font-weight: 600;
@@ -71,23 +69,23 @@
 
     .enter-btn {
       display: inline-block;
-      font-family: 'LXGW WenKai', serif;
+      font-family: var(--font-body);
       font-size: 1.1rem;
       font-weight: 800;
       color: #ffffff;
-      background: #5FA986;
-      border: 4px solid #5FA986;
+      background: var(--accent);
+      border: 4px solid var(--accent);
       padding: 0.7em 2.4em;
       border-radius: 999px;
       text-decoration: none;
       letter-spacing: 0.12em;
-      box-shadow: 0 4px 14px rgba(95, 169, 134, 0.35);
+      box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.35);
       transition: all 0.2s;
     }
 
     .enter-btn:hover {
-      background: #4E9573;
-      border-color: #4E9573;
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
       color: #ffffff;
       transform: scale(1.05);
     }

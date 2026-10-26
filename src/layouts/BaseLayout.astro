@@ -32,9 +32,6 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai&display=swap" rel="stylesheet" />
   <title>{title} | 落羽闲笺</title>
 </head>
 <body>
@@ -168,7 +165,7 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   .intro-card {
     background: transparent;
     border: none;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 0.5rem 0 1.2rem;
     display: flex;
     flex-direction: column;
@@ -310,17 +307,6 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   .sidebar-social svg {
     width: 15px;
     height: 15px;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   @media (max-width: 1320px) {

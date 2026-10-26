@@ -16,7 +16,7 @@
 <style>
   .hero-banner {
     position: relative;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     min-height: 240px;
     display: flex;
@@ -41,9 +41,9 @@
     inset: 0;
     background: linear-gradient(
       100deg,
-      rgba(247, 249, 245, 0.94) 0%,
-      rgba(247, 249, 245, 0.75) 38%,
-      rgba(247, 249, 245, 0.1) 70%
+      rgba(var(--bg-rgb), 0.94) 0%,
+      rgba(var(--bg-rgb), 0.75) 38%,
+      rgba(var(--bg-rgb), 0.1) 70%
     );
   }
 
@@ -83,16 +83,6 @@
     font-style: italic;
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   @media (max-width: 768px) {
     .hero-banner {

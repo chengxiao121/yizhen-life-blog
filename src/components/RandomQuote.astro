@@ -4,20 +4,36 @@ interface Props {
 }
 
 const { quotes } = Astro.props;
-
-// 随机选择一条句子
-const randomQuote = quotes.length > 0
-  ? quotes[Math.floor(Math.random() * quotes.length)]
-  : '世界那么大，我先溜达溜达。';
+// 随机在客户端进行（每次访问都不同）；构建期只渲染兜底文案
+const FALLBACK = '世界那么大，我先溜达溜达。';
 ---
 
-<div class="random-quote">
+<div
+  class="random-quote"
+  data-quotes={JSON.stringify(quotes)}
+  data-fallback={FALLBACK}
+>
   <p class="quote-text">
     <span class="quote-mark">"</span>
-    {randomQuote}
+    <span class="quote-body">{FALLBACK}</span>
     <span class="quote-mark">"</span>
   </p>
 </div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.random-quote').forEach((el) => {
+    const body = el.querySelector<HTMLElement>('.quote-body');
+    if (!body) return;
+    let pool: string[] = [];
+    try {
+      pool = JSON.parse(el.dataset.quotes || '[]');
+    } catch {
+      pool = [];
+    }
+    if (pool.length === 0) pool = [el.dataset.fallback || ''];
+    body.textContent = pool[Math.floor(Math.random() * pool.length)];
+  });
+</script>
 
 <style>
   .random-quote {

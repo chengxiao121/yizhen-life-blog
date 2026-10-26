@@ -147,7 +147,7 @@ const { photos } = Astro.props;
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 2;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
   }
 
@@ -200,7 +200,7 @@ const { photos } = Astro.props;
 
   .carousel-arrow:hover {
     background: rgba(95, 169, 134, 0.5);
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
   }
 
   .carousel-arrow-prev {

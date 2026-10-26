@@ -52,7 +52,7 @@ const categoryCounts = categories.map(cat => {
     position: relative;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 1.5rem 1.2rem;
     overflow: visible;
     box-shadow: var(--shadow);
@@ -63,7 +63,7 @@ const categoryCounts = categories.map(cat => {
   }
 
   .category-card:hover {
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
     box-shadow: var(--shadow-hover);
     transform: translateY(-1px);
   }
@@ -96,7 +96,7 @@ const categoryCounts = categories.map(cat => {
     border-radius: 12px;
     text-decoration: none;
     color: var(--text-secondary);
-    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -116,13 +116,13 @@ const categoryCounts = categories.map(cat => {
   .category-link.active {
     background: var(--accent-light);
     color: var(--accent-hover);
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
     box-shadow: 0 2px 8px rgba(95, 169, 134, 0.12);
   }
 
   .category-name {
     letter-spacing: 0.02em;
-    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-family: var(--font-body);
     font-weight: 700;
   }
 
@@ -138,16 +138,6 @@ const categoryCounts = categories.map(cat => {
     color: var(--accent-hover);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   /* 响应式：≤1100px 时隐藏 */
   @media (max-width: 1100px) {

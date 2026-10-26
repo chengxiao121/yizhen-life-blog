@@ -61,14 +61,14 @@ const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
   .about-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 1.3rem 1.2rem;
     box-shadow: var(--shadow);
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
   .about-card:hover {
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
     box-shadow: var(--shadow-hover);
   }
 
@@ -102,7 +102,7 @@ const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
     position: relative;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 1rem;
     overflow: hidden;
     box-shadow: var(--shadow);
@@ -122,7 +122,7 @@ const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
   }
 
   .sidebar-section:hover {
-    border-color: rgba(143, 203, 168, 0.6);
+    border-color: var(--accent-border);
   }
 
   /* 响应式：≤1100px 时隐藏右侧边栏 */
