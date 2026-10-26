@@ -1,16 +1,9 @@
 ---
-import CategorySidebar from './CategorySidebar.astro';
 import PhotoCarousel from './PhotoCarousel.astro';
 import RandomQuote from './RandomQuote.astro';
 // 数据读取方式与照片页统一：直接 import（构建期内联），禁止 fs.readFileSync
 import photosData from '../../public/data/photos.json';
 import quotesData from '../../public/data/quotes.json';
-
-interface Props {
-  currentCategory?: string;
-}
-
-const { currentCategory = '' } = Astro.props;
 
 const allPhotos = photosData.photos || [];
 
@@ -33,15 +26,24 @@ const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
     <a href="/about" class="about-link">认识一下 →</a>
   </div>
 
-  <!-- 分类卡片 -->
-  <CategorySidebar currentCategory={currentCategory} />
-
   <!-- 照片轮播 + 随机句子 -->
   <div class="sidebar-section carousel-section">
     <PhotoCarousel photos={selectedPhotos} />
     <div class="quote-wrapper">
       <RandomQuote quotes={quotes} />
     </div>
+  </div>
+
+  <!-- 吉祥物：透明底小人，自然落在页面背景上 -->
+  <div class="mascot">
+    <img
+      src="/images/mascot.webp"
+      alt="博客吉祥物"
+      class="mascot-img"
+      loading="lazy"
+      width="360"
+      height="480"
+    />
   </div>
 </aside>
 
@@ -123,6 +125,36 @@ const quotes: string[] = Array.isArray(quotesData) ? quotesData : [];
 
   .sidebar-section:hover {
     border-color: var(--accent-border);
+  }
+
+  .mascot {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 0.5rem;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .mascot-img {
+    width: 150px;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* 脚下椭圆投影，让人物「站」在地面上而不是飘着 */
+  .mascot::after {
+    content: '';
+    position: absolute;
+    bottom: 0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--shadow-ground);
+    filter: blur(6px);
+    z-index: -1;
   }
 
   /* 响应式：≤1100px 时隐藏右侧边栏 */
