@@ -21,17 +21,22 @@ const FALLBACK = '世界那么大，我先溜达溜达。';
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('.random-quote').forEach((el) => {
-    const body = el.querySelector<HTMLElement>('.quote-body');
-    if (!body) return;
-    let pool: string[] = [];
-    try {
-      pool = JSON.parse(el.dataset.quotes || '[]');
-    } catch {
-      pool = [];
-    }
-    if (pool.length === 0) pool = [el.dataset.fallback || ''];
-    body.textContent = pool[Math.floor(Math.random() * pool.length)];
+  import { onPageLoad } from '../lib/on-page-load';
+
+  // 视图过渡返回后 DOM 全新，必须重新随机（否则永远停在兜底文案）
+  onPageLoad(() => {
+    document.querySelectorAll<HTMLElement>('.random-quote').forEach((el) => {
+      const body = el.querySelector<HTMLElement>('.quote-body');
+      if (!body) return;
+      let pool: string[] = [];
+      try {
+        pool = JSON.parse(el.dataset.quotes || '[]');
+      } catch {
+        pool = [];
+      }
+      if (pool.length === 0) pool = [el.dataset.fallback || ''];
+      body.textContent = pool[Math.floor(Math.random() * pool.length)];
+    });
   });
 </script>
 

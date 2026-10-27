@@ -1,6 +1,6 @@
 /**
  * 站点导航唯一数据源（结构规则 §3）：
- * Header（移动端顶栏）和 BaseLayout（桌面侧栏）共用，禁止再各写一份。
+ * GooeyNav 岛屿（BaseLayout 与欢迎页）共用，禁止再各写一份。
  */
 export interface NavItem {
   href: string;
@@ -22,3 +22,10 @@ export function isActiveNav(href: string, pathname: string): boolean {
   if (href === '/blog') return pathname === '/blog' || pathname === '/';
   return pathname === href || pathname.startsWith(href + '/');
 }
+
+/**
+ * GooeyNav 药丸颜色，必须与 tokens.css 的 --accent 保持一致。
+ * 单独定义为常量是因为 WebGL 着色器需要具体色值，无法使用 CSS 变量；
+ * 全站只有这一处定义，欢迎页与 BaseLayout 共用。
+ */
+export const NAV_PILL_COLOR = '#E8833A';

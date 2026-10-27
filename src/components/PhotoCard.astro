@@ -33,20 +33,25 @@ const { id, path, title, date, width, height } = Astro.props;
 </div>
 
 <script>
+  import { onPageLoad } from '../lib/on-page-load';
+
   // 加载态统一在此绑定，禁止改回内联 onload/onerror
-  const imgs = document.querySelectorAll<HTMLImageElement>('.photo-card img');
-  imgs.forEach((img) => {
-    const show = () => img.classList.add('loaded');
-    const fail = () => {
-      img.classList.add('error');
-      const err = img.parentElement?.querySelector<HTMLElement>('.photo-error');
-      if (err) err.style.display = 'flex';
-    };
-    if (img.complete) {
-      img.naturalWidth > 0 ? show() : fail();
-    } else {
-      img.addEventListener('load', show);
-      img.addEventListener('error', fail);
-    }
+  // 视图过渡返回后图片是全新元素，必须在每次页面载入时重新绑定
+  onPageLoad(() => {
+    const imgs = document.querySelectorAll<HTMLImageElement>('.photo-card img');
+    imgs.forEach((img) => {
+      const show = () => img.classList.add('loaded');
+      const fail = () => {
+        img.classList.add('error');
+        const err = img.parentElement?.querySelector<HTMLElement>('.photo-error');
+        if (err) err.style.display = 'flex';
+      };
+      if (img.complete) {
+        img.naturalWidth > 0 ? show() : fail();
+      } else {
+        img.addEventListener('load', show);
+        img.addEventListener('error', fail);
+      }
+    });
   });
 </script>

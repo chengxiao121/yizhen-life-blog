@@ -3,6 +3,12 @@
 // 左侧：站名 + 副标语 + welcome 文字变图片交互（移植自 boknows-text-image-template）
 // 右侧：进入博客入口。米白底，颜色全部引用 tokens.css。
 import '../styles/global.css';
+import { navItems, NAV_PILL_COLOR } from '../lib/nav';
+import { ClientRouter } from 'astro:transitions';
+import GooeyNav from '../components/react/GooeyNav';
+
+// 导航数据复用全站唯一数据源；药丸色常量定义在 nav.ts（WebGL 着色器需要实值，无法用 CSS 变量）
+const gooeyItems = navItems.map(({ href, label }) => ({ href, label }));
 ---
 
 <html lang="zh-CN">
@@ -10,6 +16,7 @@ import '../styles/global.css';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>落羽闲笺 — 世界那么大，我先溜达溜达</title>
+  <ClientRouter />
   <style is:global>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,6 +26,16 @@ import '../styles/global.css';
       font-family: var(--font-body);
       min-height: 100svh;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- 顶部导航（GooeyNav 岛屿，水平居中，与博客页 .page-nav 位置一致） ---- */
+    .top-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.3rem 7vw 0.6rem;
     }
 
     .landing {
@@ -26,8 +43,8 @@ import '../styles/global.css';
       grid-template-columns: 1fr auto;
       gap: 5vw;
       align-items: center;
-      min-height: 100svh;
-      padding: 0 7vw;
+      flex: 1;
+      padding: 0 7vw 2rem;
     }
 
     /* ---- 左侧文字区 ---- */
@@ -182,6 +199,21 @@ import '../styles/global.css';
   </style>
 </head>
 <body>
+  <header class="top-nav">
+    <GooeyNav
+      client:load
+      items={gooeyItems}
+      initialActiveIndex={0}
+      theme="light"
+      color={NAV_PILL_COLOR}
+      size="md"
+      frame={true}
+      animationTime={380}
+      particleCount={30}
+      timeVariance={200}
+    />
+  </header>
+
   <div class="landing">
     <section class="intro-copy">
       <h1 class="site-name">落羽闲笺</h1>
@@ -198,270 +230,296 @@ import '../styles/global.css';
   </div>
 
   <script>
+    import { onPageLoad } from '../lib/on-page-load';
+
+    // 模块脚本一次会话只执行一次；视图过渡下每次导航都会触发 astro:page-load，
+    // 而字母交互的全部状态都随 DOM 换新，必须在这里整体重建。
+    // （导航点击的延迟跳转已下沉到 GooeyNav 组件内部，全站统一生效）
+    onPageLoad(() => {
+      // 非欢迎页（博客各页导航时也会触发本事件）直接跳过
+      const words = document.querySelector('#words');
+      const status = document.querySelector('#status');
+      if (!words || !status) return;
+      let disposed = false;
+
     // —— 文字变图片交互，移植自 boknows-text-image-template（MIT） ——
-    const CONFIG = {
-      text: 'welcome',
-      imagesByPosition: [
-        ['/landing/00-w-a.webp', '/landing/00-w-b.webp'],
-        ['/landing/01-e-a.webp', '/landing/01-e-b.webp'],
-        ['/landing/02-l-a.webp', '/landing/02-l-b.webp'],
-        ['/landing/03-c-a.webp', '/landing/03-c-b.webp'],
-        ['/landing/04-o-a.webp', '/landing/04-o-b.webp'],
-        ['/landing/05-m-a.webp', '/landing/05-m-b.webp'],
-        ['/landing/06-e-a.webp', '/landing/06-e-b.webp']
-      ],
-      enterDuration: 340,
-      exitDuration: 620
-    };
+      const CONFIG = {
+        text: 'welcome',
+        imagesByPosition: [
+          ['/landing/00-w-a.webp', '/landing/00-w-b.webp'],
+          ['/landing/01-e-a.webp', '/landing/01-e-b.webp'],
+          ['/landing/02-l-a.webp', '/landing/02-l-b.webp'],
+          ['/landing/03-c-a.webp', '/landing/03-c-b.webp'],
+          ['/landing/04-o-a.webp', '/landing/04-o-b.webp'],
+          ['/landing/05-m-a.webp', '/landing/05-m-b.webp'],
+          ['/landing/06-e-a.webp', '/landing/06-e-b.webp']
+        ],
+        enterDuration: 340,
+        exitDuration: 620
+      };
 
-    if (CONFIG.exitDuration) {
-      document.documentElement.style.setProperty('--exit-duration', CONFIG.exitDuration + 'ms');
-    }
-
-    const words = document.querySelector('#words');
-    const status = document.querySelector('#status');
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-
-    const tokens = Array.from(CONFIG.text);
-    const states = [];
-    let introTimers = [], autoTimer, hovered = null, inside = false, paused = false, ready = false, inIntro = false, lastAuto = -1, activeQueue = [], visible = true;
-
-    for (let index = 0; index < tokens.length; index++) {
-      const ch = tokens[index];
-      const el = document.createElement('span');
-      el.className = 'letter';
-      const char = document.createElement('span');
-      char.className = 'char';
-      char.textContent = ch;
-      el.append(char);
-      words.append(el);
-
-      const hit = document.createElement('span');
-      hit.className = 'hit';
-      hit.dataset.index = index;
-      hit.textContent = ch;
-
-      states.push({ el, char, hit, ch, index, loaded: [], last: null, timer: null, active: false });
-    }
-
-    const hitLayer = document.createElement('span');
-    hitLayer.className = 'hit-layer';
-    states.forEach(s => hitLayer.append(s.hit));
-    words.append(hitLayer);
-
-    function hide(s) {
-      clearTimeout(s.timer);
-      const sticker = s.el.querySelector('.sticker');
-      const wasActive = s.active;
-      s.active = false;
-      s.el.classList.remove('active', 'pending');
-      if (wasActive) {
-        s.el.classList.remove('returning');
-        void s.el.offsetWidth;
-        s.el.classList.add('returning');
-        if (sticker && !reduced.matches) {
-          const pose = getComputedStyle(sticker).transform;
-          sticker.getAnimations().forEach(a => a.cancel());
-          const exit = sticker.animate([
-            { transform: pose, opacity: 1, offset: 0 },
-            { transform: `${pose} scale(1.055)`, opacity: 1, offset: 0.2 },
-            { transform: `${pose} scale(0.7)`, opacity: 0.42, offset: 0.62 },
-            { transform: `${pose} scale(0.35)`, opacity: 0, offset: 1 }
-          ], { duration: CONFIG.exitDuration || 620, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
-          exit.onfinish = () => sticker.remove();
-        } else sticker?.remove();
+      if (CONFIG.exitDuration) {
+        document.documentElement.style.setProperty('--exit-duration', CONFIG.exitDuration + 'ms');
       }
-      s.el.style.paddingInline = '0em';
-      s.hit.style.paddingInline = '0em';
-    }
 
-    function clearIntro() {
-      introTimers.forEach(clearTimeout);
-      introTimers = [];
-      inIntro = false;
-      states.forEach(s => { s.el.classList.remove('pending'); hide(s); });
-    }
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
-    function returnLater(s, ms) {
-      clearTimeout(s.timer);
-      s.timer = setTimeout(() => { if (hovered !== s.index) hide(s); }, ms);
-    }
+      const tokens = Array.from(CONFIG.text);
+      const states = [];
+      let introTimers = [], autoTimer, hovered = null, inside = false, paused = false, ready = false, inIntro = false, lastAuto = -1, activeQueue = [], visible = true;
 
-    function springFrames(angle, y) {
-      return Array.from({ length: 41 }, (_, i) => {
-        const t = i / 40;
-        const value = i === 40 ? 1 : 1 - Math.exp(-7.2 * t) * (Math.cos(10.5 * t) + 0.24 * Math.sin(10.5 * t));
-        return { offset: t, transform: `translateY(${y + 8 * (1 - value)}px) rotate(${angle - 8 * (1 - value)}deg) scale(${0.35 + 0.65 * value})` };
-      });
-    }
+      for (let index = 0; index < tokens.length; index++) {
+        const ch = tokens[index];
+        const el = document.createElement('span');
+        el.className = 'letter';
+        const char = document.createElement('span');
+        char.className = 'char';
+        char.textContent = ch;
+        el.append(char);
+        words.append(el);
 
-    function show(s, { intro = false, automatic = false } = {}) {
-      if (reduced.matches || !s.loaded.length) return;
-      if (!intro && inIntro) clearIntro();
-      clearTimeout(s.timer);
+        const hit = document.createElement('span');
+        hit.className = 'hit';
+        hit.dataset.index = index;
+        hit.textContent = ch;
 
-      const pool = s.loaded.filter(a => a !== s.last);
-      const items = pool.length ? pool : s.loaded;
-      const src = items[Math.floor(Math.random() * items.length)];
-      s.last = src;
-      s.active = true;
-      s.el.classList.remove('pending', 'returning');
-      s.el.classList.add('active');
-      s.el.querySelector('.sticker')?.remove();
-
-      const sticker = document.createElement('span');
-      sticker.className = 'sticker';
-      const image = document.createElement('img');
-      image.src = src;
-      image.alt = '';
-      image.draggable = false;
-      sticker.append(image);
-      s.el.append(sticker);
-
-      s.el.style.setProperty('--height', ['o', 'w'].includes(s.ch) ? '1.18em' : '1.08em');
-      s.el.style.setProperty('--maxwidth', '1.377em');
-      s.el.style.setProperty('--offset', '0em');
-
-      const fontSize = parseFloat(getComputedStyle(words).fontSize);
-      const baseWidth = states.reduce((sum, item) => sum + item.char.getBoundingClientRect().width, 0);
-      const openingLimit = Math.max(0, (words.clientWidth - baseWidth - 24) / (2 * states.length * fontSize));
-
-      const imageWidth = s.imageWidths?.get(src) || 1.08;
-      const glyphWidth = s.char.getBoundingClientRect().width / fontSize;
-      const expandedPadding = Math.min(0.18, Math.max(0.10, (imageWidth - glyphWidth) * 0.22));
-      const padding = intro ? Math.min(expandedPadding, openingLimit) : expandedPadding;
-      s.el.style.paddingInline = s.hit.style.paddingInline = `${padding}em`;
-
-      const angle = [-9, 7, -5, 8, -7, 6, -4][s.index % 7];
-      const y = [3, -2, 2, -3, 1, 3, -1][s.index % 7];
-      sticker.animate(springFrames(angle, y), { duration: CONFIG.enterDuration || 340, fill: 'both' });
-
-      activeQueue = activeQueue.filter(i => i !== s.index);
-      activeQueue.push(s.index);
-      if (!intro) while (activeQueue.length > 4) hide(states[activeQueue.shift()]);
-
-      if (!intro && hovered !== s.index) returnLater(s, automatic ? 1000 : 420);
-    }
-
-    function introDuration() {
-      return 85 * Math.max(0, states.filter(s => s.loaded.length).length - 1) + 660;
-    }
-
-    function schedule(first = false) {
-      clearTimeout(autoTimer);
-      if (!ready || paused || inside || document.hidden || !visible || reduced.matches) return;
-      autoTimer = setTimeout(() => {
-        let available = states.filter(s => s.loaded.length && s.index !== lastAuto);
-        if (!available.length) available = states.filter(s => s.loaded.length);
-        if (!available.length) return;
-        const s = available[Math.floor(Math.random() * available.length)];
-        lastAuto = s.index;
-        show(s, { automatic: true });
-        schedule();
-      }, first ? introDuration() + 1000 + 1000 * Math.random() : 1300 + 1500 * Math.random());
-    }
-
-    function start() {
-      clearTimeout(autoTimer);
-      clearIntro();
-      activeQueue = [];
-      if (reduced.matches) { status.textContent = '已遵循系统的减少动态效果设置'; return; }
-      inIntro = true;
-      const items = states.filter(s => s.loaded.length);
-      items.forEach(s => s.el.classList.add('pending'));
-      items.forEach((s, i) => introTimers.push(setTimeout(() => show(s, { intro: true }), i * 40)));
-      const shuffled = [...items];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        states.push({ el, char, hit, ch, index, loaded: [], last: null, timer: null, active: false });
       }
-      shuffled.forEach((s, i) => introTimers.push(setTimeout(() => hide(s), 40 * Math.max(0, items.length - 1) + 660 + 45 * i)));
-      introTimers.push(setTimeout(() => {
+
+      const hitLayer = document.createElement('span');
+      hitLayer.className = 'hit-layer';
+      states.forEach(s => hitLayer.append(s.hit));
+      words.append(hitLayer);
+
+      function hide(s) {
+        clearTimeout(s.timer);
+        const sticker = s.el.querySelector('.sticker');
+        const wasActive = s.active;
+        s.active = false;
+        s.el.classList.remove('active', 'pending');
+        if (wasActive) {
+          s.el.classList.remove('returning');
+          void s.el.offsetWidth;
+          s.el.classList.add('returning');
+          if (sticker && !reduced.matches) {
+            const pose = getComputedStyle(sticker).transform;
+            sticker.getAnimations().forEach(a => a.cancel());
+            const exit = sticker.animate([
+              { transform: pose, opacity: 1, offset: 0 },
+              { transform: `${pose} scale(1.055)`, opacity: 1, offset: 0.2 },
+              { transform: `${pose} scale(0.7)`, opacity: 0.42, offset: 0.62 },
+              { transform: `${pose} scale(0.35)`, opacity: 0, offset: 1 }
+            ], { duration: CONFIG.exitDuration || 620, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
+            exit.onfinish = () => sticker.remove();
+          } else sticker?.remove();
+        }
+        s.el.style.paddingInline = '0em';
+        s.hit.style.paddingInline = '0em';
+      }
+
+      function clearIntro() {
+        introTimers.forEach(clearTimeout);
+        introTimers = [];
         inIntro = false;
-        status.textContent = '将鼠标移到字母上，看看它会变成什么';
-      }, introDuration()));
-      schedule(true);
-    }
+        states.forEach(s => { s.el.classList.remove('pending'); hide(s); });
+      }
 
-    function point(event) {
-      inside = true;
-      clearTimeout(autoTimer);
-      const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-index]');
-      const next = hit && words.contains(hit) ? Number(hit.dataset.index) : null;
-      if (next === hovered) return;
-      const old = hovered;
-      hovered = next;
-      if (old !== null && states[old].active) hide(states[old]);
-      if (next !== null) show(states[next]);
-    }
+      function returnLater(s, ms) {
+        clearTimeout(s.timer);
+        s.timer = setTimeout(() => { if (hovered !== s.index) hide(s); }, ms);
+      }
 
-    words.addEventListener('pointerenter', () => { inside = true; clearTimeout(autoTimer); });
-    words.addEventListener('pointermove', point);
-    words.addEventListener('pointerdown', point);
+      function springFrames(angle, y) {
+        return Array.from({ length: 41 }, (_, i) => {
+          const t = i / 40;
+          const value = i === 40 ? 1 : 1 - Math.exp(-7.2 * t) * (Math.cos(10.5 * t) + 0.24 * Math.sin(10.5 * t));
+          return { offset: t, transform: `translateY(${y + 8 * (1 - value)}px) rotate(${angle - 8 * (1 - value)}deg) scale(${0.35 + 0.65 * value})` };
+        });
+      }
 
-    function leave() {
-      inside = false;
-      const old = hovered;
-      hovered = null;
-      if (old !== null && states[old].active) hide(states[old]);
-      schedule(true);
-    }
-    words.addEventListener('pointerleave', leave);
-    words.addEventListener('pointercancel', leave);
-    words.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') leave(); });
+      function show(s, { intro = false, automatic = false } = {}) {
+        if (reduced.matches || !s.loaded.length) return;
+        if (!intro && inIntro) clearIntro();
+        clearTimeout(s.timer);
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) { clearTimeout(autoTimer); if (inIntro) clearIntro(); }
-      else schedule(true);
-    });
+        const pool = s.loaded.filter(a => a !== s.last);
+        const items = pool.length ? pool : s.loaded;
+        const src = items[Math.floor(Math.random() * items.length)];
+        s.last = src;
+        s.active = true;
+        s.el.classList.remove('pending', 'returning');
+        s.el.classList.add('active');
+        s.el.querySelector('.sticker')?.remove();
 
-    new IntersectionObserver(entries => {
-      visible = entries[0].isIntersecting;
-      schedule(true);
-    }, { threshold: 0.25 }).observe(words);
+        const sticker = document.createElement('span');
+        sticker.className = 'sticker';
+        const image = document.createElement('img');
+        image.src = src;
+        image.alt = '';
+        image.draggable = false;
+        sticker.append(image);
+        s.el.append(sticker);
 
-    reduced.addEventListener('change', () => {
-      if (reduced.matches) { clearIntro(); clearTimeout(autoTimer); }
-      else if (ready) start();
-    });
+        s.el.style.setProperty('--height', ['o', 'w'].includes(s.ch) ? '1.18em' : '1.08em');
+        s.el.style.setProperty('--maxwidth', '1.377em');
+        s.el.style.setProperty('--offset', '0em');
 
-    async function load(s, src) {
-      const im = new Image();
-      im.src = src;
-      try {
-        await im.decode();
-        s.loaded.push(src);
-        s.imageWidths ??= new Map();
-        s.imageWidths.set(src, Math.min(('ow'.includes(s.ch) ? 1.18 : 1.08) * im.naturalWidth / im.naturalHeight, 1.377));
-        let width = Math.min(1.32 * im.naturalWidth / im.naturalHeight, 1.62);
+        const fontSize = parseFloat(getComputedStyle(words).fontSize);
+        const baseWidth = states.reduce((sum, item) => sum + item.char.getBoundingClientRect().width, 0);
+        const openingLimit = Math.max(0, (words.clientWidth - baseWidth - 24) / (2 * states.length * fontSize));
+
+        const imageWidth = s.imageWidths?.get(src) || 1.08;
+        const glyphWidth = s.char.getBoundingClientRect().width / fontSize;
+        const expandedPadding = Math.min(0.18, Math.max(0.10, (imageWidth - glyphWidth) * 0.22));
+        const padding = intro ? Math.min(expandedPadding, openingLimit) : expandedPadding;
+        s.el.style.paddingInline = s.hit.style.paddingInline = `${padding}em`;
+
+        const angle = [-9, 7, -5, 8, -7, 6, -4][s.index % 7];
+        const y = [3, -2, 2, -3, 1, 3, -1][s.index % 7];
+        sticker.animate(springFrames(angle, y), { duration: CONFIG.enterDuration || 340, fill: 'both' });
+
+        activeQueue = activeQueue.filter(i => i !== s.index);
+        activeQueue.push(s.index);
+        if (!intro) while (activeQueue.length > 4) hide(states[activeQueue.shift()]);
+
+        if (!intro && hovered !== s.index) returnLater(s, automatic ? 1000 : 420);
+      }
+
+      function introDuration() {
+        return 85 * Math.max(0, states.filter(s => s.loaded.length).length - 1) + 660;
+      }
+
+      function schedule(first = false) {
+        clearTimeout(autoTimer);
+        if (!ready || paused || inside || document.hidden || !visible || reduced.matches) return;
+        autoTimer = setTimeout(() => {
+          let available = states.filter(s => s.loaded.length && s.index !== lastAuto);
+          if (!available.length) available = states.filter(s => s.loaded.length);
+          if (!available.length) return;
+          const s = available[Math.floor(Math.random() * available.length)];
+          lastAuto = s.index;
+          show(s, { automatic: true });
+          schedule();
+        }, first ? introDuration() + 1000 + 1000 * Math.random() : 1300 + 1500 * Math.random());
+      }
+
+      function start() {
+        clearTimeout(autoTimer);
+        clearIntro();
+        activeQueue = [];
+        if (reduced.matches) { status.textContent = '已遵循系统的减少动态效果设置'; return; }
+        inIntro = true;
+        const items = states.filter(s => s.loaded.length);
+        items.forEach(s => s.el.classList.add('pending'));
+        items.forEach((s, i) => introTimers.push(setTimeout(() => show(s, { intro: true }), i * 40)));
+        const shuffled = [...items];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        shuffled.forEach((s, i) => introTimers.push(setTimeout(() => hide(s), 40 * Math.max(0, items.length - 1) + 660 + 45 * i)));
+        introTimers.push(setTimeout(() => {
+          inIntro = false;
+          status.textContent = '将鼠标移到字母上，看看它会变成什么';
+        }, introDuration()));
+        schedule(true);
+      }
+
+      function point(event) {
+        inside = true;
+        clearTimeout(autoTimer);
+        const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-index]');
+        const next = hit && words.contains(hit) ? Number(hit.dataset.index) : null;
+        if (next === hovered) return;
+        const old = hovered;
+        hovered = next;
+        if (old !== null && states[old].active) hide(states[old]);
+        if (next !== null) show(states[next]);
+      }
+
+      words.addEventListener('pointerenter', () => { inside = true; clearTimeout(autoTimer); });
+      words.addEventListener('pointermove', point);
+      words.addEventListener('pointerdown', point);
+
+      function leave() {
+        inside = false;
+        const old = hovered;
+        hovered = null;
+        if (old !== null && states[old].active) hide(states[old]);
+        schedule(true);
+      }
+      words.addEventListener('pointerleave', leave);
+      words.addEventListener('pointercancel', leave);
+      words.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') leave(); });
+
+      const onVisibility = () => {
+        if (document.hidden) { clearTimeout(autoTimer); if (inIntro) clearIntro(); }
+        else schedule(true);
+      };
+      document.addEventListener('visibilitychange', onVisibility);
+
+      const io = new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+        schedule(true);
+      }, { threshold: 0.25 });
+      io.observe(words);
+
+      const onReducedChange = () => {
+        if (reduced.matches) { clearIntro(); clearTimeout(autoTimer); }
+        else if (ready) start();
+      };
+      reduced.addEventListener('change', onReducedChange);
+
+      async function load(s, src) {
+        const im = new Image();
+        im.src = src;
         try {
-          const canvas = document.createElement('canvas');
-          const scale = Math.min(1, 160 / Math.max(im.naturalWidth, im.naturalHeight));
-          canvas.width = Math.max(1, Math.round(im.naturalWidth * scale));
-          canvas.height = Math.max(1, Math.round(im.naturalHeight * scale));
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          ctx.drawImage(im, 0, 0, canvas.width, canvas.height);
-          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-          let left = canvas.width, right = -1;
-          for (let y = 0; y < canvas.height; y++) {
-            for (let x = 0; x < canvas.width; x++) {
-              if (data[(y * canvas.width + x) * 4 + 3] > 8) {
-                left = Math.min(left, x);
-                right = Math.max(right, x);
+          await im.decode();
+          s.loaded.push(src);
+          s.imageWidths ??= new Map();
+          s.imageWidths.set(src, Math.min(('ow'.includes(s.ch) ? 1.18 : 1.08) * im.naturalWidth / im.naturalHeight, 1.377));
+          let width = Math.min(1.32 * im.naturalWidth / im.naturalHeight, 1.62);
+          try {
+            const canvas = document.createElement('canvas');
+            const scale = Math.min(1, 160 / Math.max(im.naturalWidth, im.naturalHeight));
+            canvas.width = Math.max(1, Math.round(im.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(im.naturalHeight * scale));
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.drawImage(im, 0, 0, canvas.width, canvas.height);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let left = canvas.width, right = -1;
+            for (let y = 0; y < canvas.height; y++) {
+              for (let x = 0; x < canvas.width; x++) {
+                if (data[(y * canvas.width + x) * 4 + 3] > 8) {
+                  left = Math.min(left, x);
+                  right = Math.max(right, x);
+                }
               }
             }
-          }
-          if (right >= left) width = (right - left + 1) / scale * Math.min(1.32 / im.naturalHeight, 1.62 / im.naturalWidth);
+            if (right >= left) width = (right - left + 1) / scale * Math.min(1.32 / im.naturalHeight, 1.62 / im.naturalWidth);
+          } catch {}
+          s.padding = s.padding ?? new Map();
+          s.padding.set(src, Math.max(0.12, (width / 1.62) * 0.28) * 0.85 * 0.85);
         } catch {}
-        s.padding = s.padding ?? new Map();
-        s.padding.set(src, Math.max(0.12, (width / 1.62) * 0.28) * 0.85 * 0.85);
-      } catch {}
-    }
+      }
 
-    Promise.all(states.flatMap((s, i) => CONFIG.imagesByPosition[i].map(src => load(s, src)))).then(() => {
-      states.forEach((s, i) => s.loaded.sort((a, b) => CONFIG.imagesByPosition[i].indexOf(a) - CONFIG.imagesByPosition[i].indexOf(b)));
-      ready = true;
-      start();
+      Promise.all(states.flatMap((s, i) => CONFIG.imagesByPosition[i].map(src => load(s, src)))).then(() => {
+        if (disposed) return;
+        states.forEach((s, i) => s.loaded.sort((a, b) => CONFIG.imagesByPosition[i].indexOf(a) - CONFIG.imagesByPosition[i].indexOf(b)));
+        ready = true;
+        start();
+      });
+
+      // 离开页面时停掉全部定时器与 document 级监听；
+      // 绑在 words/topNav 等被换掉 DOM 上的监听随旧元素一起回收，无需处理
+      return () => {
+        disposed = true;
+        clearIntro();
+        clearTimeout(autoTimer);
+        document.removeEventListener('visibilitychange', onVisibility);
+        reduced.removeEventListener('change', onReducedChange);
+        io.disconnect();
+      };
     });
   </script>
 </body>

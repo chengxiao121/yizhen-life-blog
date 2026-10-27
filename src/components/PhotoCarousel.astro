@@ -40,6 +40,8 @@ const { photos } = Astro.props;
 </div>
 
 <script>
+  import { onPageLoad } from '../lib/on-page-load';
+
   class PhotoCarousel {
     container: HTMLElement;
     slides: NodeListOf<HTMLImageElement>;
@@ -134,11 +136,13 @@ const { photos } = Astro.props;
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // 视图过渡下 DOMContentLoaded 只在首次整页加载时触发一次，客户端导航永不触发，
+  // 必须改挂 astro:page-load；自动轮播的 interval 由清理函数回收
+  onPageLoad(() => {
     const carousels = document.querySelectorAll('.photo-carousel');
-    carousels.forEach((el) => {
-      new PhotoCarousel(el as HTMLElement);
-    });
+    if (!carousels.length) return;
+    const instances = Array.from(carousels).map((el) => new PhotoCarousel(el as HTMLElement));
+    return () => instances.forEach((c) => c.stopAutoPlay());
   });
 </script>
 

@@ -38,10 +38,14 @@ const { photos } = Astro.props;
   import Masonry from 'masonry-layout';
   import PhotoSwipeLightbox from 'photoswipe/lightbox';
   import 'photoswipe/style.css';
+  import { onPageLoad } from '../lib/on-page-load';
 
-  // 初始化 Masonry
-  const grid = document.getElementById('photo-grid');
-  if (grid) {
+  // 视图过渡返回后网格是全新 DOM，Masonry / 灯箱都要重建；旧实例靠清理函数销毁防泄漏
+  onPageLoad(() => {
+    // 初始化 Masonry
+    const grid = document.getElementById('photo-grid');
+    if (!grid) return;
+
     const masonry = new Masonry(grid, {
       itemSelector: '.photo-card',
       columnWidth: '.photo-grid-sizer',
@@ -68,28 +72,33 @@ const { photos } = Astro.props;
         });
       }
     });
-  }
 
-  // 初始化 PhotoSwipe（单次实例化，点击时 loadAndOpen）
-  const cards = document.querySelectorAll('.photo-card');
-  const items = Array.from(cards).map((c) => ({
-    src: c.dataset.src,
-    width: parseInt(c.dataset.width),
-    height: parseInt(c.dataset.height),
-    title: c.dataset.title
-  }));
+    // 初始化 PhotoSwipe（单次实例化，点击时 loadAndOpen）
+    const cards = document.querySelectorAll('.photo-card');
+    const items = Array.from(cards).map((c) => ({
+      src: c.dataset.src,
+      width: parseInt(c.dataset.width),
+      height: parseInt(c.dataset.height),
+      title: c.dataset.title
+    }));
 
-  const lightbox = new PhotoSwipeLightbox({
-    dataSource: items,
-    showHideAnimationType: 'zoom',
-    bgOpacity: 0.9,
-    padding: { top: 20, bottom: 20, left: 20, right: 20 }
-  });
-  lightbox.init();
-
-  cards.forEach((card, index) => {
-    card.addEventListener('click', () => {
-      lightbox.loadAndOpen(index);
+    const lightbox = new PhotoSwipeLightbox({
+      dataSource: items,
+      showHideAnimationType: 'zoom',
+      bgOpacity: 0.9,
+      padding: { top: 20, bottom: 20, left: 20, right: 20 }
     });
+    lightbox.init();
+
+    cards.forEach((card, index) => {
+      card.addEventListener('click', () => {
+        lightbox.loadAndOpen(index);
+      });
+    });
+
+    return () => {
+      lightbox.destroy();
+      masonry.destroy();
+    };
   });
 </script>

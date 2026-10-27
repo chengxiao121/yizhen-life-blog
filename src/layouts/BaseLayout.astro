@@ -1,9 +1,10 @@
 ---
-import Header from '../components/Header.astro';
 import SiteStats from '../components/SiteStats.astro';
 import Footer from '../components/Footer.astro';
+import GooeyNav from '../components/react/GooeyNav';
+import { ClientRouter } from 'astro:transitions';
 import { getPublishedPosts } from '../lib/posts';
-import { navItems, isActiveNav } from '../lib/nav';
+import { navItems, isActiveNav, NAV_PILL_COLOR } from '../lib/nav';
 import '../styles/global.css';
 
 interface Props {
@@ -17,6 +18,10 @@ interface Props {
 const { title, description = '落羽闲笺 - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
 
 const currentPath = Astro.url.pathname;
+
+// GooeyNav 激活项按当前路径匹配；不在导航中的页面（文章详情/标签页等）回退到「首页」
+const activeNavIndex = Math.max(0, navItems.findIndex((item) => isActiveNav(item.href, currentPath)));
+const gooeyItems = navItems.map(({ href, label }) => ({ href, label }));
 
 // 统计数据（数据入口统一走 lib/posts）
 const allPosts = await getPublishedPosts();
@@ -32,11 +37,25 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <ClientRouter />
   <title>{title} | 落羽闲笺</title>
 </head>
 <body>
-  <!-- 顶栏：logo + 搜索 -->
-  <Header />
+  <!-- 站点导航（GooeyNav 岛屿，全站共用；激活项由服务端按路径渲染；距顶与欢迎页一致为 21px） -->
+  <div class="page-nav">
+    <GooeyNav
+      client:load
+      items={gooeyItems}
+      initialActiveIndex={activeNavIndex}
+      theme="light"
+      color={NAV_PILL_COLOR}
+      size="md"
+      frame={true}
+      animationTime={380}
+      particleCount={30}
+      timeVariance={200}
+    />
+  </div>
 
   <!-- 内容区域：左导航栏 + 主内容 + 右侧栏 -->
   <div class="content-wrapper">
@@ -122,7 +141,13 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
     position: relative;
     min-height: 100vh;
     background: var(--bg-primary);
-    padding-top: 76px; /* 顶栏高度 + 间距 */
+  }
+
+  /* 站点导航行（GooeyNav 岛屿容器）：水平居中，距顶 1.3rem 与欢迎页 .top-nav 一致 */
+  .page-nav {
+    display: flex;
+    justify-content: center;
+    padding: 1.3rem 1rem 0;
   }
 
   /* 内容区域 */
@@ -326,9 +351,6 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   }
 
   @media (max-width: 768px) {
-    body {
-      padding-top: 64px;
-    }
     main {
       padding-bottom: 2rem;
     }

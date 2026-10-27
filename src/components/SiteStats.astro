@@ -30,11 +30,15 @@ const startDateText = `${startDate.getFullYear()}年${startDate.getMonth() + 1}�
 </div>
 
 <script>
-  (function() {
+  import { onPageLoad } from '../lib/on-page-load';
+
+  // 视图过渡下每次页面载入都要重新取 DOM 并重启时钟，返回清理函数防 interval 泄漏
+  onPageLoad(() => {
     const currentTimeEl = document.getElementById('stats-current-time');
     const daysEl = document.getElementById('stats-days');
     const hoursEl = document.getElementById('stats-hours');
-    const wrapper = document.querySelector('.site-stats-wrapper');
+    const wrapper = document.querySelector<HTMLElement>('.site-stats-wrapper');
+    if (!currentTimeEl || !daysEl || !hoursEl || !wrapper) return;
     const startTime = new Date(wrapper.dataset.startDate).getTime();
 
     function pad(n) {
@@ -63,8 +67,9 @@ const startDateText = `${startDate.getFullYear()}年${startDate.getMonth() + 1}�
 
     // 初始化并每秒更新
     updateStats();
-    setInterval(updateStats, 1000);
-  })();
+    const timer = setInterval(updateStats, 1000);
+    return () => clearInterval(timer);
+  });
 </script>
 
 <style>
