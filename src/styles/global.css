@@ -16,6 +16,8 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  /* 始终预留滚动条槽位：避免有/无滚动条的页面切换时，居中元素左右轻微跳动 */
+  scrollbar-gutter: stable;
 }
 
 body {

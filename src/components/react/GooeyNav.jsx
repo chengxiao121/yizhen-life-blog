@@ -6,7 +6,7 @@ import { navigate } from 'astro:transitions/client';
 import './GooeyNav.css';
 
 // 点击导航后让水滴动画飞完再走视图过渡（ms）；减少动态效果用户直接跳
-const NAV_DELAY = 450;
+const NAV_DELAY = 285;
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 

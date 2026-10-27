@@ -1,33 +1,25 @@
 ---
-import SiteStats from '../components/SiteStats.astro';
-import Footer from '../components/Footer.astro';
+// 站点瘦骨架（所有页面共用，含首页）：head 样板 + 全站导航行 + 主内容区。
+// 各页只负责往 <slot /> 塞内容；全站共享物（GooeyNav 挂载/参数、ClientRouter、
+// global.css）只在此处定义一份。
 import GooeyNav from '../components/react/GooeyNav';
 import { ClientRouter } from 'astro:transitions';
-import { getPublishedPosts } from '../lib/posts';
 import { navItems, isActiveNav, NAV_PILL_COLOR } from '../lib/nav';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
-  mainClass?: string;
-  noSidebar?: boolean;
-  showCategorySidebar?: boolean;
 }
 
-const { title, description = '落羽闲笺 - 世界那么大，我先溜达溜达', mainClass = '', noSidebar = false, showCategorySidebar = false } = Astro.props;
+const { title, description = '落羽闲笺 - 世界那么大，我先溜达溜达' } = Astro.props;
 
-const currentPath = Astro.url.pathname;
+// 页面可传完整标题（如首页），否则自动追加站名后缀
+const fullTitle = title.includes('落羽闲笺') ? title : `${title} | 落羽闲笺`;
 
-// GooeyNav 激活项按当前路径匹配；不在导航中的页面（文章详情/标签页等）回退到「首页」
-const activeNavIndex = Math.max(0, navItems.findIndex((item) => isActiveNav(item.href, currentPath)));
+// 导航高亮按当前路径匹配；不在导航中的页面（文章详情/标签页等）回退到「首页」
+const activeNavIndex = Math.max(0, navItems.findIndex((item) => isActiveNav(item.href, Astro.url.pathname)));
 const gooeyItems = navItems.map(({ href, label }) => ({ href, label }));
-
-// 统计数据（数据入口统一走 lib/posts）
-const allPosts = await getPublishedPosts();
-const postCount = allPosts.length;
-const tagCount = new Set(allPosts.flatMap((p) => p.data.tags)).size;
-const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
 ---
 
 <!doctype html>
@@ -38,10 +30,9 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <ClientRouter />
-  <title>{title} | 落羽闲笺</title>
+  <title>{fullTitle}</title>
 </head>
 <body>
-  <!-- 站点导航（GooeyNav 岛屿，全站共用；激活项由服务端按路径渲染；距顶与欢迎页一致为 21px） -->
   <div class="page-nav">
     <GooeyNav
       client:load
@@ -51,308 +42,30 @@ const categoryCount = new Set(allPosts.map((p) => p.data.category)).size;
       color={NAV_PILL_COLOR}
       size="md"
       frame={true}
-      animationTime={380}
+      animationTime={280}
       particleCount={30}
       timeVariance={200}
     />
   </div>
 
-  <!-- 内容区域：左导航栏 + 主内容 + 右侧栏 -->
-  <div class="content-wrapper">
-
-    <!-- 左侧固定导航栏 -->
-    {!noSidebar && (
-      <aside class="global-sidebar">
-        <div class="intro-card">
-          <div class="intro-avatar-wrapper">
-            <img src="/avatar.jpg" alt="头像" class="intro-avatar" />
-          </div>
-          <h2 class="intro-name">可乐加冰</h2>
-          <p class="intro-doodle">学一点，玩一点，记录一点。</p>
-
-          <nav class="sidebar-nav">
-            <ul>
-              {navItems.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class:list={['nav-item', { active: isActiveNav(item.href, currentPath) }]}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d={item.icon} />
-                    </svg>
-                    <span>{item.label}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div class="sidebar-stats">
-            <div class="stat-item">
-              <span class="stat-num">{postCount}</span>
-              <span class="stat-label">文章</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num">{tagCount}</span>
-              <span class="stat-label">标签</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num">{categoryCount}</span>
-              <span class="stat-label">分类</span>
-            </div>
-          </div>
-
-          <div class="sidebar-social">
-            <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.05.78 2.13v3.16c0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
-            </a>
-            <a href="/about" aria-label="邮箱">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-            </a>
-            <a href="/about" aria-label="关于我">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
-            </a>
-          </div>
-        </div>
-      </aside>
-    )}
-
-    <main class:list={[mainClass, { 'has-sidebar': !noSidebar }]}>
-      <slot />
-    </main>
-    <!-- 右侧栏目 -->
-    {showCategorySidebar && (
-      <slot name="right-sidebar" />
-    )}
-
-  </div>
-
-  <!-- 站点运行统计 -->
-  <SiteStats />
-
-  <!-- 页脚（含 ICP 备案号） -->
-  <Footer />
+  <main>
+    <slot />
+  </main>
 </body>
 </html>
 
 <style>
-  body {
-    position: relative;
-    min-height: 100vh;
-    background: var(--bg-primary);
-  }
-
-  /* 站点导航行（GooeyNav 岛屿容器）：水平居中，距顶 1.3rem 与欢迎页 .top-nav 一致 */
   .page-nav {
     display: flex;
     justify-content: center;
     padding: 1.3rem 1rem 0;
   }
 
-  /* 内容区域 */
-  .content-wrapper {
-    position: relative;
-    background: transparent;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 1280px;
+  /* :where() 压低优先级，页面可按需覆盖（如首页的全屏 landing） */
+  :where(main) {
+    width: 100%;
+    max-width: 1080px;
     margin: 0 auto;
-    gap: 1.25rem;
-  }
-
-  main {
-    position: relative;
-    min-height: calc(100vh - 200px);
-    padding: 0 0 3rem;
-    flex: 1;
-    min-width: 0;
-  }
-
-  main.has-sidebar {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  /* ===== 左侧固定导航栏 ===== */
-  .global-sidebar {
-    position: sticky;
-    top: 92px;
-    width: 165px;
-    flex-shrink: 0;
-    align-self: flex-start;
-    z-index: 50;
-    margin-left: -20px; /* 左栏贴近屏幕边缘 */
-    animation: fadeInUp 0.6s ease-out;
-  }
-
-  .intro-card {
-    background: transparent;
-    border: none;
-    border-radius: var(--radius-lg);
-    padding: 0.5rem 0 1.2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .intro-avatar-wrapper {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    margin-bottom: 0.9rem;
-    border: 3px solid var(--accent-light);
-    overflow: hidden;
-  }
-
-  .intro-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-
-  .intro-name {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: var(--text-primary);
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.06em;
-  }
-
-  .intro-doodle {
-    color: var(--text-muted);
-    font-size: 0.76rem;
-    margin-bottom: 1.1rem;
-    letter-spacing: 0.03em;
-  }
-
-  /* ── 竖向导航 ── */
-  .sidebar-nav {
-    width: 100%;
-  }
-
-  .sidebar-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.55em 0.9em;
-    border-radius: 12px;
-    color: var(--text-secondary);
-    font-size: 0.88rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition:
-      background 0.25s ease,
-      color 0.25s ease;
-  }
-
-  .nav-item svg {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-  }
-
-  .nav-item:hover {
-    background: var(--accent-light);
-    color: var(--accent-hover);
-  }
-
-  .nav-item.active {
-    background: var(--accent-light);
-    color: var(--accent-hover);
-    font-weight: 700;
-  }
-
-  /* ── 统计 ── */
-  .sidebar-stats {
-    display: flex;
-    justify-content: center;
-    gap: 1.4rem;
-    width: 100%;
-    margin-top: 1.1rem;
-    padding-top: 1rem;
-    border-top: 1px dashed var(--border);
-  }  .stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .stat-num {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
-
-  .stat-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* ── 社交图标 ── */
-  .sidebar-social {
-    display: flex;
-    justify-content: center;
-    gap: 0.9rem;
-    margin-top: 1rem;
-  }
-
-  .sidebar-social a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    color: var(--text-muted);
-    background: var(--tag-gray);
-    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
-  }
-
-  .sidebar-social a:hover {
-    color: var(--accent-hover);
-    background: var(--accent-light);
-    transform: translateY(-2px);
-  }
-
-  .sidebar-social svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  @media (max-width: 1320px) {
-    .global-sidebar {
-      margin-left: 0; /* 屏幕不够宽时取消负边距，避免贴出屏幕 */
-    }
-  }
-
-  @media (max-width: 1100px) {
-    .global-sidebar {
-      display: none;
-    }
-    .content-wrapper {
-      max-width: 100%;
-      padding: 0 1rem;
-    }
-  }
-
-  @media (max-width: 768px) {
-    main {
-      padding-bottom: 2rem;
-    }
+    padding: 0 1.5rem 3rem;
   }
 </style>
