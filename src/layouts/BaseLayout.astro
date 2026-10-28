@@ -60,7 +60,11 @@ const gooeyItems = navItems.map(({ href, label }) => ({ href, label }));
     justify-content: center;
     padding: 1.3rem 1rem 0;
   }
+</style>
 
+<!-- 必须全局：scoped 会把 data 属性选择器加到 :where() 外面，反而抬高优先级，
+     页面（如首页全屏 landing）就再也覆盖不动 main 了 -->
+<style is:global>
   /* :where() 压低优先级，页面可按需覆盖（如首页的全屏 landing） */
   :where(main) {
     width: 100%;

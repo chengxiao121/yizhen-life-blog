@@ -1,18 +1,32 @@
 ---
 // 欢迎页 — 站点首页（由 BaseLayout 瘦骨架生成：导航行 + 主内容）
 // 站名 + 副标语 + welcome 文字变图片交互（移植自 boknows-text-image-template）。
+// 右侧人物视频：加载后暂停，鼠标横向相对位移擦洗时间轴（头部随鼠标转向）。
 // 备案号按决策仅首页展示（一行极简）。
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="落羽闲笺 — 世界那么大，我先溜达溜达" description="世界喧嚣，思绪缓缓停泊。">
   <section class="landing">
-    <h1 class="site-name">落羽闲笺</h1>
-    <p class="tagline">欢迎来到我的空间</p>
-    <div class="hero-words">
-      <span id="words" class="words" role="img" aria-label="welcome"></span>
+    <div class="landing-text">
+      <h1 class="site-name">落羽闲笺</h1>
+      <p class="tagline">欢迎来到我的空间</p>
+      <div class="hero-words">
+        <span id="words" class="words" role="img" aria-label="welcome"></span>
+      </div>
+      <p id="status" class="hint" role="status">正在准备字母图片…</p>
     </div>
-    <p id="status" class="hint" role="status">正在准备字母图片…</p>
+    <div class="hero-media" aria-hidden="true">
+      <video
+        id="hero-video"
+        src="/landing/hero-character.mp4"
+        poster="/landing/hero-character-poster.jpg"
+        muted
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+      ></video>
+    </div>
   </section>
 
   <p class="icp-line">
@@ -39,12 +53,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 0 7vw;
   }
 
-  /* landing：单列左对齐，右侧暂留白（后续有想法再扩展） */
+  /* landing：左文字 + 右侧人物视频层（方案 A）。
+     负 margin 抵消 main 内边距实现通栏，视频层直达视口右缘；
+     左缘用蒙版渐变融入米白页面背景；文字区在上层不受影响。 */
   .landing {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 -7vw;
+    padding: 0 7vw;
+  }
+
+  .landing-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-media {
+    /* fixed 而非 absolute：铺满整个视口高，视频矩形的上/右/下三条边全部
+       推出屏幕外，只保留左缘蒙版这一条渐变过渡；z-index:-1 垫底不挡内容 */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 62vw;
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 26%);
+    mask-image: linear-gradient(to right, transparent 0%, black 26%);
+  }
+
+  .hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 40% center;
+    display: block;
   }
 
   .icp-line {
@@ -169,7 +215,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   @media (max-width: 860px) {
     main { padding: 0 8vw; }
-    .landing { padding: 4rem 0; }
+    .landing { padding: 4rem 8vw 1rem; margin: 0 -8vw; gap: 2rem; }
+    /* 窄屏退化为上下排布：视频变成文字下方的一块 16:9 区域，不再当背景 */
+    .hero-media {
+      position: static;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      order: 2;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -468,6 +524,68 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.removeEventListener('visibilitychange', onVisibility);
       reduced.removeEventListener('change', onReducedChange);
       io.disconnect();
+    };
+  });
+
+  // —— 右侧人物视频：鼠标横向相对位移擦洗时间轴 ——
+  // 加载后保持暂停；指针横向位移 × 0.08 帧/px 换算成时间增量，
+  // 经 seeked 事件串联排队（seek 进行中只记录最新目标，结束后立刻补 seek，
+  // 高频 pointermove 也不会丢帧）；推到最左/最右帧后原地饱和。
+  // 触屏与 prefers-reduced-motion 不绑监听，静止在中间正面帧（poster 兜底）。
+  onPageLoad(() => {
+    const v = document.querySelector('#hero-video');
+    if (!v) return;
+    const FPS = 24;
+    const FRAMES_PER_PX = 0.08;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let lastX = null;
+    let pending = null;
+
+    function clampTime(t) {
+      return Math.min(v.duration - 0.5 / FPS, Math.max(0, t));
+    }
+
+    function seekTo(t) {
+      pending = t;
+      if (!v.seeking) v.currentTime = t;
+    }
+
+    // seek 完成时若期间产生了更新的目标，立刻补一次 seek（串联防丢帧）
+    function onSeeked() {
+      if (pending !== null && Math.abs(v.currentTime - pending) > 0.5 / FPS) {
+        v.currentTime = pending;
+      } else {
+        pending = null;
+      }
+    }
+
+    function onMove(e) {
+      if (e.pointerType === 'touch') { lastX = null; return; }
+      if (lastX === null) { lastX = e.clientX; return; }
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      seekTo(clampTime(v.currentTime + (dx * FRAMES_PER_PX) / FPS));
+    }
+
+    function onLeave() { lastX = null; }
+
+    function bind() {
+      v.pause();
+      // 初始定位到中间正面帧，与海报一致，加载完成时视觉无缝
+      v.currentTime = v.duration / 2;
+      v.addEventListener('seeked', onSeeked);
+      if (reduced.matches || !matchMedia('(hover: hover)').matches) return;
+      document.addEventListener('pointermove', onMove);
+      document.documentElement.addEventListener('mouseleave', onLeave);
+    }
+
+    if (v.readyState >= 1) bind();
+    else v.addEventListener('loadedmetadata', bind, { once: true });
+
+    return () => {
+      document.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      v.removeEventListener('seeked', onSeeked);
     };
   });
 </script>
