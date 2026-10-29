@@ -14,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="sub-line">写作、摄影、音乐、打球、也持续创作产品与项目。</p>
       <p class="sub-line">在AI时代，用理性驱动理想，用灵性创造生纪</p>
       <div class="hero-words">
-        <span id="words" class="words" role="img" aria-label="Calm wraps fleeting moments"></span>
+        <span id="words" class="words font-loading" role="img" aria-label="Calm wraps fleeting moments"></span>
       </div>
       <p id="status" class="hint" role="status">正在准备字母图片…</p>
     </div>
@@ -159,6 +159,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     min-height: 1.34em;
     touch-action: pan-y pinch-zoom;
   }
+
+  /* 字体加载期隐藏：等 Cormorant 就绪 + 动态居中完成后再显示，
+     避免兜底字体/未居中位置闪现（脚本移除该类，JS 失效时最多由 2s 兜底恢复） */
+  .words.font-loading { visibility: hidden; }
 
   .word { display: inline-flex; flex-shrink: 0; }
 
@@ -615,8 +619,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       states[0].hit.style.marginLeft = dx + 'px';
     }
     centerFirstLine();
-    // 字体（Cormorant italic）异步加载会改变字母宽度，加载完成后必须重算
-    document.fonts?.ready.then(() => { if (!disposed) centerFirstLine(); });
+    // 字体（Cormorant italic）异步加载会改变字母宽度，加载完成后必须重算，
+    // 并移除 font-loading 隐藏：字体就绪 + 居中完成后才显示，消除刷新时的字体/位置闪变
+    const revealWords = () => { if (!disposed) words.classList.remove('font-loading'); };
+    if (document.fonts) {
+      document.fonts.ready.then(() => { if (!disposed) { centerFirstLine(); revealWords(); } });
+      setTimeout(revealWords, 2000); // 兜底：字体加载异常时最多隐藏 2 秒
+    } else {
+      revealWords();
+    }
     const onResizeCenter = () => centerFirstLine();
     window.addEventListener('resize', onResizeCenter);
 
