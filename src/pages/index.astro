@@ -542,12 +542,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     let lastX = null;
     let pending = null;   // 已发出、可能尚未完成的 seek 目标
     let target = null;    // 逻辑目标时间（秒），唯一事实来源
+    let seekQueued = false;
 
     function clampTime(t) {
       return Math.min(v.duration - 0.5 / FPS, Math.max(0, t));
     }
 
     function seekTo(t) {
+      // 帧粒度去重：目标帧与在途/当前帧相同（移动不足半帧、或已推到端点）时
+      // 跳过 seek，避免"解码半天目标帧没变"的无效功——这是滑动卡顿的主因之一
+      if (pending !== null && Math.abs(t - pending) < 0.5 / FPS) return;
+      if (pending === null && Math.abs(t - v.currentTime) < 0.5 / FPS) return;
       pending = t;
       if (!v.seeking) v.currentTime = t;
     }
@@ -568,7 +573,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       lastX = e.clientX;
       if (!dx) return;
       target = clampTime(target + (dx * FRAMES_PER_PX) / FPS);
-      seekTo(target);
+      // seek 发射频率锁到显示器刷新率：高频鼠标（125~1000Hz）的事件风暴
+      // 会让 seek 排队溢出，这里每帧最多发一次、总是取最新目标
+      if (!seekQueued) {
+        seekQueued = true;
+        requestAnimationFrame(() => { seekQueued = false; seekTo(target); });
+      }
     }
 
     function onLeave() { lastX = null; }
