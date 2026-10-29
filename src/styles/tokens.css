@@ -49,8 +49,15 @@
   /* 大圆角：卡片、横幅 */
 
   /* 字体 */
-  --font-body: 'LXGW WenKai', 'Noto Serif SC', serif;
+  --font-body: system-ui,
+    -apple-system,
+    'Segoe UI',
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
   --font-code: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  /* 首页大字英文衬线斜体（Cormorant Italic 700） */
+  --font-display-en: 'Cormorant', 'Playfair Display', Georgia, serif;
 
   /* 布局 */
   --max-width: 720px;

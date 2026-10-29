@@ -1,5 +1,7 @@
 /* ===== 全局样式（设计 token 见 tokens.css） ===== */
 @import './tokens.css';
+/* 首页大字英文衬线斜体（npm: @fontsource/cormorant），自托管不依赖 CDN */
+@import '@fontsource/cormorant/700-italic.css';
 /* 霞鹜文楷字体自托管（npm: lxgw-wenkai-webfont），不依赖 Google Fonts CDN */
 @import 'lxgw-wenkai-webfont/lxgwwenkai-regular.css';
 @import 'lxgw-wenkai-webfont/lxgwwenkai-bold.css';

@@ -15,3 +15,7 @@ AGENTS.md
 
 # 外部参考项目与素材工作区（不进博客仓库）
 external/
+
+# skill 发布件与样稿生成图（非博客内容）
+dist-skill/
+generated-images/

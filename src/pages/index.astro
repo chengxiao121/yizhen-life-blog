@@ -10,9 +10,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="landing">
     <div class="landing-text">
       <h1 class="site-name">落羽闲笺</h1>
-      <p class="tagline">欢迎来到我的空间</p>
+      <p class="tagline">欢迎来到我的灵质空间</p>
+      <p class="sub-line">写作、摄影、音乐、打球、也持续创作产品与项目。</p>
+      <p class="sub-line">在AI时代，用理性驱动理想，用灵性创造生纪</p>
       <div class="hero-words">
-        <span id="words" class="words" role="img" aria-label="welcome"></span>
+        <span id="words" class="words" role="img" aria-label="Calm wraps fleeting moments"></span>
       </div>
       <p id="status" class="hint" role="status">正在准备字母图片…</p>
     </div>
@@ -119,17 +121,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .tagline {
     font-size: clamp(15px, 1.4vw, 20px);
-    font-weight: 600;
-    color: var(--text-muted);
+    font-weight: 700;
+    color: var(--text-secondary);
     letter-spacing: 0.14em;
-    margin: 1rem 0 3.2rem;
+    margin: 1rem 0 0.8rem;
+  }
+
+  .sub-line {
+    font-size: clamp(13px, 1.1vw, 16px);
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    margin: 0.35rem 0;
   }
 
   /* ---- welcome 交互文字（移植自模板） ---- */
   .hero-words {
-    font-size: clamp(54px, 7vw, 116px);
-    font-weight: 800;
-    line-height: 1.1;
+    margin-top: 3.2rem;
+    /* 整行左移约 1 个字母宽（em 随字号等比缩放）；想移更多改大负值，两个字母 ≈ -1.2em */
+    margin-left: -0.4em;
+    /* 两行排版：最长行 "fleeting moments" 约 8em 宽，字号上限可比单行时提升约 50% */
+    font-size: clamp(34px, 6.2vw, 112px);
+    font-family: var(--font-display-en);
+    /* Cormorant 引入的是 italic 字面，需显式斜体；700 为该字体可用的最重字重 */
+    font-style: italic;
+    font-weight: 700;
+    line-height: 0.2;
     letter-spacing: -0.02em;
     color: var(--text-primary);
   }
@@ -137,6 +153,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .words {
     position: relative;
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.025em;
     align-items: center;
     min-height: 1.34em;
     touch-action: pan-y pinch-zoom;
@@ -144,12 +162,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .word { display: inline-flex; flex-shrink: 0; }
 
+  .letter-space { width: 0.32em; }
+
+  /* 强制换行位（空格处撑满整行，把后续字母挤到下一行）；
+     高度必须归零，否则这个隐形元素自己占一整行字母的高度，两行之间会出现大空隙 */
+  .letter-break { flex-basis: 100%; width: auto; }
+  .letter.letter-break,
+  .hit.letter-break { height: 0; }
+
   .letter {
     pointer-events: none;
     display: inline-grid;
     position: relative;
     align-items: center;
-    height: 1.08em;
+    height: 1em;
     flex-shrink: 0;
     transition: padding-inline 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -186,6 +212,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     user-select: none;
     pointer-events: none;
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.025em;
     align-items: center;
   }
 
@@ -193,7 +221,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: inline-flex;
     align-items: center;
     pointer-events: auto;
-    height: 1.35em;
+    height: 1.25em;
     line-height: 1;
   }
 
@@ -239,16 +267,45 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     let disposed = false;
 
     // —— 文字变图片交互，移植自 boknows-text-image-template（MIT） ——
+    const PHRASE = 'Calm wraps fleeting moments';
     const CONFIG = {
-      text: 'welcome',
+      text: PHRASE,
+      // 强制换行的字符位置（该处为空格，撑满整行实现两行排版）：
+      // 10 = "Calm wraps | fleeting moments"
+      lineBreaks: [10],
+      // 首行与次行动态中心对齐（脚本实测两行宽度自动定位，窗口缩放自动重算）
+      centerFirstLine: true,
+      // 贴图按"位置"挂载（27 项对应 PHRASE 逐字符）：每项为 [图a, 图b, ...] 随机切换；
+      // 空数组 = 该字母素材未到位，显示纯文字。同字母跨位置直接复用同一组文件。
+      // 命名规范：public/landing/calm-<位置>-<a|b>.webp
       imagesByPosition: [
-        ['/landing/00-w-a.webp', '/landing/00-w-b.webp'],
-        ['/landing/01-e-a.webp', '/landing/01-e-b.webp'],
-        ['/landing/02-l-a.webp', '/landing/02-l-b.webp'],
-        ['/landing/03-c-a.webp', '/landing/03-c-b.webp'],
-        ['/landing/04-o-a.webp', '/landing/04-o-b.webp'],
-        ['/landing/05-m-a.webp', '/landing/05-m-b.webp'],
-        ['/landing/06-e-a.webp', '/landing/06-e-b.webp']
+        ['/landing/calm-00-a.webp', '/landing/calm-00-b.webp'], // 0  C
+        ['/landing/calm-01-a.webp', '/landing/calm-01-b.webp'], // 1  a
+        ['/landing/calm-02-a.webp', '/landing/calm-02-b.webp'], // 2  l
+        ['/landing/calm-03-a.webp', '/landing/calm-03-b.webp'], // 3  m
+        [],                                                     // 4  (空格)
+        ['/landing/calm-05-a.webp', '/landing/calm-05-b.webp'], // 5  w
+        ['/landing/calm-06-a.webp', '/landing/calm-06-b.webp'], // 6  r
+        ['/landing/calm-01-a.webp', '/landing/calm-01-b.webp'], // 7  a（复用）
+        ['/landing/calm-08-a.webp', '/landing/calm-08-b.webp'], // 8  p
+        ['/landing/calm-09-a.webp', '/landing/calm-09-b.webp'], // 9  s
+        [],                                                     // 10 (空格)
+        ['/landing/calm-11-a.webp', '/landing/calm-11-b.webp'], // 11 f
+        ['/landing/calm-02-a.webp', '/landing/calm-02-b.webp'], // 12 l（复用）
+        ['/landing/calm-13-a.webp', '/landing/calm-13-b.webp'], // 13 e
+        ['/landing/calm-14-a.webp', '/landing/calm-14-b.webp'], // 14 e
+        ['/landing/calm-15-a.webp', '/landing/calm-15-b.webp'], // 15 t
+        ['/landing/calm-16-a.webp', '/landing/calm-16-b.webp'], // 16 i
+        ['/landing/calm-17-a.webp', '/landing/calm-17-b.webp'], // 17 n
+        ['/landing/calm-18-a.webp', '/landing/calm-18-b.webp'], // 18 g
+        [],                                                     // 19 (空格)
+        ['/landing/calm-03-a.webp', '/landing/calm-03-b.webp'], // 20 m（复用）
+        ['/landing/calm-21-a.webp', '/landing/calm-21-b.webp'], // 21 o
+        ['/landing/calm-03-a.webp', '/landing/calm-03-b.webp'], // 22 m（复用）
+        ['/landing/calm-13-b.webp', '/landing/calm-14-a.webp'], // 23 e（复用，交叉搭配）
+        ['/landing/calm-17-a.webp', '/landing/calm-17-b.webp'], // 24 n（复用）
+        ['/landing/calm-15-a.webp', '/landing/calm-15-b.webp'], // 25 t（复用）
+        ['/landing/calm-09-a.webp', '/landing/calm-09-b.webp'], // 26 s（复用）
       ],
       enterDuration: 340,
       exitDuration: 620
@@ -266,8 +323,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     for (let index = 0; index < tokens.length; index++) {
       const ch = tokens[index];
+      const isBreak = CONFIG.lineBreaks?.includes(index);
       const el = document.createElement('span');
       el.className = 'letter';
+      // 空格字符在独立 flex/grid 元素里会被空白折叠规则压成零宽，需给显式宽度分开单词
+      if (ch === ' ') el.classList.add('letter-space');
+      // 强制换行位：撑满整行把后续字母挤到下一行
+      if (isBreak) el.classList.add('letter-break');
       const char = document.createElement('span');
       char.className = 'char';
       char.textContent = ch;
@@ -275,7 +337,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       words.append(el);
 
       const hit = document.createElement('span');
-      hit.className = 'hit';
+      hit.className = 'hit' + (isBreak ? ' letter-break' : '');
       hit.dataset.index = index;
       hit.textContent = ch;
 
@@ -540,6 +602,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       start();
     });
 
+    // —— 首行动态居中：实测两行渲染宽度，把第一行精确移到与第二行中心对齐 ——
+    function centerFirstLine() {
+      const breakAt = CONFIG.lineBreaks?.[0];
+      if (!CONFIG.centerFirstLine || !breakAt || breakAt >= states.length - 1) return;
+      const a1 = states[0].el, a2 = states[breakAt - 1].el;
+      const b1 = states[breakAt + 1].el, b2 = states[states.length - 1].el;
+      const w1 = a2.getBoundingClientRect().right - a1.getBoundingClientRect().left;
+      const w2 = b2.getBoundingClientRect().right - b1.getBoundingClientRect().left;
+      const dx = Math.max(0, (w2 - w1) / 2);
+      states[0].el.style.marginLeft = dx + 'px';
+      states[0].hit.style.marginLeft = dx + 'px';
+    }
+    centerFirstLine();
+    // 字体（Cormorant italic）异步加载会改变字母宽度，加载完成后必须重算
+    document.fonts?.ready.then(() => { if (!disposed) centerFirstLine(); });
+    const onResizeCenter = () => centerFirstLine();
+    window.addEventListener('resize', onResizeCenter);
+
     // 离开页面时停掉全部定时器与 document 级监听；
     // 绑在 words 等被换掉 DOM 上的监听随旧元素一起回收，无需处理
     return () => {
@@ -549,6 +629,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (pointRafId) cancelAnimationFrame(pointRafId);
       document.removeEventListener('visibilitychange', onVisibility);
       reduced.removeEventListener('change', onReducedChange);
+      window.removeEventListener('resize', onResizeCenter);
       io.disconnect();
     };
   });
