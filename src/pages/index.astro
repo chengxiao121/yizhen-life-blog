@@ -528,10 +528,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   });
 
   // —— 右侧人物视频：鼠标横向相对位移擦洗时间轴 ——
-  // 加载后保持暂停；指针横向位移 × 0.08 帧/px 换算成时间增量，
-  // 经 seeked 事件串联排队（seek 进行中只记录最新目标，结束后立刻补 seek，
-  // 高频 pointermove 也不会丢帧）；推到最左/最右帧后原地饱和。
-  // 触屏与 prefers-reduced-motion 不绑监听，静止在中间正面帧（poster 兜底）。
+  // 加载后保持暂停；指针横向位移 × 0.08 帧/px 累加进独立的"逻辑目标时间"，
+  // 视频只负责追赶账本（seek 进行中到达的新目标由 seeked 串联补跳）。
+  // 关键：逻辑账本与视频实际进度解耦——快速滑动时 seek 异步未完成、
+  // currentTime 迟滞，若以它为基准累加会丢失位移（表现为"划到底只转了一半"）。
+  // 推到最左/最右帧后原地饱和。触屏与减动效不绑监听，静止正面帧。
   onPageLoad(() => {
     const v = document.querySelector('#hero-video');
     if (!v) return;
@@ -539,7 +540,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const FRAMES_PER_PX = 0.08;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let lastX = null;
-    let pending = null;
+    let pending = null;   // 已发出、可能尚未完成的 seek 目标
+    let target = null;    // 逻辑目标时间（秒），唯一事实来源
 
     function clampTime(t) {
       return Math.min(v.duration - 0.5 / FPS, Math.max(0, t));
@@ -561,10 +563,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function onMove(e) {
       if (e.pointerType === 'touch') { lastX = null; return; }
-      if (lastX === null) { lastX = e.clientX; return; }
+      if (lastX === null || target === null) { lastX = e.clientX; return; }
       const dx = e.clientX - lastX;
       lastX = e.clientX;
-      seekTo(clampTime(v.currentTime + (dx * FRAMES_PER_PX) / FPS));
+      if (!dx) return;
+      target = clampTime(target + (dx * FRAMES_PER_PX) / FPS);
+      seekTo(target);
     }
 
     function onLeave() { lastX = null; }
@@ -572,7 +576,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     function bind() {
       v.pause();
       // 初始定位到中间正面帧，与海报一致，加载完成时视觉无缝
-      v.currentTime = v.duration / 2;
+      target = v.duration / 2;
+      v.currentTime = target;
       v.addEventListener('seeked', onSeeked);
       if (reduced.matches || !matchMedia('(hover: hover)').matches) return;
       document.addEventListener('pointermove', onMove);
