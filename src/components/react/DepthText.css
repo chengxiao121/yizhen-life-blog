@@ -1,0 +1,78 @@
+.depth-text {
+  display: inline-block;
+  perspective: var(--depth-text-perspective);
+  perspective-origin: 50% 48%;
+  isolation: isolate;
+}
+
+.depth-text__stage {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.depth-text__layer,
+.depth-text__face {
+  grid-area: 1 / 1;
+  display: inline-block;
+  font-size: var(--depth-text-font-size);
+  font-weight: var(--depth-text-font-weight);
+  line-height: 0.86;
+  letter-spacing: -0.065em;
+  white-space: nowrap;
+  user-select: none;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+}
+
+.depth-text__layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.depth-text__layer--back {
+  text-shadow: var(--depth-text-shadow);
+}
+
+.depth-text--outline .depth-text__layer {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: max(1px, 0.012em) currentColor;
+}
+
+.depth-text__face {
+  position: relative;
+  z-index: 1;
+  color: var(--depth-text-face-color);
+  text-shadow: var(--depth-text-face-shadow);
+  transform: translateZ(0.6px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .depth-text {
+    cursor: default;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .depth-text__stage {
+    will-change: auto;
+  }
+}
+
+/* ---- CJK 变体（本项目站名专用）----
+   默认的 -0.065em 负字距与 0.86 行高是为拉丁展示字形设计的；
+   中文字形填满 em 框，负字距会让笔画互相打架，行高过紧可能裁切墨迹。
+   字距取 0.16em 而非常规 0.1em：3D 转动时挤出层会横向滑出压到相邻字，
+   中文方块字没有英文单词的整体轮廓，必须预留更大的字间空隙。 */
+.depth-text--cjk .depth-text__layer,
+.depth-text--cjk .depth-text__face {
+  letter-spacing: 0.16em;
+  line-height: 1.1;
+}

@@ -4,12 +4,35 @@
 // 右侧人物视频：加载后暂停，鼠标横向相对位移擦洗时间轴（头部随鼠标转向）。
 // 备案号按决策仅首页展示（一行极简）。
 import BaseLayout from '../layouts/BaseLayout.astro';
+import DepthText from '../components/react/DepthText';
 ---
 
 <BaseLayout title="落羽闲笺 — 世界那么大，我先溜达溜达" description="世界喧嚣，思绪缓缓停泊。">
   <section class="landing">
     <div class="landing-text">
-      <h1 class="site-name">落羽闲笺</h1>
+      <!-- 站名立体字：React 岛屿（SSR 先渲染出面层文字，hydration 后厚度抽出）。
+           可读性关键在字面/墙体色相明度分离：橙字面 + 灰紫墙体（--tag-purple-text，
+           互补色相，思路来自 React Bits 官网白字紫墙）。前两版已否决：
+           粉墙与暖橙同色域会黏连；墨棕明度太重。tilt 8 / depth 2.2 / 0.16em 字距
+           跟踪区（margin 为超出元素边缘的倍数）：横向总宽 2 倍字宽、纵向即字高本身 -->
+      <h1 class="site-name">
+        <DepthText
+          client:load
+          text="落羽闲笺"
+          layers={28}
+          depth={2.2}
+          faceColor="var(--accent-hover)"
+          depthColor="var(--tag-purple-text)"
+          tilt={8}
+          trackMarginX={0.5}
+          trackMarginY={0}
+          hoverPush={0.5}
+          shadow={false}
+          fontSize="clamp(44px, 5.5vw, 88px)"
+          fontWeight={900}
+          className="depth-text--cjk"
+        />
+      </h1>
       <p class="tagline">欢迎来到我的灵质空间</p>
       <p class="sub-line">写作、摄影、音乐、打球、也持续创作产品与项目。</p>
       <p class="sub-line">在AI时代，用理性驱动理想，用灵性创造生纪</p>
@@ -111,13 +134,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   /* ---- 左侧文字区 ---- */
-  .site-name {
-    font-size: clamp(44px, 5.5vw, 88px);
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    color: var(--accent-hover);
-    text-shadow: 3px 3px 0 rgba(245, 184, 196, 0.6);
-  }
+  /* 站名视觉已整体移交 DepthText 岛屿（颜色/字号/字距均在组件 props 与其 CSS 内），
+     这里不再保留任何站名样式，h1 仅作语义容器与默认文档流间距 */
 
   .tagline {
     font-size: clamp(15px, 1.4vw, 20px);
