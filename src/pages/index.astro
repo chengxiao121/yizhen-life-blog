@@ -611,6 +611,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function onLeave() { lastX = null; }
 
+    // 后台标签页返回后 Chromium 会回收已解码的视频帧（暂停中的视频没有新事件
+    // 触发重绘 → 整层渲染成黑块），重新 seek 一次强制解码器出新帧
+    function onVisibility() {
+      if (!document.hidden && alive && target !== null && v.readyState >= 1) {
+        pending = null;
+        v.currentTime = clampTime(target);
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility);
+
     function bind() {
       // 触屏 / 减动效：不注入 src，视频 0 流量，静止 poster 即正面帧画面
       if (reduced.matches || !matchMedia('(hover: hover)').matches) return;
@@ -633,6 +643,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       alive = false;
       document.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
+      document.removeEventListener('visibilitychange', onVisibility);
       v.removeEventListener('seeked', onSeeked);
       v.removeAttribute('src');
       v.load(); // 中断可能仍在进行的视频下载（视图过渡换页时）
