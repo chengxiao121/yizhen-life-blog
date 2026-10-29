@@ -442,9 +442,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (next !== null) show(states[next]);
     }
 
+    // 字母交互的命中检测 + 贴纸增删有布局开销，高频鼠标（125~1000Hz）下
+    // 每个事件都跑一遍会和视频 seek 解码抢主线程（表现为划过字母区时人物卡顿），
+    // 与视频侧同款策略：处理频率锁到显示器刷新率，一帧最多取最新坐标处理一次
+    let pointRafId = 0;
+    let queuedPoint = null;
+    function pointOnRaf(e) {
+      queuedPoint = e;
+      if (!pointRafId) {
+        pointRafId = requestAnimationFrame(() => {
+          pointRafId = 0;
+          if (!disposed && queuedPoint) {
+            const ev = queuedPoint;
+            queuedPoint = null;
+            point(ev);
+          }
+        });
+      }
+    }
+
     words.addEventListener('pointerenter', () => { inside = true; clearTimeout(autoTimer); });
-    words.addEventListener('pointermove', point);
-    words.addEventListener('pointerdown', point);
+    words.addEventListener('pointermove', pointOnRaf);
+    words.addEventListener('pointerdown', pointOnRaf);
 
     function leave() {
       inside = false;
@@ -521,6 +540,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       disposed = true;
       clearIntro();
       clearTimeout(autoTimer);
+      if (pointRafId) cancelAnimationFrame(pointRafId);
       document.removeEventListener('visibilitychange', onVisibility);
       reduced.removeEventListener('change', onReducedChange);
       io.disconnect();
