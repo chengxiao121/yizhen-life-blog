@@ -17,13 +17,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p id="status" class="hint" role="status">正在准备字母图片…</p>
     </div>
     <div class="hero-media" aria-hidden="true">
+      <!-- 不写 src/preload：视频 3.9MB，由脚本判定设备可交互后才按需注入；
+           触屏与减动效用户只消费 poster（与正面帧同画面），零视频流量 -->
       <video
         id="hero-video"
-        src="/landing/hero-character.mp4"
         poster="/landing/hero-character-poster.jpg"
         muted
         playsinline
-        preload="auto"
         disablepictureinpicture
       ></video>
     </div>
@@ -563,6 +563,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     let pending = null;   // 已发出、可能尚未完成的 seek 目标
     let target = null;    // 逻辑目标时间（秒），唯一事实来源
     let seekQueued = false;
+    let alive = true;
 
     function clampTime(t) {
       return Math.min(v.duration - 0.5 / FPS, Math.max(0, t));
@@ -579,6 +580,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     // seek 完成时若期间产生了更新的目标，立刻补一次 seek（串联防丢帧）
     function onSeeked() {
+      if (!alive) return;
       if (pending !== null && Math.abs(v.currentTime - pending) > 0.5 / FPS) {
         v.currentTime = pending;
       } else {
@@ -597,30 +599,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       // 会让 seek 排队溢出，这里每帧最多发一次、总是取最新目标
       if (!seekQueued) {
         seekQueued = true;
-        requestAnimationFrame(() => { seekQueued = false; seekTo(target); });
+        requestAnimationFrame(() => { seekQueued = false; if (alive) seekTo(target); });
       }
     }
 
     function onLeave() { lastX = null; }
 
     function bind() {
-      v.pause();
-      // 初始定位到中间正面帧，与海报一致，加载完成时视觉无缝
-      target = v.duration / 2;
-      v.currentTime = target;
-      v.addEventListener('seeked', onSeeked);
+      // 触屏 / 减动效：不注入 src，视频 0 流量，静止 poster 即正面帧画面
       if (reduced.matches || !matchMedia('(hover: hover)').matches) return;
-      document.addEventListener('pointermove', onMove);
-      document.documentElement.addEventListener('mouseleave', onLeave);
+      // 可交互设备：此时才注入 src 开始加载；元数据到位后定位正面帧并接管交互
+      v.addEventListener('loadedmetadata', () => {
+        if (!alive) return;
+        target = v.duration / 2;   // 初始定位到中间正面帧，与海报一致
+        v.currentTime = target;
+        v.addEventListener('seeked', onSeeked);
+        document.addEventListener('pointermove', onMove);
+        document.documentElement.addEventListener('mouseleave', onLeave);
+      }, { once: true });
+      v.preload = 'auto';
+      v.src = '/landing/hero-character.mp4';
     }
 
-    if (v.readyState >= 1) bind();
-    else v.addEventListener('loadedmetadata', bind, { once: true });
+    bind();
 
     return () => {
+      alive = false;
       document.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
       v.removeEventListener('seeked', onSeeked);
+      v.removeAttribute('src');
+      v.load(); // 中断可能仍在进行的视频下载（视图过渡换页时）
     };
   });
 </script>
