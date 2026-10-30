@@ -29,9 +29,9 @@
   --deco-orange: #F0A868;
 
   /* 樱花氛围层（首页 Canvas 粒子花瓣，三档深浅制造层次） */
-  --sakura-petal-light: #FBD9DF;
+  --sakura-petal-light: #f8c1cb;
   --sakura-petal: var(--deco-pink);
-  --sakura-petal-deep: #EE9FB2;
+  --sakura-petal-deep: #f58fa7;
 
   /* 标签配色（按真实颜色命名） */
   --tag-blue: #E3EEF8;
