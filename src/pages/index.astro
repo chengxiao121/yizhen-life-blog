@@ -2,12 +2,14 @@
 // 欢迎页 — 站点首页（由 BaseLayout 瘦骨架生成：导航行 + 主内容）
 // 站名 + 副标语 + welcome 文字变图片交互（移植自 boknows-text-image-template）。
 // 右侧人物视频：加载后暂停，鼠标横向相对位移擦洗时间轴（头部随鼠标转向）。
+// 樱花氛围层：Canvas 粒子全屏飘落，浮于内容之前，不拦截任何交互（见脚本 SAKURA 段）。
 // 备案号按决策仅首页展示（一行极简）。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DepthText from '../components/react/DepthText';
 ---
 
 <BaseLayout title="落羽闲笺 — 世界那么大，我先溜达溜达" description="世界喧嚣，思绪缓缓停泊。">
+  <canvas id="sakura-canvas" aria-hidden="true"></canvas>
   <section class="landing">
     <div class="landing-text">
       <!-- 站名立体字：React 岛屿（SSR 先渲染出面层文字，hydration 后厚度抽出）。
@@ -116,6 +118,23 @@ import DepthText from '../components/react/DepthText';
     object-fit: cover;
     object-position: 40% center;
     display: block;
+  }
+
+  /* ---- 樱花氛围层 ----
+     fixed 全屏铺满视口；浮于所有内容之前（内容最高 z-index 为 3），
+     pointer-events:none 保证永不拦截视频擦洗 / 字母交互 / 链接点击。
+     花瓣整体透明度在脚本 CONFIG.opacity 控制，这里只管层级与尺寸 */
+  #sakura-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #sakura-canvas { display: none; }
   }
 
   .icp-line {
@@ -757,6 +776,159 @@ import DepthText from '../components/react/DepthText';
       v.removeEventListener('seeked', onSeeked);
       v.removeAttribute('src');
       v.load(); // 中断可能仍在进行的视频下载（视图过渡换页时）
+    };
+  });
+
+  // —— 樱花氛围层：Canvas 粒子全屏飘落 ——
+  // 设计约定（grill-me 决策）：哑光柔粉贴合米白暖橙基调；飘在内容前面但透明度压低；
+  // 减动效用户完全不渲染；粒子数按视口面积缩放（小屏最低减半）；DPR 上限 2。
+  // dt 用 rAF 时间差驱动（速度单位 = px/s），后台标签页 rAF 自动暂停，
+  // 回前台时 dt 钳制防花瓣瞬移，无需额外 visibilitychange 监听。
+  onPageLoad(() => {
+    const canvas = document.querySelector('#sakura-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduced.matches) return; // 减动效：一根花瓣都不画
+
+    // ===== 参数（调这里，dev 模式改完即时生效）=====
+    const CONFIG = {
+      count: 90,        // 桌面端花瓣数量（按视口面积自动缩放，小屏最低 50%）
+      speed: 50,        // 基础飘落速度 px/s（个体有 0.6~1.4 倍随机因子）
+      wind: 25,         // 水平风向漂移 px/s（负值向左）
+      sway: 16,         // 左右摇摆速度幅度 px/s（正弦摆动，模拟空气扰动）
+      size: [5, 10],    // 花瓣长半径范围 px（短半径约 0.55~0.75 倍）
+      opacity: 0.95,    // 整体透明度上限（压低保证正文可读性）
+    }
+
+    // 花瓣三档色阶从 token 读取（tokens.css 樱花段），换肤时自动跟随；
+    // 自定义属性的计算值已完成 var() 展开，直接取即可
+    const css = getComputedStyle(document.documentElement);
+    const PALETTE = [
+      css.getPropertyValue('--sakura-petal-light').trim() || '#FBD9DF',
+      css.getPropertyValue('--sakura-petal').trim() || '#F5B8C4',
+      css.getPropertyValue('--sakura-petal-deep').trim() || '#EE9FB2',
+    ];
+
+    let w = 0, h = 0;
+    const petals = [];
+
+    function makePetal(spawnAnywhere) {
+      const size = CONFIG.size[0] + Math.random() * (CONFIG.size[1] - CONFIG.size[0]);
+      return {
+        x: Math.random() * w,
+        y: spawnAnywhere ? Math.random() * h : -size * 2,
+        rx: size,
+        ry: size * (0.55 + Math.random() * 0.2),
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 1.6,                 // 翻转角速度 rad/s
+        fall: CONFIG.speed * (0.6 + Math.random() * 0.8),  // 个体下落速度
+        drift: CONFIG.wind * (0.5 + Math.random()),        // 个体风向因子
+        swayPhase: Math.random() * Math.PI * 2,
+        swaySpeed: 0.8 + Math.random() * 0.8,              // 摆动角速度 rad/s
+        alpha: 0.5 + Math.random() * 0.5,
+        color: PALETTE[(Math.random() * PALETTE.length) | 0],
+      };
+    }
+
+    function targetCount() {
+      // 1440×900 为满额基准，视口越小粒子越少，下限减半
+      const scale = Math.max(0.5, Math.min(1, (w * h) / (1440 * 900)));
+      return Math.round(CONFIG.count * scale);
+    }
+
+    function syncCount() {
+      const target = targetCount();
+      while (petals.length < target) petals.push(makePetal(true));
+      if (petals.length > target) petals.length = target;
+    }
+
+    function resize() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      syncCount();
+    }
+
+    // 单片樱花瓣路径：顶端带 V 形缺口的泪滴形（真樱花瓣的标志特征），
+    // 而不是素椭圆——同样的每帧开销，辨识度完全不同
+    function drawPetal(p) {
+      const { rx, ry } = p;
+      const notch = rx * 0.35;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.globalAlpha = p.alpha * CONFIG.opacity;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.moveTo(-rx, 0);
+      ctx.quadraticCurveTo(-rx, -ry * 0.8, -notch, -ry); // 左肩
+      ctx.lineTo(0, -ry * 0.7);                          // V 形缺口谷底
+      ctx.lineTo(notch, -ry);                            // 右肩
+      ctx.quadraticCurveTo(rx, -ry * 0.8, rx, 0);
+      ctx.quadraticCurveTo(rx * 0.6, ry, 0, ry);         // 圆润瓣底
+      ctx.quadraticCurveTo(-rx * 0.6, ry, -rx, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    let rafId = 0;
+    let running = false;
+    let last = 0;
+
+    function step(now) {
+      if (!running) return;
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < petals.length; i++) {
+        const p = petals[i];
+        p.angle += p.spin * dt;
+        p.swayPhase += p.swaySpeed * dt;
+        p.y += p.fall * dt;
+        p.x += (p.drift + Math.sin(p.swayPhase) * CONFIG.sway) * dt;
+        // 出界回收：落出底部从顶部重生，横向环绕穿屏
+        if (p.y - p.rx > h) Object.assign(p, makePetal(false));
+        if (p.x < -p.rx * 2) p.x = w + p.rx * 2;
+        else if (p.x > w + p.rx * 2) p.x = -p.rx * 2;
+        drawPetal(p);
+      }
+      rafId = requestAnimationFrame(step);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      rafId = requestAnimationFrame(step);
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(rafId);
+      ctx.clearRect(0, 0, w, h);
+    }
+
+    const onResize = () => resize();
+    window.addEventListener('resize', onResize);
+
+    // 运行中切换系统减动效设置：开 = 停止并清空；关 = 恢复
+    const onReducedChange = () => (reduced.matches ? stop() : start());
+    reduced.addEventListener('change', onReducedChange);
+
+    resize();
+    start();
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', onResize);
+      reduced.removeEventListener('change', onReducedChange);
     };
   });
 </script>
