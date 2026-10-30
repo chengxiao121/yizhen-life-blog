@@ -17,8 +17,10 @@ const { title, description = '落羽闲笺 - 世界那么大，我先溜达溜�
 // 页面可传完整标题（如首页），否则自动追加站名后缀
 const fullTitle = title.includes('落羽闲笺') ? title : `${title} | 落羽闲笺`;
 
-// 导航高亮按当前路径匹配；不在导航中的页面（文章详情/标签页等）回退到「首页」
-const activeNavIndex = Math.max(0, navItems.findIndex((item) => isActiveNav(item.href, Astro.url.pathname)));
+// 导航高亮按当前路径匹配；无匹配项（文章详情/标签页等）传 -1，导航全不亮。
+// 严禁兜底到某一项：曾因 Math.max(0, …) 强制归「首页」导致文章页高亮错误、
+// 且 GooeyNav 视「首页」为激活项拦截了点击（2026-10-30 修复）
+const activeNavIndex = navItems.findIndex((item) => isActiveNav(item.href, Astro.url.pathname));
 const gooeyItems = navItems.map(({ href, label }) => ({ href, label }));
 ---
 

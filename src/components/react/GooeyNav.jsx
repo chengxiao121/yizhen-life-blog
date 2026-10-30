@@ -227,7 +227,9 @@ const GooeyNav = ({
   style
 }) => {
   const [innerIndex, setInnerIndex] = useState(initialActiveIndex);
-  const current = Math.min(Math.max(0, activeIndex ?? innerIndex), Math.max(0, items.length - 1));
+  // 仅钳上限；允许 -1（BaseLayout 对无匹配导航的页面传 -1 = 全不亮态）。
+  // current 为 -1 时无激活项，所有点击都走正常跳转
+  const current = Math.min(activeIndex ?? innerIndex, Math.max(0, items.length - 1));
   const stageRef = useRef(null);
   const canvasRef = useRef(null);
   const listRef = useRef(null);

@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
 import { getCollection } from 'astro:content';
 import { formatDate } from '../../lib/date';
+import { navItems } from '../../lib/nav';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -14,10 +15,21 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// 回列表目标：文章所属分类页。分类名与导航 label 一一对应，
+// 映射只从 nav.ts 派生（导航数据唯一来源，禁止再写一份映射）
+const categoryHref = navItems.find((item) => item.label === post.data.category)?.href ?? '/';
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <article class="article">
+    <!-- 桌面端：视口左缘悬浮箭头（hover 展开分类名）；窄屏降级为标题上方行内链接 -->
+    <a href={categoryHref} class="back-to-list" aria-label={`返回${post.data.category}文章列表`}>
+      <span class="back-to-list__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </span>
+      <span class="back-to-list__label">返回文章列表</span>
+    </a>
     <header class="article-header">
       <h1>{post.data.title}</h1>
       <div class="article-meta">
@@ -28,9 +40,6 @@ const { Content } = await post.render();
     <div class="prose">
       <Content />
     </div>
-    <footer class="article-footer">
-      <a href="/" class="back-link">&larr; 返回首页</a>
-    </footer>
   </article>
 </BaseLayout>
 
@@ -39,6 +48,37 @@ const { Content } = await post.render();
     max-width: var(--max-width);
     margin: 0 auto;
   }
+
+  /* ---- 返回列表按钮：桌面左缘悬浮，窄屏行内；文字常显 ---- */
+  .back-to-list {
+    position: fixed;
+    /* 悬浮在视口左缘、垂直居中；文章窄栏居中，左缘空间充足 */
+    top: 50%;
+    left: 1.5rem;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .back-to-list__arrow {
+    display: inline-flex;
+  }
+  .back-to-list:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-hover);
+  }
+
   .article-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -58,18 +98,12 @@ const { Content } = await post.render();
     color: var(--text-muted);
     font-size: 0.85rem;
   }
-  .article-footer {
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-light);
-    text-align: center;
-  }
-  .back-link {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    transition: color 0.2s;
-  }
-  .back-link:hover {
-    color: var(--accent);
+  /* 窄屏：悬浮降级为标题上方行内链接 */
+  @media (max-width: 860px) {
+    .back-to-list {
+      position: static;
+      display: inline-flex;
+      margin-bottom: 1.25rem;
+    }
   }
 </style>
