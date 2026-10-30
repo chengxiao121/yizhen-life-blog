@@ -16,6 +16,8 @@
   /* 核心强调色 — 暖橙 */
   --accent: #E8833A;
   --accent-hover: #e86c13;
+  --accent-deep: #B5471B;
+  /* 强调色深档：首页站名立体字墙体（同色相压暗，明度分离保证转角可读） */
   --accent-light: rgba(232, 131, 58, 0.15);
   --accent-border: rgba(232, 131, 58, 0.6);
   --accent-rgb: 232, 131, 58;

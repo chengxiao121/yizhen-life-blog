@@ -11,9 +11,9 @@ import DepthText from '../components/react/DepthText';
   <section class="landing">
     <div class="landing-text">
       <!-- 站名立体字：React 岛屿（SSR 先渲染出面层文字，hydration 后厚度抽出）。
-           可读性关键在字面/墙体色相明度分离：橙字面 + 灰紫墙体（--tag-purple-text，
-           互补色相，思路来自 React Bits 官网白字紫墙）。前两版已否决：
-           粉墙与暖橙同色域会黏连；墨棕明度太重。tilt 8 / depth 2.2 / 0.16em 字距
+           可读性关键在字面/墙体色相明度分离：橙字面 + 赤陶深橙墙体（--accent-deep，
+           同色相压暗，像字的背光面）。已否决：粉墙与暖橙同明度会黏连；墨棕太重；
+           灰紫米白底上发闷；白墙沉进米白背景立体感消失。tilt 8 / depth 2.2 / 0.16em 字距
            跟踪区（margin 为超出元素边缘的倍数）：横向总宽 2 倍字宽、纵向即字高本身 -->
       <h1 class="site-name">
         <DepthText
@@ -22,7 +22,7 @@ import DepthText from '../components/react/DepthText';
           layers={28}
           depth={2.2}
           faceColor="var(--accent-hover)"
-          depthColor="var(--tag-purple-text)"
+          depthColor="var(--accent-deep)"
           tilt={8}
           trackMarginX={0.5}
           trackMarginY={0}
